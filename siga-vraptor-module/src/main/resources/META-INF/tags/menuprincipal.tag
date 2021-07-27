@@ -460,7 +460,7 @@
 
 				</c:otherwise>
 			</c:choose></li>
-
+		<li><a class="dropdown-item" href="https://portal.pbdoc.pb.gov.br/mural-de-avisos">Atualização das Versões</a></li>
 		<li><a class="dropdown-item" href="/siga/public/app/logout">Logoff</a></li>
 	</ul></li>
 
