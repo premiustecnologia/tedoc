@@ -456,8 +456,7 @@
 				</c:when>
 				<c:otherwise>
 					<a class="dropdown-item" id="apostilaSiga"
-						href="/siga/arquivos/apostila_sigaex.pdf" target="_blank">Apostila
-						SIGA-Doc</a>
+						href="https://portal.pbdoc.pb.gov.br/manual" target="_blank">Manual PBDoc</a>
 
 				</c:otherwise>
 			</c:choose></li>
