@@ -1,10 +1,10 @@
 CREATE TABLE sigawf.wf_configuracao (
-    conf_id integer NOT NULL,
+    conf_id bigint NOT NULL,
     defp_id bigint
 );
 
 CREATE SEQUENCE sigawf.wf_configuracao_conf_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -12,7 +12,7 @@ CREATE SEQUENCE sigawf.wf_configuracao_conf_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_def_desvio (
-    defd_id integer NOT NULL,
+    defd_id bigint NOT NULL,
     defd_tx_condicao character varying(256),
     defd_nm character varying(256),
     defd_nr_ordem integer,
@@ -54,7 +54,7 @@ COMMENT ON COLUMN sigawf.wf_def_desvio.his_idc_fim IS 'Identificador do cadastra
 COMMENT ON COLUMN sigawf.wf_def_desvio.his_idc_ini IS 'Identificador do cadastrante que criou a definição de desvio';
 
 CREATE SEQUENCE sigawf.wf_def_desvio_defd_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -62,8 +62,8 @@ CREATE SEQUENCE sigawf.wf_def_desvio_defd_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_def_procedimento (
-    defp_id integer NOT NULL,
-    orgu_id integer,
+    defp_id bigint NOT NULL,
+    orgu_id bigint,
     defp_ano integer,
     defp_ds character varying(256) NOT NULL,
     defp_nm character varying(256) NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE sigawf.wf_def_procedimento (
     defp_tp_inicio character varying(45) DEFAULT 'ACESSO_LOTACAO'::character varying NOT NULL,
     pess_id_resp bigint,
     lota_id_resp bigint,
-    grup_id_edicao integer,
+    grup_id_edicao bigint,
     his_id_ini bigint,
     his_ativo integer,
     his_dt_ini date,
@@ -116,7 +116,7 @@ COMMENT ON COLUMN sigawf.wf_def_procedimento.his_idc_ini IS 'Identificador do ca
 COMMENT ON COLUMN sigawf.wf_def_procedimento.his_idc_fim IS 'Identificador do cadastrante que finalizou a definição de procedimento';
 
 CREATE SEQUENCE sigawf.wf_def_procedimento_defp_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -124,7 +124,7 @@ CREATE SEQUENCE sigawf.wf_def_procedimento_defp_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_def_responsavel (
-    defr_id integer NOT NULL,
+    defr_id bigint NOT NULL,
     defr_ds character varying(256),
     defr_nm character varying(256),
     defr_tp character varying(255),
@@ -157,7 +157,7 @@ COMMENT ON COLUMN sigawf.wf_def_responsavel.his_idc_ini IS 'Identificador do cad
 COMMENT ON COLUMN sigawf.wf_def_responsavel.his_idc_fim IS 'Identificador do cadastrante que finalizou a definição de responsável';
 
 CREATE SEQUENCE sigawf.wf_def_responsavel_defr_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -165,7 +165,7 @@ CREATE SEQUENCE sigawf.wf_def_responsavel_defr_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_def_tarefa (
-    deft_id integer NOT NULL,
+    deft_id bigint NOT NULL,
     defp_id bigint,
     defr_id bigint,
     lota_id bigint,
@@ -234,7 +234,7 @@ COMMENT ON COLUMN sigawf.wf_def_tarefa.his_idc_ini IS 'Identificador do cadastra
 COMMENT ON COLUMN sigawf.wf_def_tarefa.his_idc_fim IS 'Identificador do cadastrante que finalizou aa definição de tarefa';
 
 CREATE SEQUENCE sigawf.wf_def_tarefa_deft_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -242,7 +242,7 @@ CREATE SEQUENCE sigawf.wf_def_tarefa_deft_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_def_variavel (
-    defv_id integer NOT NULL,
+    defv_id bigint NOT NULL,
     deft_id bigint,
     defv_cd character varying(32),
     defv_nm character varying(256),
@@ -284,7 +284,7 @@ COMMENT ON COLUMN sigawf.wf_def_variavel.his_idc_ini IS 'Identificador do cadast
 COMMENT ON COLUMN sigawf.wf_def_variavel.his_idc_fim IS 'Identificador do cadastrante da finalização da definição de variável';
 
 CREATE SEQUENCE sigawf.wf_def_variavel_defv_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -292,7 +292,7 @@ CREATE SEQUENCE sigawf.wf_def_variavel_defv_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_movimentacao (
-    movi_id integer NOT NULL,
+    movi_id bigint NOT NULL,
     movi_tp character varying(31) NOT NULL,
     proc_id bigint,
     lota_id_titular bigint,
@@ -352,7 +352,7 @@ COMMENT ON COLUMN sigawf.wf_movimentacao.his_idc_ini IS 'Identificador do cadast
 COMMENT ON COLUMN sigawf.wf_movimentacao.his_idc_fim IS 'Identificador do cadastrante que finalizou a movimentação';
 
 CREATE SEQUENCE sigawf.wf_movimentacao_movi_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -360,7 +360,7 @@ CREATE SEQUENCE sigawf.wf_movimentacao_movi_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_procedimento (
-    proc_id integer NOT NULL,
+    proc_id bigint NOT NULL,
     orgu_id bigint,
     defp_id bigint,
     lota_id_evento bigint,
@@ -420,7 +420,7 @@ COMMENT ON COLUMN sigawf.wf_procedimento.his_dt_fim IS 'Data de início do proce
 COMMENT ON COLUMN sigawf.wf_procedimento.his_idc_ini IS 'Identificador do cadastrante da criação do procedimento';
 
 CREATE SEQUENCE sigawf.wf_procedimento_proc_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -428,7 +428,7 @@ CREATE SEQUENCE sigawf.wf_procedimento_proc_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_responsavel (
-    resp_id integer NOT NULL,
+    resp_id bigint NOT NULL,
     defr_id bigint,
     orgu_id bigint,
     lota_id bigint,
@@ -464,7 +464,7 @@ COMMENT ON COLUMN sigawf.wf_responsavel.his_idc_ini IS 'Identificador do cadastr
 COMMENT ON COLUMN sigawf.wf_responsavel.his_idc_fim IS 'Identificador do cadastrante que finalizou o responsável';
 
 CREATE SEQUENCE sigawf.wf_responsavel_resp_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -472,7 +472,7 @@ CREATE SEQUENCE sigawf.wf_responsavel_resp_id_seq
     CACHE 1;
 
 CREATE TABLE sigawf.wf_variavel (
-    vari_id integer NOT NULL,
+    vari_id bigint NOT NULL,
     proc_id bigint,
     vari_fg bit(1),
     vari_df date,
@@ -496,7 +496,7 @@ COMMENT ON COLUMN sigawf.wf_variavel.vari_nr IS 'Conteúdo da variável quando �
 COMMENT ON COLUMN sigawf.wf_variavel.vari_tx IS 'Conteúdo da variável quando é um texto';
 
 CREATE SEQUENCE sigawf.wf_variavel_vari_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE

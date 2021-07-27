@@ -1,11 +1,11 @@
 CREATE TABLE corporativo.cad_sit_funcional (
-    id_cad_sit_funcional integer NOT NULL,
+    id_cad_sit_funcional bigint NOT NULL,
     dsc_sit_funcional character varying(60),
-    id_mumps integer
+    id_mumps bigint
 );
 
 CREATE SEQUENCE corporativo.cad_sit_funcional_id_cad_sit_funcional_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -13,8 +13,8 @@ CREATE SEQUENCE corporativo.cad_sit_funcional_id_cad_sit_funcional_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_acesso (
-    id_acesso integer NOT NULL,
-    id_identidade integer NOT NULL,
+    id_acesso bigint NOT NULL,
+    id_identidade bigint NOT NULL,
     dt_ini timestamp with time zone NOT NULL,
     dt_fim timestamp with time zone,
     tp_acesso smallint NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE corporativo.cp_acesso (
 );
 
 CREATE SEQUENCE corporativo.cp_acesso_id_acesso_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -30,16 +30,16 @@ CREATE SEQUENCE corporativo.cp_acesso_id_acesso_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_aplicacao_feriado (
-    id_aplicacao integer NOT NULL,
-    id_orgao_usu integer,
-    id_lotacao integer,
-    id_localidade integer,
-    id_ocorrencia_feriado integer,
+    id_aplicacao bigint NOT NULL,
+    id_orgao_usu bigint,
+    id_lotacao bigint,
+    id_localidade bigint,
+    id_ocorrencia_feriado bigint,
     feriado character varying(1)
 );
 
 CREATE SEQUENCE corporativo.cp_aplicacao_feriado_id_aplicacao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -47,8 +47,8 @@ CREATE SEQUENCE corporativo.cp_aplicacao_feriado_id_aplicacao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_arquivo (
-    id_arq integer NOT NULL,
-    id_orgao_usu integer,
+    id_arq bigint NOT NULL,
+    id_orgao_usu bigint,
     conteudo_tp_arq character varying(256),
     tp_armazenamento character varying(20),
     caminho character varying(255),
@@ -74,7 +74,7 @@ CREATE TABLE corporativo.cp_arquivo_excluir (
 COMMENT ON COLUMN corporativo.cp_arquivo_excluir.caminho IS 'Coluna com o caminho do arquivo binário para exclusão';
 
 CREATE SEQUENCE corporativo.cp_arquivo_id_arq_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -82,46 +82,46 @@ CREATE SEQUENCE corporativo.cp_arquivo_id_arq_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_complexo (
-    id_complexo integer NOT NULL,
+    id_complexo bigint NOT NULL,
     nome_complexo character varying(100),
-    id_localidade integer,
-    id_orgao_usu integer
+    id_localidade bigint,
+    id_orgao_usu bigint
 );
 
 CREATE TABLE corporativo.cp_configuracao (
-    id_configuracao integer NOT NULL,
+    id_configuracao bigint NOT NULL,
     dt_ini_vig_configuracao timestamp with time zone,
     dt_fim_vig_configuracao timestamp with time zone,
     his_dt_ini timestamp with time zone,
-    id_orgao_usu integer,
-    id_lotacao integer,
-    id_cargo integer,
-    id_funcao_confianca integer,
-    id_pessoa integer,
-    id_sit_configuracao integer,
-    id_tp_configuracao integer,
-    id_servico integer,
-    id_grupo integer,
+    id_orgao_usu bigint,
+    id_lotacao bigint,
+    id_cargo bigint,
+    id_funcao_confianca bigint,
+    id_pessoa bigint,
+    id_sit_configuracao bigint,
+    id_tp_configuracao bigint,
+    id_servico bigint,
+    id_grupo bigint,
     nm_email character varying(50),
     desc_formula character varying(1024),
-    id_tp_lotacao integer,
-    id_identidade integer,
-    his_idc_ini integer,
-    his_idc_fim integer,
+    id_tp_lotacao bigint,
+    id_identidade bigint,
+    his_idc_ini bigint,
+    his_idc_fim bigint,
     his_dt_fim timestamp with time zone,
-    his_id_ini integer,
-    id_complexo integer,
-    id_orgao_objeto integer,
+    his_id_ini bigint,
+    id_complexo bigint,
+    id_orgao_objeto bigint,
     descr_configuracao character varying(255),
-    id_lotacao_objeto integer,
-    id_complexo_objeto integer,
-    id_cargo_objeto integer,
-    id_funcao_confianca_objeto integer,
-    id_pessoa_objeto integer
+    id_lotacao_objeto bigint,
+    id_complexo_objeto bigint,
+    id_cargo_objeto bigint,
+    id_funcao_confianca_objeto bigint,
+    id_pessoa_objeto bigint
 );
 
 CREATE SEQUENCE corporativo.cp_configuracao_id_configuracao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -129,12 +129,12 @@ CREATE SEQUENCE corporativo.cp_configuracao_id_configuracao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_feriado (
-    id_feriado integer NOT NULL,
+    id_feriado bigint NOT NULL,
     dsc_feriado character varying(256) NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_feriado_id_feriado_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -142,22 +142,22 @@ CREATE SEQUENCE corporativo.cp_feriado_id_feriado_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_grupo (
-    id_grupo integer NOT NULL,
-    id_tp_grupo integer NOT NULL,
-    id_orgao_usu integer NOT NULL,
-    id_grupo_pai integer,
+    id_grupo bigint NOT NULL,
+    id_tp_grupo bigint NOT NULL,
+    id_orgao_usu bigint NOT NULL,
+    id_grupo_pai bigint,
     sigla_grupo character varying(20),
     desc_grupo character varying(200),
-    his_id_ini integer,
+    his_id_ini bigint,
     his_dt_ini timestamp with time zone NOT NULL,
-    his_idc_ini integer,
+    his_idc_ini bigint,
     his_dt_fim timestamp with time zone,
-    his_idc_fim integer,
+    his_idc_fim bigint,
     his_ativo smallint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_grupo_id_grupo_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -165,27 +165,27 @@ CREATE SEQUENCE corporativo.cp_grupo_id_grupo_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_identidade (
-    id_identidade integer NOT NULL,
-    id_tp_identidade integer,
-    id_pessoa integer,
+    id_identidade bigint NOT NULL,
+    id_tp_identidade bigint,
+    id_pessoa bigint,
     data_criacao_identidade timestamp with time zone,
     data_expiracao_identidade timestamp with time zone,
     data_cancelamento_identidade timestamp with time zone,
-    id_orgao_usu integer,
+    id_orgao_usu bigint,
     login_identidade character varying(20),
     senha_identidade character varying(40),
     senha_identidade_cripto character varying(255),
     senha_identidade_cripto_sinc character varying(255),
-    his_id_ini integer,
+    his_id_ini bigint,
     his_dt_ini timestamp with time zone NOT NULL,
-    his_idc_ini integer,
+    his_idc_ini bigint,
     his_dt_fim timestamp with time zone,
-    his_idc_fim integer,
+    his_idc_fim bigint,
     his_ativo smallint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_identidade_id_identidade_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -193,13 +193,13 @@ CREATE SEQUENCE corporativo.cp_identidade_id_identidade_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_localidade (
-    id_localidade integer NOT NULL,
+    id_localidade bigint NOT NULL,
     nm_localidade character varying(256) NOT NULL,
-    id_uf integer NOT NULL
+    id_uf bigint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_localidade_id_localidade_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -207,22 +207,22 @@ CREATE SEQUENCE corporativo.cp_localidade_id_localidade_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_marca (
-    id_marca integer NOT NULL,
+    id_marca bigint NOT NULL,
     dt_ini_marca timestamp with time zone,
     dt_fim_marca timestamp with time zone,
-    id_marcador integer,
-    id_pessoa_ini integer,
-    id_lotacao_ini integer,
-    id_mobil integer,
-    id_tp_marca integer,
-    id_ref integer,
-    id_mov integer
+    id_marcador bigint,
+    id_pessoa_ini bigint,
+    id_lotacao_ini bigint,
+    id_mobil bigint,
+    id_tp_marca bigint,
+    id_ref bigint,
+    id_mov bigint
 );
 
 COMMENT ON COLUMN corporativo.cp_marca.id_mov IS 'Referencia a movimentação que produziu essa marca';
 
 CREATE SEQUENCE corporativo.cp_marca_id_marca_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -230,20 +230,20 @@ CREATE SEQUENCE corporativo.cp_marca_id_marca_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_marcador (
-    id_marcador integer NOT NULL,
+    id_marcador bigint NOT NULL,
     descr_marcador character varying(40) NOT NULL,
-    id_finalidade_marcador integer NOT NULL,
+    id_finalidade_marcador bigint NOT NULL,
     ord_marcador integer,
     grupo_marcador smallint,
-    id_lotacao_ini integer,
+    id_lotacao_ini bigint,
     descr_detalhada character varying(255),
     id_cor smallint,
     id_icone smallint,
-    his_id_ini integer,
+    his_id_ini bigint,
     his_dt_ini timestamp with time zone,
-    his_idc_ini integer,
+    his_idc_ini bigint,
     his_dt_fim timestamp with time zone,
-    his_idc_fim integer,
+    his_idc_fim bigint,
     his_ativo smallint
 );
 
@@ -270,7 +270,7 @@ COMMENT ON COLUMN corporativo.cp_marcador.his_idc_fim IS 'Id da identidade da pe
 COMMENT ON COLUMN corporativo.cp_marcador.his_ativo IS 'Identifica se está ativo ou não';
 
 CREATE SEQUENCE corporativo.cp_marcador_id_marcador_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -278,20 +278,20 @@ CREATE SEQUENCE corporativo.cp_marcador_id_marcador_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_modelo (
-    id_modelo integer NOT NULL,
-    id_orgao_usu integer,
+    id_modelo bigint NOT NULL,
+    id_orgao_usu bigint,
     id_arq bigint,
     conteudo_blob_mod bytea,
-    his_id_ini integer,
+    his_id_ini bigint,
     his_dt_ini timestamp with time zone NOT NULL,
-    his_idc_ini integer,
+    his_idc_ini bigint,
     his_dt_fim timestamp with time zone,
-    his_idc_fim integer,
+    his_idc_fim bigint,
     his_ativo smallint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_modelo_id_modelo_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -299,14 +299,14 @@ CREATE SEQUENCE corporativo.cp_modelo_id_modelo_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_ocorrencia_feriado (
-    id_ocorrencia integer NOT NULL,
+    id_ocorrencia bigint NOT NULL,
     dt_ini_feriado timestamp with time zone,
     dt_fim_feriado timestamp with time zone,
-    id_feriado integer
+    id_feriado bigint
 );
 
 CREATE SEQUENCE corporativo.cp_ocorrencia_feriado_id_ocorrencia_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -314,7 +314,7 @@ CREATE SEQUENCE corporativo.cp_ocorrencia_feriado_id_ocorrencia_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_orgao (
-    id_orgao integer NOT NULL,
+    id_orgao bigint NOT NULL,
     nm_orgao character varying(256) NOT NULL,
     cgc_orgao integer,
     razao_social_orgao character varying(256),
@@ -330,9 +330,9 @@ CREATE TABLE corporativo.cp_orgao (
     tel_contato_orgao character varying(10),
     sigla_orgao character varying(30),
     uf_orgao character varying(2),
-    id_orgao_usu integer NOT NULL,
+    id_orgao_usu bigint NOT NULL,
     fg_ativo character varying(1),
-    his_id_ini integer,
+    his_id_ini bigint,
     his_ide character varying(256),
     his_dt_ini timestamp with time zone,
     his_dt_fim timestamp with time zone,
@@ -340,7 +340,7 @@ CREATE TABLE corporativo.cp_orgao (
 );
 
 CREATE SEQUENCE corporativo.cp_orgao_id_orgao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -348,7 +348,7 @@ CREATE SEQUENCE corporativo.cp_orgao_id_orgao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_orgao_usuario (
-    id_orgao_usu integer NOT NULL,
+    id_orgao_usu bigint NOT NULL,
     nm_orgao_usu character varying(256) NOT NULL,
     cgc_orgao_usu bigint,
     razao_social_orgao_usu character varying(256),
@@ -365,13 +365,13 @@ CREATE TABLE corporativo.cp_orgao_usuario (
     is_externo_orgao_usu smallint DEFAULT 0,
     his_dt_ini date,
     his_dt_fim date,
-    his_idc_ini integer,
-    his_idc_fim integer,
+    his_idc_ini bigint,
+    his_idc_fim bigint,
     his_ativo smallint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_orgao_usuario_id_orgao_usu_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -379,14 +379,14 @@ CREATE SEQUENCE corporativo.cp_orgao_usuario_id_orgao_usu_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_papel (
-    id_papel integer NOT NULL,
-    id_tp_papel integer NOT NULL,
-    id_pessoa integer NOT NULL,
-    id_lotacao integer NOT NULL,
-    id_funcao_confianca integer,
-    id_cargo integer NOT NULL,
-    id_orgao_usu integer NOT NULL,
-    his_id_ini integer,
+    id_papel bigint NOT NULL,
+    id_tp_papel bigint NOT NULL,
+    id_pessoa bigint NOT NULL,
+    id_lotacao bigint NOT NULL,
+    id_funcao_confianca bigint,
+    id_cargo bigint NOT NULL,
+    id_orgao_usu bigint NOT NULL,
+    his_id_ini bigint,
     his_ide character varying(256),
     his_dt_ini timestamp with time zone NOT NULL,
     his_dt_fim timestamp with time zone,
@@ -394,7 +394,7 @@ CREATE TABLE corporativo.cp_papel (
 );
 
 CREATE SEQUENCE corporativo.cp_papel_id_papel_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -402,17 +402,17 @@ CREATE SEQUENCE corporativo.cp_papel_id_papel_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_personalizacao (
-    id_pessoa integer NOT NULL,
-    id_papel_ativo integer,
-    id_substituindo_pessoa integer,
-    id_substituindo_lotacao integer,
-    id_substituindo_papel integer,
+    id_pessoa bigint NOT NULL,
+    id_papel_ativo bigint,
+    id_substituindo_pessoa bigint,
+    id_substituindo_lotacao bigint,
+    id_substituindo_papel bigint,
     nm_simulando_usuario character varying(15),
-    id_personalizacao integer NOT NULL
+    id_personalizacao bigint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_personalizacao_id_personalizacao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -420,14 +420,14 @@ CREATE SEQUENCE corporativo.cp_personalizacao_id_personalizacao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_sede (
-    id_sede integer NOT NULL,
+    id_sede bigint NOT NULL,
     nm_sede character varying(256) NOT NULL,
     dsc_sede character varying(512),
-    id_orgao_usu integer NOT NULL
+    id_orgao_usu bigint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_sede_id_sede_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -435,16 +435,16 @@ CREATE SEQUENCE corporativo.cp_sede_id_sede_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_servico (
-    id_servico integer NOT NULL,
+    id_servico bigint NOT NULL,
     sigla_servico character varying(40) NOT NULL,
     desc_servico character varying(200) NOT NULL,
-    id_servico_pai integer,
-    id_tp_servico integer NOT NULL,
+    id_servico_pai bigint,
+    id_tp_servico bigint NOT NULL,
     label_servico character varying(35)
 );
 
 CREATE SEQUENCE corporativo.cp_servico_id_servico_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -452,13 +452,13 @@ CREATE SEQUENCE corporativo.cp_servico_id_servico_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_situacao_configuracao (
-    id_sit_configuracao integer NOT NULL,
+    id_sit_configuracao bigint NOT NULL,
     dsc_sit_configuracao character varying(255),
     restritividade_sit_conf bigint NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_situacao_configuracao_id_sit_configuracao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -466,13 +466,13 @@ CREATE SEQUENCE corporativo.cp_situacao_configuracao_id_sit_configuracao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_configuracao (
-    id_tp_configuracao integer NOT NULL,
+    id_tp_configuracao bigint NOT NULL,
     dsc_tp_configuracao character varying(255),
-    id_sit_configuracao integer
+    id_sit_configuracao bigint
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_configuracao_id_tp_configuracao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -480,12 +480,12 @@ CREATE SEQUENCE corporativo.cp_tipo_configuracao_id_tp_configuracao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_grupo (
-    id_tp_grupo integer NOT NULL,
+    id_tp_grupo bigint NOT NULL,
     desc_tp_grupo character varying(200)
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_grupo_id_tp_grupo_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -493,12 +493,12 @@ CREATE SEQUENCE corporativo.cp_tipo_grupo_id_tp_grupo_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_identidade (
-    id_tp_identidade integer NOT NULL,
+    id_tp_identidade bigint NOT NULL,
     desc_tp_identidade character varying(60)
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_identidade_id_tp_identidade_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -506,14 +506,14 @@ CREATE SEQUENCE corporativo.cp_tipo_identidade_id_tp_identidade_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_lotacao (
-    id_tp_lotacao integer NOT NULL,
+    id_tp_lotacao bigint NOT NULL,
     sigla_tp_lotacao character varying(40),
     desc_tp_lotacao character varying(200),
-    id_tp_lotacao_pai integer
+    id_tp_lotacao_pai bigint
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_lotacao_id_tp_lotacao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -521,12 +521,12 @@ CREATE SEQUENCE corporativo.cp_tipo_lotacao_id_tp_lotacao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_marca (
-    id_tp_marca integer NOT NULL,
+    id_tp_marca bigint NOT NULL,
     descr_tp_marca character varying(30)
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_marca_id_tp_marca_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -534,12 +534,12 @@ CREATE SEQUENCE corporativo.cp_tipo_marca_id_tp_marca_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_marcador (
-    id_tp_marcador integer NOT NULL,
+    id_tp_marcador bigint NOT NULL,
     descr_tipo_marcador character varying(30)
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_marcador_id_tp_marcador_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -547,12 +547,12 @@ CREATE SEQUENCE corporativo.cp_tipo_marcador_id_tp_marcador_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_papel (
-    id_tp_papel integer NOT NULL,
+    id_tp_papel bigint NOT NULL,
     desc_tp_papel character varying(60)
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_papel_id_tp_papel_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -560,12 +560,12 @@ CREATE SEQUENCE corporativo.cp_tipo_papel_id_tp_papel_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_pessoa (
-    id_tp_pessoa integer NOT NULL,
+    id_tp_pessoa bigint NOT NULL,
     desc_tp_pessoa character varying(60)
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_pessoa_id_tp_pessoa_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -573,13 +573,13 @@ CREATE SEQUENCE corporativo.cp_tipo_pessoa_id_tp_pessoa_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_servico (
-    id_tp_servico integer NOT NULL,
+    id_tp_servico bigint NOT NULL,
     desc_tp_servico character varying(60),
-    id_sit_configuracao integer
+    id_sit_configuracao bigint
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_servico_id_tp_servico_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -587,17 +587,17 @@ CREATE SEQUENCE corporativo.cp_tipo_servico_id_tp_servico_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_tipo_servico_situacao (
-    id_tp_servico integer DEFAULT 0 NOT NULL,
-    id_sit_configuracao integer DEFAULT 0 NOT NULL
+    id_tp_servico bigint DEFAULT 0 NOT NULL,
+    id_sit_configuracao bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE corporativo.cp_tipo_token (
-    id_tp_token integer NOT NULL,
+    id_tp_token bigint NOT NULL,
     descr_tp_token character varying(30)
 );
 
 CREATE SEQUENCE corporativo.cp_tipo_token_id_tp_token_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -605,16 +605,16 @@ CREATE SEQUENCE corporativo.cp_tipo_token_id_tp_token_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_token (
-    id_token integer NOT NULL,
-    id_ref integer NOT NULL,
-    id_tp_token integer NOT NULL,
+    id_token bigint NOT NULL,
+    id_ref bigint NOT NULL,
+    id_tp_token bigint NOT NULL,
     dt_iat date NOT NULL,
     dt_exp date,
     token character varying(256) NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_token_id_token_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -622,12 +622,12 @@ CREATE SEQUENCE corporativo.cp_token_id_token_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_uf (
-    id_uf integer NOT NULL,
+    id_uf bigint NOT NULL,
     nm_uf character varying(256) NOT NULL
 );
 
 CREATE SEQUENCE corporativo.cp_uf_id_uf_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -635,12 +635,12 @@ CREATE SEQUENCE corporativo.cp_uf_id_uf_seq
     CACHE 1;
 
 CREATE TABLE corporativo.cp_unidade_medida (
-    id_unidade_medida integer NOT NULL,
+    id_unidade_medida bigint NOT NULL,
     descr_unidade_medida character varying(10)
 );
 
 CREATE SEQUENCE corporativo.cp_unidade_medida_id_unidade_medida_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -648,18 +648,18 @@ CREATE SEQUENCE corporativo.cp_unidade_medida_id_unidade_medida_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_cargo (
-    id_cargo integer NOT NULL,
+    id_cargo bigint NOT NULL,
     nome_cargo character varying(100) NOT NULL,
-    id_orgao_usu integer NOT NULL,
+    id_orgao_usu bigint NOT NULL,
     dt_fim_cargo timestamp with time zone,
     dt_ini_cargo timestamp with time zone,
-    id_cargo_inicial integer,
+    id_cargo_inicial bigint,
     ide_cargo character varying(256),
     sigla_cargo character varying(30)
 );
 
 CREATE SEQUENCE corporativo.dp_cargo_id_cargo_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -667,12 +667,12 @@ CREATE SEQUENCE corporativo.dp_cargo_id_cargo_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_estado_civil (
-    id_estado_civil integer NOT NULL,
+    id_estado_civil bigint NOT NULL,
     nm_estado_civil character varying(20) NOT NULL
 );
 
 CREATE SEQUENCE corporativo.dp_estado_civil_id_estado_civil_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -680,22 +680,22 @@ CREATE SEQUENCE corporativo.dp_estado_civil_id_estado_civil_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_funcao_confianca (
-    id_funcao_confianca integer NOT NULL,
+    id_funcao_confianca bigint NOT NULL,
     nome_funcao_confianca character varying(100) NOT NULL,
     nivel_funcao_confianca smallint,
     cod_folha_funcao_confianca smallint,
     dt_ini_funcao_confianca timestamp with time zone,
     dt_fim_funcao_confianca timestamp with time zone,
-    id_funcao_confianca_pai integer,
+    id_funcao_confianca_pai bigint,
     categoria_funcao_confianca character varying(15),
-    id_orgao_usu integer NOT NULL,
+    id_orgao_usu bigint NOT NULL,
     ide_funcao_confianca character varying(256),
-    id_fun_conf_ini integer,
+    id_fun_conf_ini bigint,
     sigla_funcao_confianca character varying(30)
 );
 
 CREATE SEQUENCE corporativo.dp_funcao_confianca_id_funcao_confianca_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -703,20 +703,20 @@ CREATE SEQUENCE corporativo.dp_funcao_confianca_id_funcao_confianca_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_lotacao (
-    id_lotacao integer NOT NULL,
+    id_lotacao bigint NOT NULL,
     data_ini_lot timestamp with time zone NOT NULL,
     data_fim_lot timestamp with time zone,
     nome_lotacao character varying(120) NOT NULL,
-    id_lotacao_pai integer,
+    id_lotacao_pai bigint,
     sigla_lotacao character varying(20),
-    id_orgao_usu integer NOT NULL,
+    id_orgao_usu bigint NOT NULL,
     ide_lotacao character varying(256),
-    id_lotacao_ini integer,
-    id_tp_lotacao integer,
-    id_localidade integer,
+    id_lotacao_ini bigint,
+    id_tp_lotacao bigint,
+    id_localidade bigint,
     is_externa_lotacao smallint DEFAULT 0,
-    his_idc_ini integer,
-    his_idc_fim integer,
+    his_idc_ini bigint,
+    his_idc_fim bigint,
     is_suspensa smallint DEFAULT 0
 );
 
@@ -725,7 +725,7 @@ COMMENT ON COLUMN corporativo.dp_lotacao.his_idc_ini IS 'Id identidade da pessoa
 COMMENT ON COLUMN corporativo.dp_lotacao.his_idc_fim IS 'Id identidade da pessoa que finalizou';
 
 CREATE SEQUENCE corporativo.dp_lotacao_id_lotacao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -733,17 +733,17 @@ CREATE SEQUENCE corporativo.dp_lotacao_id_lotacao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_padrao_referencia (
-    id_padrao_referencia integer NOT NULL,
+    id_padrao_referencia bigint NOT NULL,
     id_padrao_referencia_pai smallint,
     dsc_padrao character varying(3) NOT NULL,
     dsc_classe character varying(20),
     dsc_nivel character varying(2),
     padrao_referencia_dt_fim timestamp with time zone,
-    id_orgao_usu integer DEFAULT 1 NOT NULL
+    id_orgao_usu bigint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE corporativo.dp_padrao_referencia_id_padrao_referencia_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -751,16 +751,16 @@ CREATE SEQUENCE corporativo.dp_padrao_referencia_id_padrao_referencia_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_pessoa (
-    id_pessoa integer NOT NULL,
+    id_pessoa bigint NOT NULL,
     data_ini_pessoa timestamp with time zone NOT NULL,
     data_fim_pessoa timestamp with time zone,
     cpf_pessoa bigint NOT NULL,
     nome_pessoa character varying(60) NOT NULL,
     data_nasc_pessoa timestamp with time zone,
     matricula integer NOT NULL,
-    id_lotacao integer NOT NULL,
-    id_cargo integer,
-    id_funcao_confianca integer,
+    id_lotacao bigint NOT NULL,
+    id_cargo bigint,
+    id_funcao_confianca bigint,
     sesb_pessoa character varying(5),
     email_pessoa character varying(60),
     tp_servidor_pessoa smallint,
@@ -779,9 +779,9 @@ CREATE TABLE corporativo.dp_pessoa (
     naturalidade_pessoa character varying(60),
     fg_imprime_end character varying(1),
     dsc_padrao_referencia_pessoa character varying(16),
-    id_orgao_usu integer NOT NULL,
+    id_orgao_usu bigint NOT NULL,
     ide_pessoa character varying(256),
-    id_pessoa_inicial integer,
+    id_pessoa_inicial bigint,
     endereco_pessoa character varying(100),
     bairro_pessoa character varying(50),
     cidade_pessoa character varying(30),
@@ -791,16 +791,16 @@ CREATE TABLE corporativo.dp_pessoa (
     rg_orgao_pessoa character varying(50),
     rg_data_expedicao_pessoa timestamp with time zone,
     rg_uf_pessoa character varying(2),
-    id_estado_civil integer,
-    id_tp_pessoa integer,
+    id_estado_civil bigint,
+    id_tp_pessoa bigint,
     nome_exibicao character varying(255),
-    his_idc_ini integer,
-    his_idc_fim integer,
+    his_idc_ini bigint,
+    his_idc_fim bigint,
     nome_pessoa_ai character varying(60)
 );
 
 CREATE SEQUENCE corporativo.dp_pessoa_id_pessoa_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -808,12 +808,12 @@ CREATE SEQUENCE corporativo.dp_pessoa_id_pessoa_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_provimento (
-    id_provimento integer NOT NULL,
+    id_provimento bigint NOT NULL,
     dsc_provimento character varying(60) NOT NULL
 );
 
 CREATE SEQUENCE corporativo.dp_provimento_id_provimento_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -821,21 +821,21 @@ CREATE SEQUENCE corporativo.dp_provimento_id_provimento_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_substituicao (
-    id_substituicao integer NOT NULL,
-    id_titular integer,
-    id_lota_titular integer NOT NULL,
-    id_substituto integer,
-    id_lota_substituto integer NOT NULL,
+    id_substituicao bigint NOT NULL,
+    id_titular bigint,
+    id_lota_titular bigint NOT NULL,
+    id_substituto bigint,
+    id_lota_substituto bigint NOT NULL,
     dt_ini_subst timestamp with time zone NOT NULL,
     dt_fim_subst timestamp with time zone,
     dt_ini_reg timestamp with time zone,
     dt_fim_reg timestamp with time zone,
-    id_reg_ini integer,
+    id_reg_ini bigint,
     tp_substituicao character(1)
 );
 
 CREATE SEQUENCE corporativo.dp_substituicao_id_substituicao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -843,27 +843,27 @@ CREATE SEQUENCE corporativo.dp_substituicao_id_substituicao_seq
     CACHE 1;
 
 CREATE TABLE corporativo.dp_visualizacao (
-    id_visualizacao integer NOT NULL,
-    id_titular integer,
-    id_deleg integer,
+    id_visualizacao bigint NOT NULL,
+    id_titular bigint,
+    id_deleg bigint,
     dt_ini_deleg date,
     dt_fim_deleg date,
     dt_ini_reg date,
     dt_fim_reg date,
-    id_reg_ini integer
+    id_reg_ini bigint
 );
 
 CREATE TABLE corporativo.dp_visualizacao_acesso (
-    id_visualizacao_acesso integer NOT NULL,
-    id_visualizacao integer,
-    id_titular integer,
-    id_deleg integer,
+    id_visualizacao_acesso bigint NOT NULL,
+    id_visualizacao bigint,
+    id_titular bigint,
+    id_deleg bigint,
     dt_acesso date,
-    id_doc integer
+    id_doc bigint
 );
 
 CREATE SEQUENCE corporativo.dp_visualizacao_acesso_id_visualizacao_acesso_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -871,7 +871,7 @@ CREATE SEQUENCE corporativo.dp_visualizacao_acesso_id_visualizacao_acesso_seq
     CACHE 1;
 
 CREATE SEQUENCE corporativo.dp_visualizacao_id_visualizacao_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
