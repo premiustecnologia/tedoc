@@ -13,7 +13,7 @@ public interface ZipItem {
 	public enum Tipo implements ZipItem {
 
 		/*
-		 * Tipos de ZipItem suportados pelo PBDoc
+		 * Tipos de ZipItem suportados pelo PBdoc
 		 */
 
 		RTF,

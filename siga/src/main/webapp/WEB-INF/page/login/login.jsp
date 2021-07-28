@@ -135,7 +135,7 @@
 											    		Versão: ${versao}
 											    	    </div>
 											    	    <div>
-											    		<a class="text-top" href="https://portal.pbdoc.pb.gov.br/" target="_blank" class="btn btn-link">Sobre o PBDoc</a> 
+											    		<a class="text-top" href="https://portal.pbdoc.pb.gov.br/" target="_blank" class="btn btn-link">Sobre o PBdoc</a> 
 											    	    </div>
 											    </div>
 											</div>
