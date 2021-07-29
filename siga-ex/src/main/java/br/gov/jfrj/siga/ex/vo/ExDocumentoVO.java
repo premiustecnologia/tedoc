@@ -660,15 +660,15 @@ public class ExDocumentoVO extends ExVO {
 				Ex.getInstance().getComp()
 						.podeRegistrarAssinatura(titular, lotaTitular, mob));
 
-//		vo.addAcao(
-//				"script_key",
-//				"A_ssinar",
-//				"/app/expediente/mov",
-//				"assinar",
-//				Ex.getInstance().getComp()
-//						.podeAssinar(titular, lotaTitular, mob),
-//				null, null, null, null,
-//				"once");
+		vo.addAcao(
+				"script_key",
+				"A_ssinar",
+				"/app/expediente/mov",
+				"assinar",
+				Ex.getInstance().getComp()
+						.podeAssinar(titular, lotaTitular, mob),
+				null, null, null, null,
+				"once");
 		
 		vo.addAcao(
 				"script_key",

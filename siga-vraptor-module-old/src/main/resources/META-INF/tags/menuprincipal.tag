@@ -355,10 +355,10 @@
 		<li>
 			<c:choose>
 				<c:when test="${not empty f:resource('siga.ex.manual.url')}">
-						<a id="apostilaSiga" href="${f:resource('siga.ex.manual.url')}" target="_blank">Apostila SIGA-Doc</a>
+						<a id="apostilaSiga" href="${f:resource('siga.ex.manual.url')}" target="_blank">Manual PBdoc</a>
 				</c:when>
 				<c:otherwise>
-					<a id="apostilaSiga" href="/siga/arquivos/apostila_sigaexantesbs4.pdf" target="_blank">Apostila SIGA-Doc</a>
+					<a id="apostilaSiga" href="https://portal.pbdoc.pb.gov.br/manual" target="_blank">Manual PBdoc</a>
 	
 				</c:otherwise>
 			</c:choose>

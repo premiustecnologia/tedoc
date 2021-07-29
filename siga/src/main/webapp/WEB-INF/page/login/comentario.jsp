@@ -11,7 +11,7 @@
 	<c:if test="${f:resource('/siga.base.url') == 'http://siga.jfrj.jus.br' or f:resource('/siga.base.url') == 'https://siga.jfrj.jus.br' }">
 		<hr/>
 	
-		<p style="font-size: 150%">Agora o Siga oferece a possibilidade de assinar documento com senha (sem token). Para isto, basta clicar na opção "Com Senha" na página de assinatura, e entrar com sua matrícula e a senha do Siga.</p>
+		<p style="font-size: 150%">Agora o PBdoc oferece a possibilidade de assinar documento com senha (sem token). Para isto, basta clicar na opção "Com Senha" na página de assinatura, e entrar com sua matrícula e a senha do Siga.</p>
 
 		<hr/>
 		
@@ -22,8 +22,8 @@
 		<p align="center"><img width="15%" src="/siga/imagens/qr-code-http-siga-jfrj-jus-br-siga-le.png"></img></p>
 	</c:if>
 	<hr/>
-	<p style="font-size: 150%">Recomendamos o navegador Google Chrome para acesso ao SIGA.</p> </br>
-	<a href="https://github.com/projeto-siga/siga" target="_blank" >Sobre o SIGA</a>
+	<p style="font-size: 150%">Recomendamos o navegador Google Chrome para acesso ao PBdoc.</p> </br>
+	<a href="https://github.com/projeto-siga/siga" target="_blank" >Sobre o PBdoc</a>
 	<hr/>
 	
 </div>
