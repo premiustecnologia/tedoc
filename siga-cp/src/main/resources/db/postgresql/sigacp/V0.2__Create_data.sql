@@ -1377,88 +1377,88 @@ INSERT INTO corporativo.dp_pessoa VALUES (1, '2001-01-01 00:00:00-02', NULL, 111
 INSERT INTO corporativo.dp_pessoa VALUES (2, '2001-01-01 00:00:00-02', NULL, 22222222222, 'USUARIO TESTE 2', '2001-01-01 00:00:00-02', 99998, 2, 1, NULL, 'ZZZ', 'usuarioteste2@jfrj.jus.br', NULL, 'TST', 'M', 'ESPEC', 'A+', 'BRASILEIRO', '2001-01-01 00:00:00-02', '2001-01-01 00:00:00-02', '2001-01-01 00:00:00-02', '2001-01-01 00:00:00-02', '0000/2001', '1', NULL, NULL, NULL, 'PAD-REF', 999999999, '99998', 2, 'AV ALMTE BARROSO 78', 'CENTRO', 'RIO DE JANEIRO', '20000000', '9702', '987654321', 'TESTE', '2001-01-01 00:00:00-02', 'RJ', 2, 2, NULL, NULL, NULL, NULL);
 INSERT INTO corporativo.dp_pessoa VALUES (3, '2001-01-01 00:00:00-02', NULL, 33333333333, 'USUARIO TESTE 3', '2001-01-01 00:00:00-02', 99997, 3, 1, NULL, 'ZZZ', 'usuarioteste3@jfrj.jus.br', NULL, 'TST', 'M', 'ESPEC', 'A+', 'BRASILEIRO', '2001-01-01 00:00:00-02', '2001-01-01 00:00:00-02', '2001-01-01 00:00:00-02', '2001-01-01 00:00:00-02', '0000/2001', '1', NULL, NULL, NULL, 'PAD-REF', 999999999, '99997', 3, 'AV ALMTE BARROSO 78', 'CENTRO', 'RIO DE JANEIRO', '20000000', '9703', '987654321', 'TESTE', '2001-01-01 00:00:00-02', 'RJ', 2, 2, NULL, NULL, NULL, NULL);
 
-SELECT pg_catalog.setval('corporativo.cad_sit_funcional_id_cad_sit_funcional_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cad_sit_funcional_id_cad_sit_funcional_seq', (SELECT COALESCE(MAX(id_cad_sit_funcional) + 1, 1) FROM corporativo.cad_sit_funcional), false);
 
-SELECT pg_catalog.setval('corporativo.cp_acesso_id_acesso_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_acesso_id_acesso_seq', (SELECT COALESCE(MAX(id_acesso) + 1, 1) FROM corporativo.cp_acesso), false);
 
-SELECT pg_catalog.setval('corporativo.cp_aplicacao_feriado_id_aplicacao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_aplicacao_feriado_id_aplicacao_seq', (SELECT COALESCE(MAX(id_aplicacao) + 1, 1) FROM corporativo.cp_aplicacao_feriado), false);
 
-SELECT pg_catalog.setval('corporativo.cp_arquivo_id_arq_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_arquivo_id_arq_seq', (SELECT COALESCE(MAX(id_arq) + 1, 1) FROM corporativo.cp_arquivo), false);
 
-SELECT pg_catalog.setval('corporativo.cp_configuracao_id_configuracao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_configuracao_id_configuracao_seq', (SELECT COALESCE(MAX(id_configuracao) + 1, 1) FROM corporativo.cp_configuracao), false);
 
-SELECT pg_catalog.setval('corporativo.cp_feriado_id_feriado_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_feriado_id_feriado_seq', (SELECT COALESCE(MAX(id_feriado) + 1, 1) FROM corporativo.cp_feriado), false);
 
-SELECT pg_catalog.setval('corporativo.cp_grupo_id_grupo_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_grupo_id_grupo_seq', (SELECT COALESCE(MAX(id_grupo) + 1, 1) FROM corporativo.cp_grupo), false);
 
-SELECT pg_catalog.setval('corporativo.cp_identidade_id_identidade_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_identidade_id_identidade_seq', (SELECT COALESCE(MAX(id_identidade) + 1, 1) FROM corporativo.cp_identidade), false);
 
-SELECT pg_catalog.setval('corporativo.cp_localidade_id_localidade_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_localidade_id_localidade_seq', (SELECT COALESCE(MAX(id_localidade) + 1, 1) FROM corporativo.cp_localidade), false);
 
-SELECT pg_catalog.setval('corporativo.cp_marca_id_marca_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_marca_id_marca_seq', (SELECT COALESCE(MAX(id_marca) + 1, 1) FROM corporativo.cp_marca), false);
 
-SELECT pg_catalog.setval('corporativo.cp_marcador_id_marcador_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_marcador_id_marcador_seq', (SELECT COALESCE(MAX(id_marcador) + 1, 1) FROM corporativo.cp_marcador), false);
 
-SELECT pg_catalog.setval('corporativo.cp_modelo_id_modelo_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_modelo_id_modelo_seq', (SELECT COALESCE(MAX(id_modelo) + 1, 1) FROM corporativo.cp_modelo), false);
 
-SELECT pg_catalog.setval('corporativo.cp_ocorrencia_feriado_id_ocorrencia_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_ocorrencia_feriado_id_ocorrencia_seq', (SELECT COALESCE(MAX(id_ocorrencia) + 1, 1) FROM corporativo.cp_ocorrencia_feriado), false);
 
-SELECT pg_catalog.setval('corporativo.cp_orgao_id_orgao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_orgao_id_orgao_seq', (SELECT COALESCE(MAX(id_orgao) + 1, 1) FROM corporativo.cp_orgao), false);
 
-SELECT pg_catalog.setval('corporativo.cp_orgao_usuario_id_orgao_usu_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_orgao_usuario_id_orgao_usu_seq', (SELECT COALESCE(MAX(id_orgao_usu) + 1, 1) FROM corporativo.cp_orgao_usuario), false);
 
-SELECT pg_catalog.setval('corporativo.cp_papel_id_papel_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_papel_id_papel_seq', (SELECT COALESCE(MAX(id_papel) + 1, 1) FROM corporativo.cp_papel), false);
 
-SELECT pg_catalog.setval('corporativo.cp_personalizacao_id_personalizacao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_personalizacao_id_personalizacao_seq', (SELECT COALESCE(MAX(id_personalizacao) + 1, 1) FROM corporativo.cp_personalizacao), false);
 
-SELECT pg_catalog.setval('corporativo.cp_sede_id_sede_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_sede_id_sede_seq', (SELECT COALESCE(MAX(id_sede) + 1, 1) FROM corporativo.cp_sede), false);
 
-SELECT pg_catalog.setval('corporativo.cp_servico_id_servico_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_servico_id_servico_seq', (SELECT COALESCE(MAX(id_servico) + 1, 1) FROM corporativo.cp_servico), false);
 
-SELECT pg_catalog.setval('corporativo.cp_situacao_configuracao_id_sit_configuracao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_situacao_configuracao_id_sit_configuracao_seq', (SELECT COALESCE(MAX(id_sit_configuracao) + 1, 1) FROM corporativo.cp_situacao_configuracao), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_configuracao_id_tp_configuracao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_configuracao_id_tp_configuracao_seq', (SELECT COALESCE(MAX(id_tp_configuracao) + 1, 1) FROM corporativo.cp_tipo_configuracao), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_grupo_id_tp_grupo_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_grupo_id_tp_grupo_seq', (SELECT COALESCE(MAX(id_tp_grupo) + 1, 1) FROM corporativo.cp_tipo_grupo), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_identidade_id_tp_identidade_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_identidade_id_tp_identidade_seq', (SELECT COALESCE(MAX(id_tp_identidade) + 1, 1) FROM corporativo.cp_tipo_identidade), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_lotacao_id_tp_lotacao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_lotacao_id_tp_lotacao_seq', (SELECT COALESCE(MAX(id_tp_lotacao) + 1, 1) FROM corporativo.cp_tipo_lotacao), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_marca_id_tp_marca_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_marca_id_tp_marca_seq', (SELECT COALESCE(MAX(id_tp_marca) + 1, 1) FROM corporativo.cp_tipo_marca), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_marcador_id_tp_marcador_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_marcador_id_tp_marcador_seq', (SELECT COALESCE(MAX(id_tp_marcador) + 1, 1) FROM corporativo.cp_tipo_marcador), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_papel_id_tp_papel_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_papel_id_tp_papel_seq', (SELECT COALESCE(MAX(id_tp_papel) + 1, 1) FROM corporativo.cp_tipo_papel), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_pessoa_id_tp_pessoa_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_pessoa_id_tp_pessoa_seq', (SELECT COALESCE(MAX(id_tp_pessoa) + 1, 1) FROM corporativo.cp_tipo_pessoa), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_servico_id_tp_servico_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_servico_id_tp_servico_seq', (SELECT COALESCE(MAX(id_tp_servico) + 1, 1) FROM corporativo.cp_tipo_servico), false);
 
-SELECT pg_catalog.setval('corporativo.cp_tipo_token_id_tp_token_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_tipo_token_id_tp_token_seq', (SELECT COALESCE(MAX(id_tp_token) + 1, 1) FROM corporativo.cp_tipo_token), false);
 
-SELECT pg_catalog.setval('corporativo.cp_token_id_token_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_token_id_token_seq', (SELECT COALESCE(MAX(id_token) + 1, 1) FROM corporativo.cp_token), false);
 
-SELECT pg_catalog.setval('corporativo.cp_uf_id_uf_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_uf_id_uf_seq', (SELECT COALESCE(MAX(id_uf) + 1, 1) FROM corporativo.cp_uf), false);
 
-SELECT pg_catalog.setval('corporativo.cp_unidade_medida_id_unidade_medida_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.cp_unidade_medida_id_unidade_medida_seq', (SELECT COALESCE(MAX(id_unidade_medida) + 1, 1) FROM corporativo.cp_unidade_medida), false);
 
-SELECT pg_catalog.setval('corporativo.dp_cargo_id_cargo_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_cargo_id_cargo_seq', (SELECT COALESCE(MAX(id_cargo) + 1, 1) FROM corporativo.dp_cargo), false);
 
-SELECT pg_catalog.setval('corporativo.dp_estado_civil_id_estado_civil_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_estado_civil_id_estado_civil_seq', (SELECT COALESCE(MAX(id_estado_civil) + 1, 1) FROM corporativo.dp_estado_civil), false);
 
-SELECT pg_catalog.setval('corporativo.dp_funcao_confianca_id_funcao_confianca_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_funcao_confianca_id_funcao_confianca_seq', (SELECT COALESCE(MAX(id_funcao_confianca) + 1, 1) FROM corporativo.dp_funcao_confianca), false);
 
-SELECT pg_catalog.setval('corporativo.dp_lotacao_id_lotacao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_lotacao_id_lotacao_seq', (SELECT COALESCE(MAX(id_lotacao) + 1, 1) FROM corporativo.dp_lotacao), false);
 
-SELECT pg_catalog.setval('corporativo.dp_padrao_referencia_id_padrao_referencia_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_padrao_referencia_id_padrao_referencia_seq', (SELECT COALESCE(MAX(id_padrao_referencia) + 1, 1) FROM corporativo.dp_padrao_referencia), false);
 
-SELECT pg_catalog.setval('corporativo.dp_pessoa_id_pessoa_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_pessoa_id_pessoa_seq', (SELECT COALESCE(MAX(id_pessoa) + 1, 1) FROM corporativo.dp_pessoa), false);
 
-SELECT pg_catalog.setval('corporativo.dp_provimento_id_provimento_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_provimento_id_provimento_seq', (SELECT COALESCE(MAX(id_provimento) + 1, 1) FROM corporativo.dp_provimento), false);
 
-SELECT pg_catalog.setval('corporativo.dp_substituicao_id_substituicao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_substituicao_id_substituicao_seq', (SELECT COALESCE(MAX(id_substituicao) + 1, 1) FROM corporativo.dp_substituicao), false);
 
-SELECT pg_catalog.setval('corporativo.dp_visualizacao_acesso_id_visualizacao_acesso_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_visualizacao_acesso_id_visualizacao_acesso_seq', (SELECT COALESCE(MAX(id_visualizacao_acesso) + 1, 1) FROM corporativo.dp_visualizacao_acesso), false);
 
-SELECT pg_catalog.setval('corporativo.dp_visualizacao_id_visualizacao_seq', 1, false);
+SELECT pg_catalog.setval('corporativo.dp_visualizacao_id_visualizacao_seq', (SELECT COALESCE(MAX(id_visualizacao) + 1, 1) FROM corporativo.dp_visualizacao), false);

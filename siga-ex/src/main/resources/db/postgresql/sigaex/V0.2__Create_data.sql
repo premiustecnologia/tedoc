@@ -394,54 +394,54 @@ INSERT INTO siga.ex_via VALUES (3, 8, 58, '1', 85, NULL, '-', 1, 3, '2009-03-13 
 INSERT INTO siga.ex_via VALUES (4, 11, 58, '1', 85, NULL, '-', 1, 4, '2009-03-13 00:00:00-03', NULL, NULL, NULL, 1);
 INSERT INTO siga.ex_via VALUES (5, 12, 58, '1', 85, NULL, '-', 1, 5, '2009-03-13 00:00:00-03', NULL, NULL, NULL, 1);
 
-SELECT pg_catalog.setval('siga.ex_boletim_doc_id_boletim_doc_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_boletim_doc_id_boletim_doc_seq', (SELECT COALESCE(MAX(id_boletim_doc) + 1, 1) FROM siga.ex_boletim_doc), false);
 
-SELECT pg_catalog.setval('siga.ex_classificacao_id_classificacao_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_classificacao_id_classificacao_seq', (SELECT COALESCE(MAX(id_classificacao) + 1, 1) FROM siga.ex_classificacao), false);
 
-SELECT pg_catalog.setval('siga.ex_configuracao_id_configuracao_ex_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_configuracao_id_configuracao_ex_seq', (SELECT COALESCE(MAX(id_configuracao_ex) + 1, 1) FROM siga.ex_configuracao), false);
 
-SELECT pg_catalog.setval('siga.ex_documento_id_doc_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_documento_id_doc_seq', (SELECT COALESCE(MAX(id_doc) + 1, 1) FROM siga.ex_documento), false);
 
-SELECT pg_catalog.setval('siga.ex_documento_numeracao_id_documento_numeracao_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_documento_numeracao_id_documento_numeracao_seq', (SELECT COALESCE(MAX(id_documento_numeracao) + 1, 1) FROM siga.ex_documento_numeracao), false);
 
-SELECT pg_catalog.setval('siga.ex_email_notificacao_id_email_notificacao_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_email_notificacao_id_email_notificacao_seq', (SELECT COALESCE(MAX(id_email_notificacao) + 1, 1) FROM siga.ex_email_notificacao), false);
 
-SELECT pg_catalog.setval('siga.ex_estado_doc_id_estado_doc_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_estado_doc_id_estado_doc_seq', (SELECT COALESCE(MAX(id_estado_doc) + 1, 1) FROM siga.ex_estado_doc), false);
 
-SELECT pg_catalog.setval('siga.ex_forma_documento_id_forma_doc_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_forma_documento_id_forma_doc_seq', (SELECT COALESCE(MAX(id_forma_doc) + 1, 1) FROM siga.ex_forma_documento), false);
 
-SELECT pg_catalog.setval('siga.ex_mobil_id_mobil_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_mobil_id_mobil_seq', (SELECT COALESCE(MAX(id_mobil) + 1, 1) FROM siga.ex_mobil), false);
 
-SELECT pg_catalog.setval('siga.ex_modelo_id_mod_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_modelo_id_mod_seq', (SELECT COALESCE(MAX(id_mod) + 1, 1) FROM siga.ex_modelo), false);
 
-SELECT pg_catalog.setval('siga.ex_movimentacao_id_mov_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_movimentacao_id_mov_seq', (SELECT COALESCE(MAX(id_mov) + 1, 1) FROM siga.ex_movimentacao), false);
 
-SELECT pg_catalog.setval('siga.ex_nivel_acesso_id_nivel_acesso_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_nivel_acesso_id_nivel_acesso_seq', (SELECT COALESCE(MAX(id_nivel_acesso) + 1, 1) FROM siga.ex_nivel_acesso), false);
 
-SELECT pg_catalog.setval('siga.ex_papel_id_papel_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_papel_id_papel_seq', (SELECT COALESCE(MAX(id_papel) + 1, 1) FROM siga.ex_papel), false);
 
-SELECT pg_catalog.setval('siga.ex_preenchimento_id_preenchimento_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_preenchimento_id_preenchimento_seq', (SELECT COALESCE(MAX(id_preenchimento) + 1, 1) FROM siga.ex_preenchimento), false);
 
-SELECT pg_catalog.setval('siga.ex_protocolo_id_protocolo_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_protocolo_id_protocolo_seq', (SELECT COALESCE(MAX(id_protocolo) + 1, 1) FROM siga.ex_protocolo), false);
 
-SELECT pg_catalog.setval('siga.ex_sequencia_id_seq_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_sequencia_id_seq_seq', (SELECT COALESCE(MAX(id_seq) + 1, 1) FROM siga.ex_sequencia), false);
 
-SELECT pg_catalog.setval('siga.ex_situacao_configuracao_id_sit_configuracao_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_situacao_configuracao_id_sit_configuracao_seq', (SELECT COALESCE(MAX(id_sit_configuracao) + 1, 1) FROM siga.ex_situacao_configuracao), false);
 
-SELECT pg_catalog.setval('siga.ex_temporalidade_id_temporalidade_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_temporalidade_id_temporalidade_seq', (SELECT COALESCE(MAX(id_temporalidade) + 1, 1) FROM siga.ex_temporalidade), false);
 
-SELECT pg_catalog.setval('siga.ex_tipo_despacho_id_tp_despacho_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_tipo_despacho_id_tp_despacho_seq', (SELECT COALESCE(MAX(id_tp_despacho) + 1, 1) FROM siga.ex_tipo_despacho), false);
 
-SELECT pg_catalog.setval('siga.ex_tipo_destinacao_id_tp_destinacao_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_tipo_destinacao_id_tp_destinacao_seq', (SELECT COALESCE(MAX(id_tp_destinacao) + 1, 1) FROM siga.ex_tipo_destinacao), false);
 
-SELECT pg_catalog.setval('siga.ex_tipo_documento_id_tp_doc_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_tipo_documento_id_tp_doc_seq', (SELECT COALESCE(MAX(id_tp_doc) + 1, 1) FROM siga.ex_tipo_documento), false);
 
-SELECT pg_catalog.setval('siga.ex_tipo_forma_documento_id_tipo_forma_doc_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_tipo_forma_documento_id_tipo_forma_doc_seq', (SELECT COALESCE(MAX(id_tipo_forma_doc) + 1, 1) FROM siga.ex_tipo_forma_documento), false);
 
-SELECT pg_catalog.setval('siga.ex_tipo_mobil_id_tipo_mobil_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_tipo_mobil_id_tipo_mobil_seq', (SELECT COALESCE(MAX(id_tipo_mobil) + 1, 1) FROM siga.ex_tipo_mobil), false);
 
-SELECT pg_catalog.setval('siga.ex_tipo_movimentacao_id_tp_mov_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_tipo_movimentacao_id_tp_mov_seq', (SELECT COALESCE(MAX(id_tp_mov) + 1, 1) FROM siga.ex_tipo_movimentacao), false);
 
-SELECT pg_catalog.setval('siga.ex_tp_doc_publicacao_id_doc_publicacao_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_tp_doc_publicacao_id_doc_publicacao_seq', (SELECT COALESCE(MAX(id_doc_publicacao) + 1, 1) FROM siga.ex_tp_doc_publicacao), false);
 
-SELECT pg_catalog.setval('siga.ex_via_id_via_seq', 1, false);
+SELECT pg_catalog.setval('siga.ex_via_id_via_seq', (SELECT COALESCE(MAX(id_via) + 1, 1) FROM siga.ex_via), false);
