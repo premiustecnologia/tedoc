@@ -645,8 +645,7 @@ public class CpConfiguracaoBL {
 			}
 			return false;
 		} catch (Exception ex) {
-			log.error(ex);
-			ex.printStackTrace();
+			log.error("Não foi possível certificar se usuário tem acesso à configuração", ex);
 			throw ex;
 		}
 	}

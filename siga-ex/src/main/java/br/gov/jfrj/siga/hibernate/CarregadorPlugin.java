@@ -2,11 +2,13 @@ package br.gov.jfrj.siga.hibernate;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.nio.file.FileSystems;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.ListIterator;
-import java.util.logging.Logger;
+
+import org.jboss.logging.Logger;
 
 import br.gov.jfrj.siga.base.Prop;
 import br.gov.jfrj.siga.hibernate.ext.IMontadorQuery;
@@ -20,27 +22,29 @@ import br.gov.jfrj.siga.hibernate.ext.MontadorQuery;
  */
 public class CarregadorPlugin {
 
-	Logger log = Logger.getLogger("siga.ex.ext");
-	
-	ClassLoaderRecarregavel classloader = null;
-	
+	private static final Logger log = Logger.getLogger(CarregadorPlugin.class);
+
+	private static final String DEFAULT_FILESYSTEM_SEPARATOR = FileSystems.getDefault().getSeparator();
+	private static final String DEFAULT_PROTOCOL = "file://";
+
+	private ClassLoaderRecarregavel classloader;
+
 	/**
 	 * Inicializa o carregador de plugins usando o mesmo classpath do classloader em execução
 	 */
 	public CarregadorPlugin() {
-
-		Enumeration<URL> resources;
 		try {
-			resources = Thread.currentThread().getContextClassLoader().getResources("/br");
-			ArrayList<URL> list = Collections.list(resources);
-
-			ListIterator<URL> iterator = list.listIterator();
+			final Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources("/br");
+			final List<URL> list = Collections.list(resources);
+			final ListIterator<URL> iterator = list.listIterator();
 			while(iterator.hasNext()){
 				URL url = iterator.next();
-				if (!url.getPath().contains("siga-ext")){
+				if (!url.getPath().contains("siga-ext")) {
 					iterator.remove();
-				}else{
-					iterator.set(new URL(url.getPath().replaceAll("\\.jar.*", ".jar")));
+				} else {
+					final String path = url.getPath().replaceAll("\\.jar.*", ".jar");
+					final String absolutePath = path.startsWith(DEFAULT_FILESYSTEM_SEPARATOR) ? DEFAULT_PROTOCOL + path : path;
+					iterator.set(new URL(absolutePath));
 				}
 			}
 			URL implDefault = Thread.currentThread().getContextClassLoader().getResource("br/gov/jfrj/siga/hibernate/ext/MontadorQuery.class");
@@ -51,12 +55,10 @@ public class CarregadorPlugin {
 			
 			this.classloader = new ClassLoaderRecarregavel(classpath);
 		} catch (IOException e) {
-			log.severe("Não foi possível criar o classloader recarregável.");
+			log.error("Não foi possível criar o classloader recarregável.", e);
 		}
-		
-		
 	}
-	
+
 	/**
 	 * Retorna o componente padrão. Normalmente utilizada quando um plugin não está disponível
 	 * @return - instância padrão
@@ -65,8 +67,10 @@ public class CarregadorPlugin {
 		try {
 			return new MontadorQuery();
 		} catch (Exception e) {
-			log.severe("Não foi possível instanciar o MontadorQuery default! Será utilizado o MontadorQuery no mesmo classloader da aplicação e isso"
-					+ " poderá exigir o reinicio da instância do servidor de aplicação durante o redeploy");
+			log.error("Não foi possível instanciar o MontadorQuery default. "
+					+ "Será utilizado o MontadorQuery no mesmo classloader da "
+					+ "aplicação e isso poderá exigir o reinicio da instância do "
+					+ "servidor de aplicação durante o redeploy", e);
 		}
 		return null;
 	}
@@ -77,9 +81,9 @@ public class CarregadorPlugin {
 	 */
 	public IMontadorQuery getMontadorQueryImpl() {
 		try {
-			return (IMontadorQuery) Class.forName(Prop.get("montador.query"),true,this.classloader).newInstance();
+			return (IMontadorQuery) Class.forName(Prop.get("montador.query"), true, this.classloader).newInstance();
 		} catch (Exception e) {
-			log.warning("Não foi possível instanciar o MontadorQuery do plugin!");
+			log.debug("Não foi possível instanciar o MontadorQuery do plugin: prosseguindo com o carregamento da instância padrão.", e);
 		}
 		return getMontadorQueryDefault();
 	}
