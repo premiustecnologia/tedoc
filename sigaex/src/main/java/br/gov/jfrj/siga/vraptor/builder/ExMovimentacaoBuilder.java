@@ -1,5 +1,7 @@
 package br.gov.jfrj.siga.vraptor.builder;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +29,8 @@ import br.gov.jfrj.siga.vraptor.ExMobilSelecao;
 public final class ExMovimentacaoBuilder {
 
 	private static final Logger log = Logger.getLogger(ExMovimentacaoBuilder.class);
+
+	private static final String DD_MM_YYYY = "dd/MM/yyyy";
 
 	private DpLotacao lotaTitular;
 	private DpPessoa cadastrante;
@@ -177,20 +181,25 @@ public final class ExMovimentacaoBuilder {
 			}
 		}
 
-		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		final SimpleDateFormat df = new SimpleDateFormat(DD_MM_YYYY);
 
-		try {
-			mov.setDtMov(df.parse(dtMovString));
-			if (mov.getDtMov() != null && !Data.dataDentroSeculo21(mov.getDtMov()))
-				throw new AplicacaoException("Data inválida, deve estar entre o ano 2000 e ano 2100");
-		} catch (final ParseException e) {
-			log.warn("Não foi possível ler a data de movimentação", e);
+		if (isNotBlank(this.dtMovString)) {
+			try {
+				mov.setDtMov(df.parse(dtMovString));
+				if (mov.getDtMov() != null && !Data.dataDentroSeculo21(mov.getDtMov())) {
+					throw new AplicacaoException("Data inválida, deve estar entre o ano 2000 e ano 2100");
+				}
+			} catch (final ParseException e) {
+				log.warn("Não foi possível ler a data de movimentação", e);
+			}
 		}
 
-		try {
-			mov.setDtFimMov(df.parse(dtDevolucaoMovString));
-		} catch (final ParseException e) {
-			log.warn("Não foi possível ler a data de devolução de movimentação", e);
+		if (isNotBlank(this.dtDevolucaoMovString)) {
+			try {
+				mov.setDtFimMov(df.parse(dtDevolucaoMovString));
+			} catch (final ParseException e) {
+				log.warn("Não foi possível ler a data de devolução de movimentação", e);
+			}
 		}
 
 		if (getDtPubl() != null) {
@@ -203,10 +212,12 @@ public final class ExMovimentacaoBuilder {
 			}
 		}
 
-		try {
-			mov.setDtDispPublicacao(df.parse(dtDispon));
-		} catch (final ParseException e) {
-			log.warn("Não foi possível ler a data de disponibilização de movimentação", e);
+		if (isNotBlank(this.dtDispon)) {
+			try {
+				mov.setDtDispPublicacao(df.parse(dtDispon));
+			} catch (final ParseException e) {
+				log.warn("Não foi possível ler a data de disponibilização de movimentação", e);
+			}
 		}
 
 		mov.setNmArqMov(fileName);
