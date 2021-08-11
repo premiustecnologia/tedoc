@@ -33,7 +33,7 @@ RUN wget https://github.com/assijus/blucservice/releases/download/v2.3.6/blucser
 RUN wget https://github.com/projeto-siga/vizservice/releases/download/v1.0.0.0/vizservice.war -O ${DEPLOYMENTS_HOME}/vizservice.war
 
 # Driver JDBC do PostgreSQL
-ENV JDBC_DRIVER_FILENAME 'postgresql-42.2.22.jar'
+ENV JDBC_DRIVER_FILENAME 'postgresql-42.2.23.jar'
 RUN mkdir -p ${JBOSS_HOME}/modules/org/postgresql/main
 RUN wget https://jdbc.postgresql.org/download/${JDBC_DRIVER_FILENAME} -O ${JBOSS_HOME}/modules/org/postgresql/main/${JDBC_DRIVER_FILENAME}
 RUN touch ${JBOSS_HOME}/modules/org/postgresql/main/module.xml
