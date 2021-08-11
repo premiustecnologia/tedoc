@@ -24,7 +24,6 @@ package br.gov.jfrj.siga.ex;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -68,7 +67,8 @@ import br.gov.jfrj.siga.hibernate.ExDao;
 				+ "			and cla.codificacao like :mascara"
 				+ "	    	and cla.hisAtivo = 1"
 				+ "	       	and cla.idClassificacao = v.exClassificacao.idClassificacao "
-				+ "	       	and v.hisAtivo = 1" + "	    	order by codificacao"),
+				+ "	       	and v.hisAtivo = 1"
+				+ "     ORDER BY cla.codificacao ASC"),
 		@NamedQuery(name = "consultarFilhosExClassificacao", query = "select distinct(cla) from ExClassificacao cla "
 				+ "		where cla.codificacao like :mascara"
 				+ "	    	and cla.hisAtivo = 1" + "	    	order by codificacao"),
@@ -93,7 +93,8 @@ import br.gov.jfrj.siga.hibernate.ExDao;
 		@NamedQuery(name = "consultarExClassificacaoPorMascara", query = "select distinct(cla) from ExClassificacao cla left join fetch cla.exViaSet via"
 				+ "		where cla.codificacao like :mascara"
 				+ "			and (upper(cla.descrClassificacao) like upper('%' || :descrClassificacao || '%'))"
-				+ "	    	and cla.hisAtivo = 1 order by codificacao, via.codVia") })
+				+ "	    	and cla.hisAtivo = 1 "
+				+ "     ORDER BY cla.codificacao ASC ") })
 public abstract class AbstractExClassificacao extends HistoricoAuditavelSuporte
 		implements Serializable {
 
