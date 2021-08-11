@@ -23,7 +23,6 @@
 		<module>siga-ex</module>
 		<module>siga-jwt</module>
 		<module>siga-oidc</module>
-		<module>siga-le</module>
 	</modules>
 
 
