@@ -179,9 +179,8 @@
 					</p>
 				</div>
 			</div>
-	
 			<div class="row mt-3"
-				v-if="!carregando &amp;&amp; !errormsg &amp;&amp; grupos.length == 0">
+				v-if="!carregando && !errormsg && mesaVazia">
 				<div class="col col-12">
 					<p class="alert alert-warning">
 						<strong>Atenção!</strong> Nenhum documento na mesa.
