@@ -528,12 +528,8 @@ public class ExDao extends CpDao {
 	public void preencherParametros(final IExMobilDaoFiltro flt,
 			final Query query) {
 		if (flt.getUltMovIdEstadoDoc() != null	&& flt.getUltMovIdEstadoDoc() != 0) {
-
-//			query.setParameter("ultMovIdEstadoDoc", flt.getUltMovIdEstadoDoc());
 			CpMarcador marcador = ExDao.getInstance().consultar(flt.getUltMovIdEstadoDoc(), CpMarcador.class, false);
 			query.setParameter("idMarcadorIni", marcador.getHisIdIni());
-			query.setParameter("dbDatetime", this.consultarDataEHoraDoServidor());
-
 		} else {
 			query.setParameter("id1", 3L);
 			query.setParameter("id2", 14L);
@@ -680,8 +676,7 @@ public class ExDao extends CpDao {
 		IMontadorQuery montadorQuery = carregarPlugin();
 
 		long tempoIni = System.nanoTime();
-		Query query = em().createQuery(
-				montadorQuery.montaQueryConsultaporFiltro(flt, false));
+		Query query = em().createQuery(montadorQuery.montaQueryConsultaporFiltro(flt, false));
 		preencherParametros(flt, query);
 
 		if (offset > 0) {
@@ -692,8 +687,6 @@ public class ExDao extends CpDao {
 		}
 		List l = query.getResultList();
 		long tempoTotal = System.nanoTime() - tempoIni;
-		// System.out.println("consultarPorFiltroOtimizado: " +
-		// tempoTotal/1000000 + " ms -> " + query + ", resultado: " + l);
 		return l;
 	}
 
