@@ -92,12 +92,12 @@ ${meta}
 	
 	
 <script src="/siga/public/javascript/jquery/jquery-1.11.2.min.js" type="text/javascript"></script>
-	
+
 <link rel="stylesheet" href="/siga/fontawesome/css/all.css"	type="text/css" />
 
 <c:set var="collapse_Expanded" scope="request" value="collapsible expanded" />
 
-<c:set var="siga_version"  scope="request" value="10.0.8.3" />
+<c:set var="siga_version" scope="request" value="${f:env('TAG_GIT')}" />
 
 <c:choose>
 	<c:when test="${siga_cliente == 'GOVSP'}">
@@ -364,7 +364,7 @@ ${meta}
 							<c:if test="${not empty titular.orgaoUsuario.descricao}"><span style="white-space: nowrap;"> <i class="fa fa-angle-double-right"></i> ${titular.orgaoUsuario.descricao} |</span></h6></c:if>
 						</c:catch>
 						<span>
-							<strong>${f:resource('/siga.cabecalho.titulo')} v${siga_version}</strong>
+							<strong>${f:resource('/siga.cabecalho.titulo')} ${siga_version}</strong>
 						</span>
 						<span class="badge bg-danger">
 							<c:choose>

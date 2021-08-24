@@ -18,7 +18,6 @@
  ******************************************************************************/
 package br.gov.jfrj.siga.jee;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
@@ -35,12 +34,15 @@ import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRuntime;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
 import br.gov.jfrj.siga.base.Contexto;
 import br.gov.jfrj.siga.base.Prop;
 import br.gov.jfrj.siga.base.ReaisPorExtenso;
 import br.gov.jfrj.siga.base.SigaCalendar;
 import br.gov.jfrj.siga.base.util.Texto;
-import br.gov.jfrj.siga.cp.CpModelo;
 import br.gov.jfrj.siga.cp.CpServico;
 import br.gov.jfrj.siga.cp.CpTipoConfiguracao;
 import br.gov.jfrj.siga.cp.bl.Cp;
@@ -48,14 +50,6 @@ import br.gov.jfrj.siga.dp.CpOrgaoUsuario;
 import br.gov.jfrj.siga.dp.DpLotacao;
 import br.gov.jfrj.siga.dp.DpPessoa;
 import br.gov.jfrj.siga.dp.dao.CpDao;
-
-//import net.sf.ehcache.Cache;
-//import net.sf.ehcache.CacheManager;
-//import net.sf.ehcache.Element;
-//import net.sf.ehcache.config.CacheConfiguration;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 public class SigaLibsEL {
 	private static String month[] = new String[] { "Jan", "Fev", "Mar", "Abr",
@@ -97,6 +91,10 @@ public class SigaLibsEL {
 
 	public static Object resource(String name) {
 		return Contexto.resource(name);
+	}
+
+	public static String env(String env) {
+		return System.getenv(env);
 	}
 
 	public static String espera(Date dt) {
@@ -332,7 +330,7 @@ public class SigaLibsEL {
 				public String load(String source) throws Exception {
 					Long idOrgaoUsu = Long.valueOf(source.split("-")[1]);
 					ProcessadorFreemarkerSimples p = new ProcessadorFreemarkerSimples();
-					Map attrs = new HashMap();
+					Map<String, Object> attrs = new HashMap<>();
 					attrs.put("nmMod", "macro complementoHEAD");
 					attrs.put("template", "[@complementoHEAD/]");
 					try {
