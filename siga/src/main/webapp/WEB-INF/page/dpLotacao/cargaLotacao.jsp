@@ -45,7 +45,7 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group">
-							<label>&Oacute;rg&atilde;o</label>
+							<label>Selecione o &Oacute;rg&atilde;o</label>
 							<c:choose>
 								<c:when test="${empty nmOrgaousu}">
 									<select name="idOrgaoUsu" value="${idOrgaoUsu}">
@@ -76,8 +76,8 @@
 				<div class="row">
 					<div class="col-sm">
 						<div class="form-group">
-							<button type="submit" onclick="javascript: return validaSelecaoAnexo( this.form );" name="sbmt" class="btn btn-primary" >Ok</button>
-							<button type="button" onclick="javascript:location.href='/siga/app/lotacao/editar';" class="btn btn-primary" >Cancelar</button>
+							<button type="submit" onclick="javascript: return validaSelecaoAnexo( this.form );" name="sbmt" class="btn btn-primary" >Carregar</button>
+							<button type="button" onclick="javascript:location.href='/siga/app/lotacao/editar';" class="btn btn-danger" >Cancelar</button>
 						</div>
 					</div>
 				</div>								

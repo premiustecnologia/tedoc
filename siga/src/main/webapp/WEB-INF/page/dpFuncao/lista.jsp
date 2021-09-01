@@ -63,10 +63,24 @@ function sbmt(offset) {
 						</div>
 					</div>
 				</div>
-					
 			</div>
+			<c:if test="${not empty mensagem}">
+				<div style="align-items: center">
+					<div>
+						<p id="mensagem" style="text-align: center" class="alert alert-success">${mensagem}</p>
+						<script>
+							setTimeout(function() {
+								$('#mensagem').fadeTo(1000, 0, function() {
+									$('#mensagem').slideUp(1000);
+								});
+							}, 5000);
+						</script>
+					</div>
+				</div>
+			</c:if>
+
 			<!-- main content -->	
-			<h5>Funç&otilde;es de Confian&ccedil;a cadastrados</h2>
+			<h2>Funç&otilde;es de Confian&ccedil;a Cadastrados</h2>
 			
 				<table border="0" class="table table-sm table-striped">
 					<thead class="${thead_color}">

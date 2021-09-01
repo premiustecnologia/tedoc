@@ -474,7 +474,6 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				listaFuncao.add(f);
 				listaFuncao.addAll(CpDao.getInstance().consultarPorFiltro(funcao));
 				result.include("listaFuncao", listaFuncao);
-
 				result.include("request", getRequest());
 				result.include("id", id);
 			}
@@ -604,6 +603,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		try {
 			DpPessoa pes = new CpBL().criarUsuario(id, getIdentidadeCadastrante(), idOrgaoUsu, idCargo, idFuncao, idLotacao, nmPessoa, dtNascimento, cpf, email, identidade,
 					orgaoIdentidade, ufIdentidade, dataExpedicaoIdentidade, nomeExibicao, enviarEmail);
+			this.result.include("mensagem", "Operação realizada com sucesso!");
 		} catch (RegraNegocioException e) {
 			result.include(SigaModal.ALERTA, e.getMessage());
 		}
@@ -750,7 +750,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			result.include("cpfPesquisa", cpfPesquisa);			
 			result.include("idLotacaoPesquisa", idLotacaoPesquisa);
 			result.include("idUsuarioPesquisa", idUsuarioPesquisa);
-
+			this.result.include("mensagem", "Operação realizada com sucesso!");
 			carregarCombos(null, idOrgaoUsu, null, null, null, null, cpfPesquisa, paramoffset, Boolean.TRUE);
 		}
 	}

@@ -217,6 +217,7 @@ public class DpFuncaoController extends SigaSelecionavelControllerSupport<DpFunc
 		}
 		result.include("request",getRequest());
 		result.include("id",id);
+		this.result.include("mensagem", "Operação realizada com sucesso!");
 	}
 	
 	@Transacional
@@ -279,7 +280,8 @@ public class DpFuncaoController extends SigaSelecionavelControllerSupport<DpFunc
 				funcao.setIdeFuncao(funcao.getId().toString());
 				dao().gravar(funcao);
 			}
-			dao().commitTransacao();			
+			dao().commitTransacao();
+			this.result.include("mensagem", "Operação realizada com sucesso!");
 		} catch (final Exception e) {
 			dao().rollbackTransacao();
 			throw new AplicacaoException("Erro na gravação", 0, e);

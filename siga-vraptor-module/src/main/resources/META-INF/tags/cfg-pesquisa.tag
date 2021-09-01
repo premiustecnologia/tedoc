@@ -80,10 +80,22 @@
 						</div>
 					</div>
 				</form>
-
 			</div>
-
 		</div>
+		<c:if test="${not empty mensagem}">
+			<div style="align-items: center">
+				<div>
+					<p id="mensagem" style="text-align: center" class="alert alert-success">${mensagem}</p>
+					<script>
+						setTimeout(function () {
+							$('#mensagem').fadeTo(1000, 0, function () {
+								$('#mensagem').slideUp(1000);
+							});
+						}, 5000);
+					</script>
+				</div>
+			</div>
+		</c:if>
 		<div id="tableCadastradas"></div>
 	</div>
 
