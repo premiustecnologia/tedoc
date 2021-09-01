@@ -26,7 +26,20 @@
 				</form>
 			</div>
 		</div>
-
+		<c:if test="${not empty mensagem}">
+			<div style="align-items: center">
+				<div>
+					<p id="mensagem" style="text-align: center" class="alert alert-success">${mensagem}</p>
+					<script>
+						setTimeout(function () {
+							$('#mensagem').fadeTo(1000, 0, function () {
+								$('#mensagem').slideUp(1000);
+							});
+						}, 5000);
+					</script>
+				</div>
+			</div>
+		</c:if>
 		<h3>Lista de Modelos</h3>
 		<table class="table table-sm table-striped">
 			<thead class="${thead_color}">

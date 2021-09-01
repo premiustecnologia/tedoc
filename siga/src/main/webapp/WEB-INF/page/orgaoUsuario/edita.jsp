@@ -126,7 +126,7 @@
 						<div class="col-sm-6">
 							<div class="form-group">
 								<input type="button" value="Salvar" onclick="javascript: validar();" class="btn btn-primary" />
-								<input type="button" value="Cancelar" onclick="javascript:history.back();" class="btn btn-danger" />
+								<input type="button" value="Cancelar" onclick="javascript:history.back();" class="btn btn-secondary" />
 							</div>
 						</div>
 					</div>

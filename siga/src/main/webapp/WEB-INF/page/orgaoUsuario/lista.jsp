@@ -39,9 +39,9 @@ function sbmt(offset) {
 				</div>
 			</div>
 		<c:if test="${not empty mensagem}">
-			<div class="row" style="alignment: center">
-				<div style="align-content: center">
-					<p id="mensagem" class="alert alert-success">${mensagem}</p>
+			<div style="align-items: center">
+				<div>
+					<p id="mensagem" style="text-align: center" class="alert alert-success">${mensagem}</p>
 					<script>
 						setTimeout(function() {
 							$('#mensagem').fadeTo(1000, 0, function() {

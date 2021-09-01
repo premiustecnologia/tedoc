@@ -92,9 +92,8 @@
 					<div class="row">
 						<div class="col-sm-8">
 							<div class="form-group">
-								<button type="button" class="btn btn-primary  btn-salvar" onclick="onBtnSalvarClicado()">Ok</button>
-								<button type="button" class="btn btn-primary  btn-salvar" onclick="onBtnSalvarClicado()">Aplicar</button>								
-								<a href="${linkTo[ExFormaDocumentoController].listarFormas()}?ordenar=descricao" class="btn btn-cancel">Cancela</a>
+								<button type="button" class="btn btn-primary  btn-salvar" onclick="onBtnSalvarClicado()">Salvar</button>
+								<a href="${linkTo[ExFormaDocumentoController].listarFormas()}?ordenar=descricao" class="btn btn-secondary btn-cancel">Cancelar</a>
 							</div>
 						</div>
 					</div>

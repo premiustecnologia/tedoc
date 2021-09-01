@@ -218,7 +218,6 @@ public class OrgaoUsuarioController extends SigaSelecionavelControllerSupport<Cp
 			dao().commitTransacao();
 			this.result.include("mensagem", "Operação realizada com sucesso!");
 			this.result.redirectTo(this).lista(0, "");
-
 		} catch (final Exception e) {
 			dao().rollbackTransacao();
 			throw new AplicacaoException("Erro na gravação", 0, e);
