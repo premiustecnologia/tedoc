@@ -38,7 +38,20 @@ function sbmt(offset) {
 					</div>
 				</div>
 			</div>
-			
+		<c:if test="${not empty mensagem}">
+			<div style="align-items: center">
+				<div>
+					<p id="mensagem" style="text-align: center" class="alert alert-success">${mensagem}</p>
+					<script>
+						setTimeout(function() {
+							$('#mensagem').fadeTo(1000, 0, function() {
+								$('#mensagem').slideUp(1000);
+							});
+						}, 5000);
+					</script>
+				</div>
+			</div>
+		</c:if>
 			<!-- main content -->
 			<h5>&Oacute;rg&atilde;os cadastrados</h5>
 				<table border="0" class="table table-sm table-striped">

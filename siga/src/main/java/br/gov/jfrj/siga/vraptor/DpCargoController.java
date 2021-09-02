@@ -287,12 +287,13 @@ public class DpCargoController extends
 				cargo.setIdeCargo(cargo.getId().toString());
 				dao().gravar(cargo);
 			}
-			dao().commitTransacao();			
+			dao().commitTransacao();
+			this.result.include("mensagem", "Operação realizada com sucesso!");
+			this.result.redirectTo(this).lista(0, null, "");
 		} catch (final Exception e) {
 			dao().rollbackTransacao();
 			throw new AplicacaoException("Erro na gravação", 0, e);
 		}
-		this.result.redirectTo(this).lista(0, null, "");
 	}
 
 	@Get("/app/cargo/carregarExcel")

@@ -1,6 +1,5 @@
 package br.gov.jfrj.siga.vraptor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -135,7 +134,6 @@ public class ExFormaDocumentoController extends ExController {
 				setMensagem("Esta sigla ja esta sendo utilizada");
 			}
 		}
-		
 		result.use(Results.page()).forwardTo("/WEB-INF/page/mensagemAjax.jsp");
 	}
 
@@ -197,14 +195,14 @@ public class ExFormaDocumentoController extends ExController {
 			result.include("origemInternoProduzido", origemInternoProduzido);
 			result.include("origemInternoCapturado", origemInternoCapturado);
 			result.include("origemExternoCapturado", origemExternoCapturado);
-			
+			this.result.include("mensagem", "Operação realizada com sucesso");
 			result.redirectTo(this).listarFormas(null);
-		} catch (RegraNegocioException e) {			
-			
+		} catch (RegraNegocioException e) {
 			result.include(SigaModal.ALERTA, SigaModal.mensagem(e.getMessage()));
 			result.forwardTo(this).editarForma(id, descricao, sigla, idTipoFormaDoc, origemExterno, origemInternoImportado,  origemInternoProduzido
 					, origemInternoCapturado, isComposto,  origemExternoCapturado);
 		}
+
 	}
 
 	private ExFormaDocumento recuperarForma(final Long id) {
@@ -226,8 +224,6 @@ public class ExFormaDocumentoController extends ExController {
 			}																				
 		} 		
 		formaCadastrada.setExTipoDocumentoSet(origensCadastradas);
-		
 		return formaCadastrada;
 	}
-
 }

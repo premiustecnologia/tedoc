@@ -183,8 +183,8 @@
 				<div class="row">
 					<div class="col-sm-2">
 						<div class="form-group">
-							<button type="button" id="btnOk" onclick="javascript: validar();" class="btn btn-primary" >Ok</button>
-							<button type="button" onclick="javascript:history.back();" class="btn btn-primary" >Cancelar</button>
+							<button type="button" id="btnOk" onclick="javascript: validar();" class="btn btn-primary" >Salvar</button>
+							<button type="button" onclick="javascript:history.back();" class="btn btn-secondary" >Cancelar</button>
 						</div>
 					</div>
 				</div>

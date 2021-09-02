@@ -365,10 +365,9 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 		CpUF uf = new CpUF();
 		uf.setIdUF(Long.valueOf(idUf));
 		result.include("listaLocalidades", dao().consultarLocalidadesPorUF(uf));
-				
 		result.include("request",getRequest());
 		result.include("id",id);
-
+		this.result.include("mensagem", "Operação realizada com sucesso!");
 	}
 
 	@Transacional
@@ -381,7 +380,9 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 
 		Cp.getInstance().getBL().criarLotacao(getIdentidadeCadastrante(), getTitular(), getTitular().getLotacao(), id,
 				nmLotacao, idOrgaoUsu, siglaLotacao, situacao, isExternaLotacao, lotacaoPai, idLocalidade);
+		this.result.include("mensagem", "Operação realizada com sucesso!");
 		this.result.redirectTo(this).lista(0, null, "");
+
 	}
 
 	@Transacional
