@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Prop {
+
 	public interface IPropertyProvider {
 		String getProp(String nome);
 
@@ -35,30 +36,27 @@ public class Prop {
 
 	public static Boolean getBool(String nome) {
 		String p = Prop.get(nome);
-		if (p == null)
-			return null;
-		return Boolean.valueOf(p.trim());
+		return p == null ? null : Boolean.valueOf(p.trim());
+	}
+
+	public static Long getLong(String nome) {
+		String p = Prop.get(nome);
+		return p == null ? null : Long.valueOf(p.trim());
 	}
 
 	public static Integer getInt(String nome) {
 		String p = Prop.get(nome);
-		if (p == null)
-			return null;
-		return Integer.valueOf(p.trim());
+		return p == null ? null : Integer.valueOf(p.trim());
 	}
 
 	public static Double getDouble(String nome) {
 		String p = Prop.get(nome);
-		if (p == null)
-			return null;
-		return Double.valueOf(p.trim());
+		return p == null ? null : Double.valueOf(p.trim());
 	}
 
 	public static List<String> getList(String nome) {
 		String p = Prop.get(nome);
-		if (p == null)
-			return null;
-		return Arrays.asList(p.split(","));
+		return p == null ? null : Arrays.asList(p.split(","));
 	}
 
 	public static boolean isGovSP() {

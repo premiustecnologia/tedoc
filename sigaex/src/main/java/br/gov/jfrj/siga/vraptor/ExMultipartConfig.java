@@ -11,10 +11,11 @@ import br.gov.jfrj.siga.base.Prop;
 public class ExMultipartConfig extends DefaultMultipartConfig {  
   
     public long getSizeLimit() {  
-        return Prop.getInt("pdf.tamanho.maximo");
+        return Prop.getLong("pdf.tamanho.maximo");
     }
     
     public long getFileSizeLimit() {
-        return Prop.getInt("pdf.tamanho.maximo");
+        return Prop.getLong("pdf.tamanho.maximo");
     }
-}  
+
+}
