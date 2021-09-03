@@ -11,6 +11,7 @@ function testpdf(x) {
     	var mensagem = 'Tamanho do arquivo excede o permitido (10MB)';
     	aplicarErro(inputFile, mensagem);    	    	
         sigaModal.alerta(mensagem).focus(document.getElementById("arquivo"));
+		x.arquivo.value = '';        
         return false;
     }
 	

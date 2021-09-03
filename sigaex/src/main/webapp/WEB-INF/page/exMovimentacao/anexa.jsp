@@ -66,7 +66,7 @@
 			var result = true;
 			var arquivo = form.arquivo;
 			if (arquivo == null || arquivo.value == '') {
-				alert("O arquivo a ser anexado não foi selecionado!");
+				sigaModal.alerta('O arquivo a ser anexado não foi selecionado!');
 				result = false;
 			}
 			return result;
@@ -81,8 +81,9 @@
 				nomeusuario.value = tmp.toUpperCase();
 			}
 		}
+		
 	</script>
-
+	<script type="text/javascript" src="../../../javascript/documento.validacao.js"></script>
 	<div class="container-fluid">
 		<input type="hidden" id="visualizador" value="${f:resource('/sigaex.pdf.visualizador') }"/>
 		<c:if test="${!assinandoAnexosGeral}">
@@ -145,7 +146,7 @@
 							<div class="col-sm-12">
 								<div class="form-group">
 									<label>Arquivo:</label> <input class="form-control" type="file"
-										name="arquivo" accept="application/pdf"
+										name="arquivo" id="arquivo" accept="application/pdf"
 										onchange="testpdf(this.form)" />
 								</div>
 							</div>
