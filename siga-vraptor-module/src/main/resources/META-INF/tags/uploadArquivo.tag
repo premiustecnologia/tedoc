@@ -18,7 +18,7 @@
 
 <script type="text/javascript">
 	function testTamanho() {
-		var tamanhoArquivo = parseInt(document.getElementById("arquivo").files[0].size);
+		var tamanhoArquivo = parseInt(document.getElementByName("arquivo").files[0].size);
 	    if(tamanhoArquivo > ${tamanhoMaximo}*1024*1024){
 	    	sigaModal.alerta("Tamanho do arquivo excede o permitido (${tamanhoMaximo} MB)!");
 	        document.getElementById("arquivo").value = "";
