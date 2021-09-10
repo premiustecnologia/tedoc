@@ -15,8 +15,8 @@ import com.crivano.swaggerservlet.SwaggerException;
 
 import br.gov.jfrj.siga.base.AplicacaoException;
 import br.gov.jfrj.siga.cp.CpTipoConfiguracao;
-import br.gov.jfrj.siga.cp.model.enm.CpMarcadorGrupoEnum;
 import br.gov.jfrj.siga.cp.model.enm.CpMarcadorEnum;
+import br.gov.jfrj.siga.cp.model.enm.CpMarcadorGrupoEnum;
 import br.gov.jfrj.siga.cp.model.enm.TipoDePainelEnum;
 import br.gov.jfrj.siga.dp.CpMarcador;
 import br.gov.jfrj.siga.dp.DpLotacao;
@@ -160,8 +160,7 @@ public class MesaGet implements IMesaGet {
 					continue;
 
 				Marca t = new Marca();
-				CpMarcadorEnum mar = CpMarcadorEnum.getById(tag.marcador.getIdMarcador().intValue());
-				
+				CpMarcadorEnum mar = CpMarcadorEnum.getById(tag.marcador.getIdMarcador());
 
 				CpMarcadorGrupoEnum grupo = null;
 				if (mar != null) {

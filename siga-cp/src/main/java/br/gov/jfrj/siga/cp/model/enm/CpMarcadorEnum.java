@@ -1,5 +1,7 @@
 package br.gov.jfrj.siga.cp.model.enm;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,24 +206,34 @@ public enum CpMarcadorEnum {
 		this.grupo = grupo;
 	}
 
-	public static CpMarcadorEnum getById(int id) {
+	public static CpMarcadorEnum getById(Number id) {
+		if (id == null) {
+			return null;
+		}
+
 		for (CpMarcadorEnum i : CpMarcadorEnum.values()) {
-			if (i.id == id)
+			if (i.id == id.longValue()) {
 				return i;
+			}
 		}
 		return null;
 	}
 
 	public static CpMarcadorEnum getByNome(String nome) {
+		if (isBlank(nome)) {
+			return null;
+		}
+
 		for (CpMarcadorEnum i : CpMarcadorEnum.values()) {
-			if (i.nome.equals(nome))
+			if (i.nome.equals(nome)) {
 				return i;
+			}
 		}
 		return null;
 	}
 
-	public static List<Integer> getListIdByGrupo(String nomegrupo) {
-		List<Integer> listMar = new ArrayList<Integer>();
+	public static List<Long> getListIdByGrupo(String nomegrupo) {
+		List<Long> listMar = new ArrayList<>();
 		for (CpMarcadorEnum mar : CpMarcadorEnum.values()) {
 			if (mar.getGrupo().getNome().equals(nomegrupo)) {
 				listMar.add(mar.id);
@@ -235,7 +247,7 @@ public enum CpMarcadorEnum {
 	}
 
 	public long getId() {
-		return (long) id;
+		return id;
 	}
 
 	public String getNome() {
@@ -250,7 +262,7 @@ public enum CpMarcadorEnum {
 		return grupo;
 	}
 
-	public final int id;
+	private final long id;
 	private final String nome;
 	private final String icone;
 	private final String descricao;

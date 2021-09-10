@@ -16,8 +16,8 @@ import com.crivano.swaggerservlet.ISwaggerModel;
 import br.gov.jfrj.siga.base.Data;
 import br.gov.jfrj.siga.base.Prop;
 import br.gov.jfrj.siga.base.SigaMessages;
-import br.gov.jfrj.siga.cp.model.enm.CpMarcadorGrupoEnum;
 import br.gov.jfrj.siga.cp.model.enm.CpMarcadorEnum;
+import br.gov.jfrj.siga.cp.model.enm.CpMarcadorGrupoEnum;
 import br.gov.jfrj.siga.cp.model.enm.TipoDePainelEnum;
 import br.gov.jfrj.siga.dp.CpMarcador;
 import br.gov.jfrj.siga.dp.DpLotacao;
@@ -52,7 +52,7 @@ public class Mesa2 {
 		public boolean grupoCollapsed;
 		public boolean grupoHide;
 		public List<MesaItem> grupoDocs;
-		public List<Integer> grupoMarcadores;
+		public List<Long> grupoMarcadores;
 	}
 	
 	public static class MesaItem implements ISwaggerModel {
@@ -226,8 +226,8 @@ public class Mesa2 {
 					continue;
 
 				Marca t = new Marca();
-				CpMarcadorEnum mar = CpMarcadorEnum.getById(tag.marcador
-						.getIdInicial().intValue());
+				CpMarcadorEnum mar = CpMarcadorEnum.getById(tag.marcador.getIdInicial());
+
 				if (mar != null) {
 					t.nome = mar.getNome();
 					t.icone = mar.getIcone();

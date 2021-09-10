@@ -14,8 +14,8 @@ import com.crivano.swaggerservlet.ISwaggerModel;
 import br.gov.jfrj.siga.base.Data;
 import br.gov.jfrj.siga.base.Prop;
 import br.gov.jfrj.siga.base.SigaMessages;
-import br.gov.jfrj.siga.cp.model.enm.CpMarcadorGrupoEnum;
 import br.gov.jfrj.siga.cp.model.enm.CpMarcadorEnum;
+import br.gov.jfrj.siga.cp.model.enm.CpMarcadorGrupoEnum;
 import br.gov.jfrj.siga.cp.model.enm.TipoDePainelEnum;
 import br.gov.jfrj.siga.dp.CpMarcador;
 import br.gov.jfrj.siga.dp.DpLotacao;
@@ -150,8 +150,7 @@ public class Mesa {
 					continue;
 
 				Marca t = new Marca();
-				CpMarcadorEnum mar = CpMarcadorEnum.getById(tag.marcador
-						.getIdMarcador().intValue());
+				CpMarcadorEnum mar = CpMarcadorEnum.getById(tag.marcador.getIdMarcador());
 
 				t.nome = mar.getNome();
 				t.icone = mar.getIcone();
