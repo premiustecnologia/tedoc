@@ -5,14 +5,17 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
+import org.jboss.logging.Logger;
+
 import br.gov.jfrj.siga.base.UsuarioDeSistemaEnum;
 
 public class ContextoPersistencia {
 
-	private final static ThreadLocal<EntityManager> emByThread = new ThreadLocal<EntityManager>();
-	private final static ThreadLocal<String> userPrincipalByThread = new ThreadLocal<String>();
-	private final static ThreadLocal<Date> dataEHoraDoServidor = new ThreadLocal<Date>();
-	private final static ThreadLocal<UsuarioDeSistemaEnum> usuarioDeSistema = new ThreadLocal<UsuarioDeSistemaEnum>();
+	private static final Logger log = Logger.getLogger(ContextoPersistencia.class);
+	private static final ThreadLocal<EntityManager> emByThread = new ThreadLocal<EntityManager>();
+	private static final ThreadLocal<String> userPrincipalByThread = new ThreadLocal<String>();
+	private static final ThreadLocal<Date> dataEHoraDoServidor = new ThreadLocal<Date>();
+	private static final ThreadLocal<UsuarioDeSistemaEnum> usuarioDeSistema = new ThreadLocal<UsuarioDeSistemaEnum>();
 	
 	static public void setEntityManager(EntityManager em) {
 		emByThread.set(em);
@@ -49,7 +52,7 @@ public class ContextoPersistencia {
 		EntityTransaction transaction = em().getTransaction();
 		if (transaction != null && transaction.isActive()) {
 			transaction.commit();
-			System.out.println(transaction.isActive());
+			log.debugv("Transaction active: {0}", transaction.isActive());
 		}
  	}
 	
