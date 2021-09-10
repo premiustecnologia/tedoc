@@ -635,6 +635,10 @@ public class CpConfiguracaoBL {
 			if (cfg != null) {
 				situacao = cfg.getCpSituacaoConfiguracao();
 			} else {
+				if (cfgFiltro.getCpTipoConfiguracao() == null) {
+					log.warn("Tipo de configuração não encontrado: permissão será negada.");
+					return false;
+				}
 				situacao = cfgFiltro.getCpTipoConfiguracao().getSituacaoDefault();
 			}
 
