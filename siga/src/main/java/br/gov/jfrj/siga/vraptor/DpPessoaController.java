@@ -559,8 +559,9 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		cpOrgaoUsuario.setSiglaOrgaoUsu("");
 		l.setOrgaoUsuario(cpOrgaoUsuario);
 		listaLotacao.add(l);
-		if (idOrgaoUsu != CpConfiguracaoBL.ID_ORGAO_ROOT)
+		if (idOrgaoUsu != null && idOrgaoUsu.longValue() != CpConfiguracaoBL.ID_ORGAO_ROOT) {
 			listaLotacao.addAll(CpDao.getInstance().consultarPorFiltro(lotacao));
+		}
 		result.include("listaLotacao", listaLotacao);
 
 		if (retornarEnvioEmail == null || !retornarEnvioEmail) {
