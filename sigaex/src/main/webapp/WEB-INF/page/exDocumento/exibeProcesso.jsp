@@ -555,7 +555,6 @@
 				ifr.src = path + refPDF + refSiglaDocPrincipal;
 				
 				if(!refPDF.includes("completo=1")) {
-					var url = ifr.src;
 					ifr.src = montarUrlDocPDF(ifr.src, "${f:resource('/sigaex.pdf.visualizador')}");
 				}
 				
@@ -577,7 +576,6 @@
 				ifr.src = path + refPDF;
 				
 				if(!refPDF.includes("completo=1")) {
-					var url = ifr.src;
 					ifr.src = montarUrlDocPDF(ifr.src, "${f:resource('/sigaex.pdf.visualizador')}");
 				}
 				ifrp.style.border = "0px solid black";
