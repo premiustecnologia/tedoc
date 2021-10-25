@@ -292,7 +292,7 @@
 							</c:if>
 						</span>		
 						<c:if test="${mob.doc.podeReordenar()}">				
-							<div class="menu-ordenacao"">
+							<div class="menu-ordenacao">
 								Clique e arraste os itens tracejados para reordená-los<br />							
 								<form action="${pageContext.request.contextPath}/app/expediente/doc/reordenar" id="formReordenarDocs" class="form" method="POST">									
 									<input type="hidden" name="idDocumentos" id="inputHiddenIdDocs" />													
@@ -555,7 +555,6 @@
 				ifr.src = path + refPDF + refSiglaDocPrincipal;
 				
 				if(!refPDF.includes("completo=1")) {
-					var url = ifr.src;
 					ifr.src = montarUrlDocPDF(ifr.src, "${f:resource('/sigaex.pdf.visualizador')}");
 				}
 				
@@ -577,7 +576,6 @@
 				ifr.src = path + refPDF;
 				
 				if(!refPDF.includes("completo=1")) {
-					var url = ifr.src;
 					ifr.src = montarUrlDocPDF(ifr.src, "${f:resource('/sigaex.pdf.visualizador')}");
 				}
 				ifrp.style.border = "0px solid black";
