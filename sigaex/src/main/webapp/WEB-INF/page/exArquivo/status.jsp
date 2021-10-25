@@ -24,11 +24,7 @@
 		</div>
 	</div>
 
-<<<<<<< HEAD
-	<script type="text/javascript" src="/sigaex/javascript/siga.js"></script>
-=======
 	<script type="text/javascript" src="/siga/javascript/siga.js"></script>
->>>>>>> refs/heads/bugfix/177-erro-visualizar-documentos
 	<script type="text/javascript" src="/sigaex/javascript/vue.min.js"></script>
 
 	<script type="text/javascript" language="Javascript1.1">

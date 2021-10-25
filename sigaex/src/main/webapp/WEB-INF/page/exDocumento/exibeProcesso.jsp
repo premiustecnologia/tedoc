@@ -145,11 +145,11 @@
 
 		if (ifr && !window.opera) {
 			ifr.style.display = "block";
-			if (ifr.contentDocument && ifr.contentDocument.body.offsetHeight) //ns6 syntax
-				ifr.height = ifr.contentDocument.body.offsetHeight
-						+ FFextraHeight;
-			else if (ifr.Document && ifr.Document.body.scrollHeight) //ie5+ syntax
+			if (ifr.contentDocument && ifr.contentDocument.body && ifr.contentDocument.body.offsetHeight) { // ns6 syntax
+				ifr.height = ifr.contentDocument.body.offsetHeight + FFextraHeight;
+			} else if (ifr.Document && ifr.Document.body && ifr.Document.body.scrollHeight) { // ie5+ syntax
 				ifr.height = ifr.Document.body.scrollHeight;
+			}
 		}
 	}
 
