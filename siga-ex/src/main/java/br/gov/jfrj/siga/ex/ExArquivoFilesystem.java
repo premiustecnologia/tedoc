@@ -12,15 +12,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import br.gov.jfrj.siga.armazenamento.zip.ZipItem;
+import br.gov.jfrj.siga.armazenamento.zip.ZipPropriedades;
 import br.gov.jfrj.siga.armazenamento.zip.ZipServico;
 import br.gov.jfrj.siga.dp.CpOrgaoUsuario;
 import br.gov.jfrj.siga.dp.DpLotacao;
 
 public interface ExArquivoFilesystem {
 
+	public static final String ZIP_MIME_TYPE = "application/zip";
+
 	static final String YEAR_PATTERN = "yyyy";
 	static final String EXTENSAO_ZIP = ".zip";
-	public static final String ZIP_MIME_TYPE = "application/zip";
 	static final String ERRO_CAMINHO_ARQUIVO = "Erro ao montar caminho para o arquivo \"%s\" de ID=%d: campo \"%s\" não pôde ser convertido em caminho";
 
 	Long getId();
@@ -89,8 +91,18 @@ public interface ExArquivoFilesystem {
 		}
 
 		byte[] zip = ZipServico.ler(this);
+
+		// Arquivo original não encontrado: tenta buscar arquivo de exemplo se em ambiente de desenvolvimento
 		if (zip == null) {
-			return null;
+			final ZipPropriedades zipProps = ZipPropriedades.getInstance();
+			if (zipProps.isArquivoExemploAtivo()) {
+				zip = zipProps.obterArquivoExemplo();
+			}
+
+			// Arquivo de exemplo em ambiente de desenvolvimento não encontrado
+			if (zip == null) {
+				return null;
+			}
 		}
 
 		this.atualizarCache(zip);

@@ -35,10 +35,11 @@ public abstract class ZipServico {
 
 	private static File referenciaArquivo(ExArquivoFilesystem exArquivo) {
 		try {
-			Path caminhoBase = ZipPropriedades.getInstance().obterCaminhoBase();
-			File zipFile = exArquivo.getPathConteudo(caminhoBase).toFile();
-			FileUtils.forceMkdir(zipFile.getParentFile());
+			final Path caminhoBase = ZipPropriedades.getInstance().obterCaminhoBase();
+			final File zipFile = exArquivo.getPathConteudo(caminhoBase).toFile();
+
 			log.debugf("Capturando referência para arquivo #%d %s", exArquivo.getId(), zipFile.getAbsolutePath());
+			FileUtils.forceMkdir(zipFile.getParentFile());
 			return zipFile;
 		} catch (Exception e) {
 			throw new AplicacaoException("Não foi possível fazer referência ao arquivo do documento " + exArquivo.getId() + " no sistema de arquivos", CODIGO_ERRO_ZIP_SERVICO, e);
@@ -46,12 +47,12 @@ public abstract class ZipServico {
 	}
 
 	public static List<String> nomesItens(@NotNull ExArquivoFilesystem exArquivo) {
-		byte[] zipBytes = ler(exArquivo);
+		final byte[] zipBytes = ler(exArquivo);
 		return nomesItens(zipBytes);
 	}
 
 	public static List<String> nomesItens(@NotNull byte[] zipBytes) {
-		List<String> nomesItens = new ArrayList<>();
+		final List<String> nomesItens = new ArrayList<>();
 		try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(zipBytes))) {
 			ZipEntry zipEntry = zipInputStream.getNextEntry();
 			while (zipEntry != null) {
@@ -65,8 +66,8 @@ public abstract class ZipServico {
 	}
 
 	public static List<ZipItem> listarItens(@NotNull byte[] zipBytes) {
-		List<String> nomes = nomesItens(zipBytes);
-		List<ZipItem> itens = new ArrayList<>(nomes.size());
+		final List<String> nomes = nomesItens(zipBytes);
+		final List<ZipItem> itens = new ArrayList<>(nomes.size());
 		for (String nome : nomes) {
 			itens.add(ZipItem.Tipo.porNomeItem(nome));
 		}
@@ -74,7 +75,7 @@ public abstract class ZipServico {
 	}
 
 	public static byte[] lerItem(@NotNull ExArquivoFilesystem exArquivo, @NotNull ZipItem item) {
-		byte[] zipBytes = ler(exArquivo);
+		final byte[] zipBytes = ler(exArquivo);
 		return lerItem(zipBytes, item);
 	}
 
@@ -83,26 +84,30 @@ public abstract class ZipServico {
 	}
 
 	public static byte[] ler(@NotNull ExArquivoFilesystem exArquivo) {
+		final File zipFile = referenciaArquivo(exArquivo);
+		return ler(zipFile);
+	}
+
+	public static byte[] ler(final File zipFile) {
+		if (zipFile == null || !zipFile.exists()) {
+			return null;
+		}
 		try {
-			File zipFile = referenciaArquivo(exArquivo);
-			if (!zipFile.exists()) {
-				return null;
-			}
 			return FileUtils.readFileToByteArray(zipFile);
 		} catch (Exception e) {
-			throw new AplicacaoException("Não foi possível ler os dados do documento " + exArquivo.getId() + " no sistema de arquivos", CODIGO_ERRO_ZIP_SERVICO, e);
+			throw new AplicacaoException("Não foi possível ler os dados do documento " + zipFile + " no sistema de arquivos", CODIGO_ERRO_ZIP_SERVICO, e);
 		}
 	}
 
 	public static void gravarItem(@NotNull ExArquivoFilesystem exArquivo, byte[] itemBytes, @NotNull ZipItem item) {
 		// Capturando dados do ZIP original (se existir) e atualizando seus itens
-		byte[] originalZipBytes = ler(exArquivo);
-		byte[] novoZipBytes = criarOuAtualizarZipComItem(originalZipBytes, itemBytes, item);
+		final byte[] originalZipBytes = ler(exArquivo);
+		final byte[] novoZipBytes = criarOuAtualizarZipComItem(originalZipBytes, itemBytes, item);
 		gravar(exArquivo, novoZipBytes);
 	}
 
 	public static void gravar(@NotNull ExArquivoFilesystem exArquivo, @NotNull byte[] zipBytes) {
-		File zipFile = referenciaArquivo(exArquivo);
+		final File zipFile = referenciaArquivo(exArquivo);
 		try {
 			if (zipBytes == null) {
 				apagarArquivo(zipFile);
@@ -116,7 +121,7 @@ public abstract class ZipServico {
 	}
 
 	public static void apagar(@NotNull ExArquivoFilesystem exArquivo) {
-		File zipFile = referenciaArquivo(exArquivo);
+		final File zipFile = referenciaArquivo(exArquivo);
 		apagarArquivo(zipFile);
 	}
 
