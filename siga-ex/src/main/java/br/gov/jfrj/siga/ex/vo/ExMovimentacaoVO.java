@@ -65,7 +65,6 @@ import java.util.TreeMap;
 
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.internal.org.bouncycastle.jcajce.provider.symmetric.util.PBE.Util;
 
 import br.gov.jfrj.siga.base.AcaoVO;
 import br.gov.jfrj.siga.base.AplicacaoException;
@@ -75,11 +74,11 @@ import br.gov.jfrj.siga.base.SigaMessages;
 import br.gov.jfrj.siga.base.util.Texto;
 import br.gov.jfrj.siga.dp.DpLotacao;
 import br.gov.jfrj.siga.dp.DpPessoa;
+import br.gov.jfrj.siga.ex.ExDocumento;
 import br.gov.jfrj.siga.ex.ExMovimentacao;
 import br.gov.jfrj.siga.ex.ExTipoMovimentacao;
 import br.gov.jfrj.siga.ex.bl.Ex;
 import br.gov.jfrj.siga.ex.logic.ExPodeCancelarMarcacao;
-import br.gov.jfrj.siga.ex.logic.ExPodeMarcar;
 import br.gov.jfrj.siga.ex.util.ProcessadorReferencias;
 
 public class ExMovimentacaoVO extends ExVO {
@@ -249,16 +248,17 @@ public class ExMovimentacaoVO extends ExVO {
 
 			if (idTpMov == TIPO_MOVIMENTACAO_ANEXACAO) {
 				if (!mov.isCancelada() && !mov.mob().doc().isSemEfeito() && !mov.mob().isEmTransito()) {
-					addAcao(null, "Excluir", "/app/expediente/mov", "excluir",
-							Ex.getInstance().getComp().podeExcluirAnexo(titular, lotaTitular, mov.mob(), mov));
-					addAcao(null, "Cancelar", "/app/expediente/mov", "cancelar",
-							Ex.getInstance().getComp().podeCancelarAnexo(titular, lotaTitular, mov.mob(), mov));
-					addAcao(null, "Assinar", "/app/expediente/mov", "exibir", true, null, "&popup=true",
-							null, null, null);
+					final ExDocumento documento = mov.mob().doc();
+					final DpPessoa cadastranteDoc = documento.getCadastrante();
+					final boolean usuarioAtualMesmoCadastranteDoc = cadastrante.getId() == cadastranteDoc.getId();
+					final boolean usuarioAtualCossignatarioDoc = documento.isCossignatario(cadastrante);
 
-					addAcao("script_key", "Autenticar", "/app/expediente/mov", "autenticar_mov",
-							Ex.getInstance().getComp().podeAutenticarMovimentacao(titular, lotaTitular, mov), null,
-							"&popup=true&autenticando=true", null, null, null);
+					if (usuarioAtualMesmoCadastranteDoc || usuarioAtualCossignatarioDoc) {
+						addAcao(null, "Excluir", "/app/expediente/mov", "excluir", Ex.getInstance().getComp().podeExcluirAnexo(titular, lotaTitular, mov.mob(), mov));
+						addAcao(null, "Cancelar", "/app/expediente/mov", "cancelar", Ex.getInstance().getComp().podeCancelarAnexo(titular, lotaTitular, mov.mob(), mov));
+						addAcao(null, "Assinar", "/app/expediente/mov", "exibir", true, null, "&popup=true", null, null, null);
+						addAcao("script_key", "Autenticar", "/app/expediente/mov", "autenticar_mov", Ex.getInstance().getComp().podeAutenticarMovimentacao(titular, lotaTitular, mov), null, "&popup=true&autenticando=true", null, null, null);
+					}
 				}
 			}
 
