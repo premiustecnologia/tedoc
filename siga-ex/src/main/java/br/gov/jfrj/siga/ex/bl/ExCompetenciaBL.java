@@ -3075,6 +3075,35 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	}
 
 	/**
+	 * Retorna se é possível assinar uma movimentação mov, de anexação de arquivo. 
+	 * Regras:
+	 * <ul>
+	 * <li>Anexação não pode estar cancelada</li>	
+	 * <li>Usuário só pode assinar uma única vez</li>
+	 * </ul>
+	 * 
+	 * @param titular
+	 * @param mob
+	 * @param mov
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean podeAssinarAnexo(final DpPessoa titular, final ExMobil mob, final ExMovimentacao mov) {
+		if (mov == null || mov.isCancelada()) {
+			return false;
+		}
+
+		final Set<ExMovimentacao> movsComSenha = mov.getApenasAssinaturasComSenha();
+		for (ExMovimentacao exMovimentacao : movsComSenha) {
+			final DpPessoa cadastranteMov = exMovimentacao.getCadastrante();
+			if (cadastranteMov != null && cadastranteMov.getId() == titular.getId()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Retorna se é possível cancelar uma movimentação mov, de anexação de
 	 * arquivo. Regras:
 	 * <ul>
