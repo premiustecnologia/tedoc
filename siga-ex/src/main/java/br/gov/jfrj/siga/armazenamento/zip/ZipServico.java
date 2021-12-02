@@ -11,6 +11,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -88,7 +90,13 @@ public abstract class ZipServico {
 			if (!zipFile.exists()) {
 				return null;
 			}
-			return FileUtils.readFileToByteArray(zipFile);
+
+			final Instant start = Instant.now();
+			final byte[] zipByteArray = FileUtils.readFileToByteArray(zipFile);
+			if (log.isDebugEnabled()) {
+				log.debug("[ZIP FILE] [I/O WRITE] [EXECUTION TIME]: " + Duration.between(start, Instant.now()).getSeconds() + " seconds | " + zipFile.getAbsolutePath());
+			}
+			return zipByteArray;
 		} catch (Exception e) {
 			throw new AplicacaoException("Não foi possível ler os dados do documento " + exArquivo.getId() + " no sistema de arquivos", CODIGO_ERRO_ZIP_SERVICO, e);
 		}
@@ -108,7 +116,12 @@ public abstract class ZipServico {
 				apagarArquivo(zipFile);
 			} else {
 				log.debugf("Despejando arquivo %s no filesystem", zipFile.getAbsolutePath());
+
+				final Instant start = Instant.now();
 				FileUtils.writeByteArrayToFile(zipFile, zipBytes, false);
+				if (log.isDebugEnabled()) {
+					log.debug("[ZIP FILE] [I/O WRITE] [EXECUTION TIME]: " + Duration.between(start, Instant.now()).getSeconds() + " seconds | " + zipFile.getAbsolutePath());
+				}
 			}
 		} catch (Exception e) {
 			throw new AplicacaoException("Não foi possível gravar arquivo do documento " + exArquivo.getId() + " no sistema de arquivos", CODIGO_ERRO_ZIP_SERVICO, e);
