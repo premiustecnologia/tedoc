@@ -18,6 +18,12 @@
  ******************************************************************************/
 package br.gov.jfrj.siga.ex.vo;
 
+import static br.gov.jfrj.siga.ex.ExTipoMovimentacao.TIPO_MOVIMENTACAO_RECEBIMENTO;
+import static br.gov.jfrj.siga.ex.ExTipoMovimentacao.TIPO_MOVIMENTACAO_TRANSFERENCIA;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableSortedSet;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,7 +45,6 @@ import br.gov.jfrj.siga.ex.ExDocumento;
 import br.gov.jfrj.siga.ex.ExMarca;
 import br.gov.jfrj.siga.ex.ExMobil;
 import br.gov.jfrj.siga.ex.ExMovimentacao;
-import br.gov.jfrj.siga.ex.ExTipoDestinacao;
 import br.gov.jfrj.siga.ex.ExTipoMovimentacao;
 import br.gov.jfrj.siga.ex.bl.Ex;
 import br.gov.jfrj.siga.ex.bl.ExBL;
@@ -50,6 +55,10 @@ import br.gov.jfrj.siga.ex.util.ProcessadorModeloFreemarker;
 import br.gov.jfrj.siga.hibernate.ExDao;
 
 public class ExDocumentoVO extends ExVO {
+
+	private static final SortedSet<Long> TIPOS_ULTIMAS_MOVS_ASSOCIAR_DESTINATARIO = unmodifiableSortedSet(
+			new TreeSet<>(asList(TIPO_MOVIMENTACAO_RECEBIMENTO, TIPO_MOVIMENTACAO_TRANSFERENCIA)));
+
 	DpPessoa titular;
 	DpLotacao lotaTitular;
 	ExDocumento doc;
@@ -139,18 +148,20 @@ public class ExDocumentoVO extends ExVO {
 		}
 		
 		// destinatário é o destinatário da última movimentação do tipo tramite/recebimento
-		if (mob.getExMovimentacaoSet() != null && mob.getExMovimentacaoSet().size() > 1 && 
-				(mob.getExMovimentacaoSet().last().getIdTpMov() == ExTipoMovimentacao.TIPO_MOVIMENTACAO_TRANSFERENCIA || 
-				mob.getExMovimentacaoSet().last().getIdTpMov() == ExTipoMovimentacao.TIPO_MOVIMENTACAO_RECEBIMENTO)) {
-			ExMovimentacao ultimaMovimentacao = mob.getExMovimentacaoSet().last();
-			
-			if (ultimaMovimentacao.getResp() != null) {
-				doc.setDestinatario(ultimaMovimentacao.getResp());
-			} else {
-				doc.setLotaDestinatario(ultimaMovimentacao.getLotaResp());
-				doc.setDestinatario(null);
+		
+		final SortedSet<ExMovimentacao> movs = mob.getExMovimentacaoSet();
+		if (isNotEmpty(movs)) {
+			final ExMovimentacao ultimaMov = movs.last();
+			final Long tipoUltimaMov = ultimaMov.getIdTpMov();
+			if (TIPOS_ULTIMAS_MOVS_ASSOCIAR_DESTINATARIO.contains(tipoUltimaMov)) {
+				if (ultimaMov.getResp() != null) {
+					doc.setDestinatario(ultimaMov.getResp());
+				} else {
+					doc.setDestinatario(null);
+					doc.setLotaDestinatario(ultimaMov.getLotaResp());
+				}
 			}
-		} 
+		}
 		
 		this.destinatarioString = doc.getDestinatarioString();
 		
@@ -897,12 +908,11 @@ public class ExDocumentoVO extends ExVO {
 
 	public void addDadosComplementares() {
 		ProcessadorModeloFreemarker p = new ProcessadorModeloFreemarker();
-		Map attrs = new HashMap();
+		final Map<String, Object> attrs = new HashMap<>();
 		attrs.put("nmMod", "macro dadosComplementares");
 		attrs.put("template", "[@dadosComplementares/]");
 		attrs.put("doc", this.getDoc());
-		dadosComplementares = p.processarModelo(doc.getOrgaoUsuario(), attrs,
-				null);
+		dadosComplementares = p.processarModelo(doc.getOrgaoUsuario(), attrs, null);
 	}
 
 	public String getClasse() {
