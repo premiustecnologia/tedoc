@@ -405,12 +405,23 @@ public class ExMobilVO extends ExVO {
 				"transferir",
 				Ex.getInstance().getComp()
 						.podeTransferir(titular, lotaTitular, mob));
+				
+		addAcao("note_add",
+				"_Anotar",
+				"/app/expediente/mov",
+				"anotar",
+				Ex.getInstance().getComp().podeFazerAnotacao(titular, lotaTitular, mob), 
+				null, 
+				"sigla=" + mob.getCodigoCompacto(), 
+				null, null, null);
 		
-		addAcao(AcaoVO.builder().nome("_Anotar").icone("note_add").acao("/app/expediente/mov/anotar")
-				.params("sigla", mob.getCodigoCompacto()).exp(new ExPodeAnotar(mob, titular, lotaTitular)).build());
-		
-		addAcao(AcaoVO.builder().nome("Definir " + SigaMessages.getMessage("documento.marca")).icone("folder_star").modal("definirMarcaModal")
-				.exp(new ExPodeMarcar(mob, titular, lotaTitular)).build());
+		addAcao("folder_star",
+				"Definir " + SigaMessages.getMessage("documento.marca"),
+				null,
+				null,
+				Ex.getInstance().getComp().podeMarcar(titular, lotaTitular, mob), 
+				null, null, null, null, null, null,
+				"definirMarcaModal");
 		
 		if (mob.isVia() || mob.isVolume()) {
 			addAcao("attach",
@@ -419,12 +430,7 @@ public class ExMobilVO extends ExVO {
 					"anexar",
 					Ex.getInstance().getComp()
 							.podeAnexarArquivo(titular, lotaTitular, mob));
-//			addAcao("note_add",
-//					"_Anotar",
-//					"/app/expediente/mov",
-//					"anotar",
-//					Ex.getInstance().getComp()
-//							.podeFazerAnotacao(titular, lotaTitular, mob));
+
 			addAcao("page_white_copy",
 					"Incluir _Cópia",
 					"/app/expediente/mov",

@@ -3341,7 +3341,8 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	 * eliminado, não estar em trânsito, não ser geral e não haver configuração
 	 * impeditiva, o que significa que, tendo acesso a um documento não
 	 * eliminado fora de trânsito, qualquer usuário pode fazer anotação.
-
+	 * 
+	 * Quando o móbil é público, o titular deve ser atendente
 	 * 
 	 * @param titular
 	 * @param lotaTitular
@@ -3349,12 +3350,12 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean podeFazerAnotacao(final DpPessoa titular,
-			final DpLotacao lotaTitular, final ExMobil mob) {
+	public boolean podeFazerAnotacao(final DpPessoa titular, final DpLotacao lotaTitular, final ExMobil mob) {
+		boolean isDocPublico = mob.getDoc().getExNivelAcesso().getIdNivelAcesso() == ExNivelAcesso.ID_PUBLICO;
 
-		return (!mob.isEmTransitoInterno() && !mob.isEliminado() && !mob
-				.isGeral())
-				&& getConf().podePorConfiguracao(titular, lotaTitular,
+		return (!mob.isEmTransitoInterno() && !mob.isEliminado() && !mob.isGeral()) && 
+				(!isDocPublico || isDocPublico && isAtendente(titular, lotaTitular, mob)) &&
+				getConf().podePorConfiguracao(titular, lotaTitular,
 						ExTipoMovimentacao.TIPO_MOVIMENTACAO_ANOTACAO,
 						CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR);
 	}
@@ -3365,33 +3366,7 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	 * significa que, tendo acesso a um documento não eliminado, qualquer
 	 * usuário pode se cadastrar como interessado.
 	 * 
-	 * @param titular
-	 * @param lotaTitular
-	 * @param mob
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean podeFazerVinculacaoPapel(final DpPessoa titular,
-			final DpLotacao lotaTitular, final ExMobil mob) {
-
-
-		if (mob.doc().isCancelado() || mob.doc().isSemEfeito()
-
-
-
-				|| mob.isEliminado())
-			return false;
-
-		return getConf().podePorConfiguracao(titular, lotaTitular,
-				ExTipoMovimentacao.TIPO_MOVIMENTACAO_VINCULACAO_PAPEL,
-				CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR);
-	}
-
-	/**
-	 * Retorna se é possível vincular uma marca ao documento. Basta não estar
-	 * eliminado o documento e não haver configuração impeditiva, o que
-	 * significa que, tendo acesso a um documento não eliminado, qualquer
-	 * usuário pode colocar marcas.
+	 * Quando o móbil é público, o titular deve ser atendente
 	 * 
 	 * @param titular
 	 * @param lotaTitular
@@ -3399,16 +3374,41 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	 * @return
 	 * @throws Exception
 	 */
-//	public boolean podeMarcar(final DpPessoa titular,
-//			final DpLotacao lotaTitular, final ExMobil mob) {
-//		if (mob.doc().isCancelado() || mob.doc().isSemEfeito()
-//				|| mob.isEliminado())
-//			return false;
-//
-//		return getConf().podePorConfiguracao(titular, lotaTitular,
-//				ExTipoMovimentacao.TIPO_MOVIMENTACAO_MARCACAO,
-//				CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR);
-//	}
+	public boolean podeFazerVinculacaoPapel(final DpPessoa titular, final DpLotacao lotaTitular, final ExMobil mob) {
+
+		boolean isDocPublico = mob.getDoc().getExNivelAcesso().getIdNivelAcesso() == ExNivelAcesso.ID_PUBLICO;
+		
+		return (!mob.doc().isCancelado() && !mob.isEliminado() && !mob.doc().isSemEfeito()) && 
+				(!isDocPublico || isDocPublico && isAtendente(titular, lotaTitular, mob)) &&
+				getConf().podePorConfiguracao(titular, lotaTitular,
+						ExTipoMovimentacao.TIPO_MOVIMENTACAO_VINCULACAO_PAPEL,
+						CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR);
+	}
+
+	/**
+	 * Retorna se é possível vincular uma marca ao documento. Basta não estar
+	 * eliminado o documento e não haver configuração impeditiva, o que
+	 * significa que, tendo acesso a um documento não eliminado, qualquer
+	 * usuário pode colocar marcas. 
+	 * 
+	 * Quando o móbil é público, o titular deve ser atendente
+	 * 
+	 * @param titular
+	 * @param lotaTitular
+	 * @param mob
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean podeMarcar(final DpPessoa titular, final DpLotacao lotaTitular, final ExMobil mob) {
+		
+		boolean isDocPublico = mob.getDoc().getExNivelAcesso().getIdNivelAcesso() == ExNivelAcesso.ID_PUBLICO;
+
+		return (!mob.isEmTransitoInterno() && !mob.doc().isCancelado() && !mob.isEliminado() && !mob.isGeral() && !mob.doc().isSemEfeito()) && 
+				(!isDocPublico || isDocPublico && isAtendente(titular, lotaTitular, mob)) &&
+				getConf().podePorConfiguracao(titular, lotaTitular,
+						ExTipoMovimentacao.TIPO_MOVIMENTACAO_MARCACAO,
+						CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR);
+	}
 
 	/**
 	 * Retorna se é possível finalizar o documento ao qual o móbil passado por
@@ -3794,7 +3794,7 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	 * </ul>
 	 */
 	public static boolean isAtendente(final DpPessoa titular,
-			final DpLotacao lotaTitular, final ExMobil mob) throws Exception {
+			final DpLotacao lotaTitular, final ExMobil mob) {
 		if (mob.isGeral()) {
 			for (ExMobil m : mob.doc().getExMobilSet()) {
 				if (!m.isGeral() && isAtendente(titular, lotaTitular, m))
@@ -3941,6 +3941,7 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	 * <li>Móbil tem de ser geral</li>
 	 * <li>Móbil não pode ter sido eliminado</li>
 	 * <li>Móbil não pode estar cancelado</li>
+	 * <li>Quando o móbil é público, o titular deve ser atendente</li>
 	 * <li>Não pode haver configuração impeditiva</li>
 	 ** 
 	 * @param titular
@@ -3949,14 +3950,21 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean podeReclassificar(final DpPessoa titular,
-			final DpLotacao lotaTitular, final ExMobil mob) {
-
-		return (!mob.doc().isPendenteDeAssinatura() && mob.isGeral() && !mob.isCancelada()
-				&& !mob.isEliminado() && getConf().podePorConfiguracao(titular,
-				lotaTitular,
-				ExTipoMovimentacao.TIPO_MOVIMENTACAO_RECLASSIFICACAO,
-				CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR));
+	public boolean podeReclassificar(final DpPessoa titular, final DpLotacao lotaTitular, final ExMobil mob) {
+		try {
+			boolean isDocPublico = mob.getDoc().getExNivelAcesso().getIdNivelAcesso() == ExNivelAcesso.ID_PUBLICO;
+			
+			return (!mob.doc().isPendenteDeAssinatura() && 
+					mob.isGeral() && 
+					!mob.isCancelada() && 
+					!mob.isEliminado() && 
+					(!isDocPublico || isDocPublico && isAtendente(titular, lotaTitular, mob)) &&
+					getConf().podePorConfiguracao(titular, lotaTitular, 
+							ExTipoMovimentacao.TIPO_MOVIMENTACAO_RECLASSIFICACAO, 
+							CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR));
+		} catch (Exception ex) {
+			return false;
+		}
 	}
 
 	/**
