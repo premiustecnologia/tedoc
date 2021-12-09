@@ -18,6 +18,8 @@
  ******************************************************************************/
 package br.gov.jfrj.siga.relatorio;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -110,12 +112,13 @@ public class AcessoServicoRelatorio extends RelatorioTemplate {
 		parametros.put("titulo","SIGA");
 		parametros.put("subtitulo","Sistema de Gestão Administrativa");
 		parametros.put("secaoUsuario", "");
-		if ( Prop.get("/siga.relat.brasao") == null ) {
-			parametros.put("brasao","brasao.png");
+
+		final String pathBrasao = Prop.get("/siga.relat.brasao");
+		if (isEmpty(pathBrasao)) {
+			parametros.put("brasao", "brasao.png");
 		} else {
-			parametros.put("brasao",Prop.get("/siga.relat.brasao") );
+			parametros.put("brasao", pathBrasao);
 		}
-		//System.out.println("Brasao: " + parametros.get("brasao"));
 	}
 
 	@Override

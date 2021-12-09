@@ -109,7 +109,7 @@ public class RelatorioController extends SigaController {
 
 	@Get("app/gi/relatorio/emitir_permissao_usuario")
 	public Download emitirRelPermissaoUsuario(String idPessoa) throws Exception {
-		Map<String, String> listaParametros = new HashMap<String, String>();
+		final Map<String, String> listaParametros = new HashMap<>();
 		listaParametros.put("idPessoa", idPessoa);
 		PermissaoUsuarioRelatorio rel = new PermissaoUsuarioRelatorio(listaParametros);
 		extracted(rel);		

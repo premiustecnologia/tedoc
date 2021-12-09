@@ -18,6 +18,8 @@
  ******************************************************************************/
 package br.gov.jfrj.siga.relatorio;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -97,13 +99,13 @@ public class AlteracaoDireitosRelatorio extends RelatorioTemplate {
 		parametros.put("titulo","SIGA");
 		parametros.put("subtitulo","Sistema de Gestão Administrativa");
 		parametros.put("secaoUsuario", "");
-		if ( Prop.get("/siga.relat.brasao")  == null ) {
-			parametros.put("brasao","brasao.png");
+
+		final String pathBrasao = Prop.get("/siga.relat.brasao");
+		if (isEmpty(pathBrasao)) {
+			parametros.put("brasao", "brasao.png");
 		} else {
-			parametros.put("brasao", Prop.get("/siga.relat.brasao") );
+			parametros.put("brasao", pathBrasao);
 		}
-		//System.out.println("Brasao: " + parametros.get("brasao"));
-		// this.setPageSizeAndOrientation(Page.Page_A4_Landscape());
 	}
 
 	@Override

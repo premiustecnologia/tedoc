@@ -1,5 +1,8 @@
 package br.gov.jfrj.siga.relatorio;
 
+import static java.util.Collections.emptyList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.jboss.logging.Logger;
 
 import ar.com.fdvs.dj.domain.builders.DJBuilderException;
 import ar.com.fdvs.dj.domain.constants.Page;
@@ -27,8 +32,11 @@ import br.gov.jfrj.siga.dp.dao.CpDao;
  *
  */
 public class PermissaoUsuarioRelatorio extends RelatorioTemplate{
+
+	private static final Logger log = Logger.getLogger(PermissaoUsuarioRelatorio.class);
+
 	private DpPessoa dpPessoa;
-	public PermissaoUsuarioRelatorio(Map parametros) throws DJBuilderException {
+	public PermissaoUsuarioRelatorio(Map<String, String> parametros) throws DJBuilderException {
 		super(parametros);
 		if (parametros.get("idPessoa") == null){
 			throw new DJBuilderException("Parâmetro idPessoa não informado!");
@@ -42,12 +50,13 @@ public class PermissaoUsuarioRelatorio extends RelatorioTemplate{
 		parametros.put("titulo","SIGA");
 		parametros.put("subtitulo","Sistema de Gestão Administrativa");
 		parametros.put("secaoUsuario", "");
-		if ( Prop.get("/siga.relat.brasao")  == null ) {
-			parametros.put("brasao","brasao.png");
+
+		final String pathBrasao = Prop.get("/siga.relat.brasao");
+		if (isEmpty(pathBrasao)) {
+			parametros.put("brasao", "brasao.png");
 		} else {
-			parametros.put("brasao", Prop.get("/siga.relat.brasao") );
+			parametros.put("brasao", pathBrasao);
 		}
-		//System.out.println("Brasao: " + parametros.get("brasao"));
 	}
 	@Override
 	public AbstractRelatorioBaseBuilder configurarRelatorio()
@@ -72,10 +81,9 @@ public class PermissaoUsuarioRelatorio extends RelatorioTemplate{
 	 * Processa as configurações ativas para os vários ids da pessoa 
 	 * (mesmo id inicial que a pessoa selecionada)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public Collection processarDados() {
-		ArrayList<String> dados=new ArrayList<String>();
+	public Collection<String> processarDados() {
+		final List<String> dados = new ArrayList<>();
 		HashMap<CpServico, ConfiguracaoAcesso> achm = new HashMap<CpServico, ConfiguracaoAcesso>();
 		List<CpServico> l = dao().listarServicos();
 		try {
@@ -86,8 +94,8 @@ public class PermissaoUsuarioRelatorio extends RelatorioTemplate{
 							achm.put(ac.getServico(), ac);
 			}
 		} catch(Exception e) {
-			dados=new ArrayList<String>();
-			return dados;
+			log.warn("Não foi possível processar permissões", e);
+			return emptyList();
 		}
 		SortedSet<ConfiguracaoAcesso> acs = new TreeSet<ConfiguracaoAcesso>();
 		for (ConfiguracaoAcesso ac : achm.values()) {
@@ -98,7 +106,7 @@ public class PermissaoUsuarioRelatorio extends RelatorioTemplate{
 						.add(ac);
 			}
 		}
-		for (ConfiguracaoAcesso cfga : new ArrayList<ConfiguracaoAcesso>(acs) ) {
+		for (ConfiguracaoAcesso cfga : acs) {
 			varrerConfiguracao ( cfga,  dados );
 		}
 		return dados;
