@@ -405,13 +405,12 @@ public class ExDocumentoDTO {
 	public String getDtDocExtenso() {
 		final SimpleDateFormat df1 = new SimpleDateFormat("dd/MM/yyyy",new Locale("pt", "BR"));
 		Date minhaData = null;
-
 		try {
 			minhaData = df1.parse(getDtDocString());
 		} catch (final ParseException e) {
 			return "Ocorreu um erro na conversão da Data";
 		}
-		df1.applyPattern("'" + "Rio de Janeiro" + ",' dd 'de' MMMM 'de' yyyy.");
+		df1.applyPattern("dd 'de' MMMM 'de' yyyy");
 		return df1.format(minhaData);
 	}
 

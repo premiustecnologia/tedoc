@@ -279,11 +279,9 @@ public class ExMovimentacao extends AbstractExMovimentacao implements
 	}
 
 	/**
-	 * Retorna a data da movimentação por extenso. no formato "Rio de Janeiro,
-	 * 01 de fevereiro de 2010", por exemplo.
+	 * Retorna a data da movimentação por extenso. no formato "CIDADE, 01 de fevereiro de 2010", por exemplo.
 	 * 
-	 * @return Data da movimentação por extenso. no formato "Rio de Janeiro, 01
-	 *         de fevereiro de 2010", por exemplo.
+	 * @return Data da movimentação por extenso. no formato "CIDADE, 01 de fevereiro de 2010", por exemplo.
 	 */
 	public String getDtExtenso() {
         SimpleDateFormat df1 = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy.", new Locale("pt", "BR"));

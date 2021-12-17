@@ -660,8 +660,7 @@ public class ExDocumento extends AbstractExDocumento implements Serializable, Ca
 	}
 
 	/**
-	 * Retorna a data do documento por extenso. no formato "Rio de Janeiro, 01
-	 * de fevereiro de 2010", por exemplo.
+	 * Retorna a data do documento por extenso. no formato "CIDADE, 01 de fevereiro de 2010", por exemplo.
 	 */
 	public String getDtExtenso() {
 		return DocumentoUtil
