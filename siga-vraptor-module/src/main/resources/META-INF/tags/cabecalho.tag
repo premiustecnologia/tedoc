@@ -365,29 +365,32 @@ ${meta}
 						<span>
 							<strong>${f:resource('/siga.cabecalho.titulo')} ${siga_version}</strong>
 						</span>
-						<span class="badge bg-danger">
-							<c:choose>
-								<c:when test="${f:resource('/siga.ambiente') eq 'desenv'}">
-									DESENVOLVIMENTO
-								</c:when>
-								<c:when test="${f:resource('/siga.ambiente') eq 'treinamento'}">
-									TREINAMENTO
-								</c:when>
-								<c:when test="${f:resource('/siga.ambiente') eq 'configuracao'}">
-									CONFIGURACAÇÃO
-								</c:when>
-								<c:when test="${f:resource('/siga.ambiente') eq 'homolog'}">
-									HOMOLOGAÇÃO
-								</c:when>
-								<c:when test="${f:resource('/siga.ambiente') eq 'suporte'}">
-									SUPORTE
-								</c:when>
-								<c:when test="${f:resource('/siga.ambiente') eq 'prod'}"></c:when>
-								<c:otherwise>
-									Ambiente N/A
-								</c:otherwise>
-							</c:choose>
-						</span>
+						<c:if test="${f:resource('/siga.ambiente') ne 'prod'}">
+							<span class="badge bg-danger">
+								<c:choose>
+									<c:when test="${f:resource('/siga.ambiente') eq 'desenv'}">
+										DESENVOLVIMENTO
+									</c:when>
+									<c:when test="${f:resource('/siga.ambiente') eq 'treinamento'}">
+										TREINAMENTO
+									</c:when>
+									<c:when test="${f:resource('/siga.ambiente') eq 'configuracao'}">
+										CONFIGURACAÇÃO
+									</c:when>
+									<c:when test="${f:resource('/siga.ambiente') eq 'homolog'}">
+										HOMOLOGAÇÃO
+									</c:when>
+									<c:when test="${f:resource('/siga.ambiente') eq 'suporte'}">
+										SUPORTE
+									</c:when>
+									<c:otherwise>
+										<span style="text-transform: uppercase;">
+											AMBIENTE ${f:resource('/siga.ambiente')}
+										</span>
+									</c:otherwise>
+								</c:choose>
+							</span>
+						</c:if>
 					</div>
 				</div>
 				
