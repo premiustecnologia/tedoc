@@ -94,7 +94,7 @@ public abstract class ZipServico {
 			final Instant start = Instant.now();
 			final byte[] zipByteArray = FileUtils.readFileToByteArray(zipFile);
 			if (log.isDebugEnabled()) {
-				log.info("[ZIP FILE] [I/O READ] [EXECUTION TIME]:  " + Duration.between(start, Instant.now()).getSeconds() + " seconds | " + zipFile.getAbsolutePath());
+				log.debug("[ZIP FILE] [I/O READ] [EXECUTION TIME]:  " + Duration.between(start, Instant.now()).getSeconds() + " seconds | " + zipFile.getAbsolutePath());
 			}
 			return zipByteArray;
 		} catch (Exception e) {
@@ -120,7 +120,7 @@ public abstract class ZipServico {
 				final Instant start = Instant.now();
 				FileUtils.writeByteArrayToFile(zipFile, zipBytes, false);
 				if (log.isDebugEnabled()) {
-					log.info("[ZIP FILE] [I/O WRITE] [EXECUTION TIME]: " + Duration.between(start, Instant.now()).getSeconds() + " seconds | " + zipFile.getAbsolutePath());
+					log.debug("[ZIP FILE] [I/O WRITE] [EXECUTION TIME]: " + Duration.between(start, Instant.now()).getSeconds() + " seconds | " + zipFile.getAbsolutePath());
 				}
 			}
 		} catch (Exception e) {

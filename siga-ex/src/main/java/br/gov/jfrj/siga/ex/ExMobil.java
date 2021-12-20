@@ -19,6 +19,8 @@
 package br.gov.jfrj.siga.ex;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.stripToNull;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 
 import java.io.Serializable;
 import java.time.Year;
@@ -60,21 +62,36 @@ import br.gov.jfrj.siga.persistencia.ExMobilDaoFiltro;
 @Entity
 @BatchSize(size = 500)
 @Table(name = "siga.ex_mobil")
-public class ExMobil extends AbstractExMobil implements Serializable, Selecionavel, Comparable {
+public class ExMobil extends AbstractExMobil implements Serializable, Selecionavel, Comparable<ExMobil> {
 
+	private static final Logger log = Logger.getLogger(ExMobil.class);
+	private static final String ALFABETO_SEM_LETRAS_KVWXY = "ABCDEFGHIJLMNOPQRSTUZ";
 	private static final String PIPE = "|";
 	private static final Pattern PATTERN_TMP_DOC = Pattern.compile("^TMP-?([0-9]{1,10})");
-	private static final String PATTERN_DOC_FINALIZADO = "^(?<orgao>%s)?-?(?<especie>[A-Za-z]{3})?-?(?:(?<sonumero>[0-9]{1,8})|(?:(?<ano>\\d{4}?)/?)(?<numero>[0-9]{1,8})(?<subnumero>\\.?[0-9]{1,3})??)(?:(?<via>(?:-?[a-zA-Z]{1})|(?:-[0-9]{1,2}))|(?:-?V(?<volume>[0-9]{1,2})))?$";
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger log = Logger.getLogger(ExMobil.class);
-	
 	@Transient
 	private static boolean isMovimentacaoComOrigemPeloBotaoDeRestricaoDeAcesso = false;
+
+	private static String getRegexTemplateDocFinalizado(final Map<String, CpOrgaoUsuario> mapaOrgaoPorSiglasOuAcronimos) {
+		final String acronimos = mapaOrgaoPorSiglasOuAcronimos.keySet().stream()
+				.collect(Collectors.joining(PIPE, PIPE, EMPTY));
+
+		return "^"
+				+ "(?<orgao>" + acronimos + ")?-?"
+				+ "(?<especie>[A-Za-z]{3})?-?(?:"
+				+ "(?<sonumero>[0-9]{1,12})|(?:"
+				+ "(?<ano>\\d{4}?)/?)"
+				+ "(?<numero>[0-9]{1,12})"
+				+ "(?<subnumero>\\.?[0-9]{1,3})??)(?:"
+				+ "(?<via>(?:-?[a-zA-Z]{1})|(?:-[0-9]{1,2}))|(?:-?V"
+				+ "(?<volume>[0-9]{1,2}))"
+				+ ")?$";
+	}
 
 	/**
 	 * Retorna A penúltima movimentação não cancelada de um Mobil.
@@ -367,22 +384,23 @@ public class ExMobil extends AbstractExMobil implements Serializable, Selecionav
 	 * @param sigla
 	 */
 	public void setSigla(String sigla) {
-		sigla = sigla.trim().toUpperCase();
+		sigla = stripToNull(sigla);
 		if (sigla != null && sigla.contains(":")) {
+			sigla = upperCase(sigla);
 			sigla = sigla.split(":")[0];
 		}
 
-		Map<String, CpOrgaoUsuario> mapAcronimo = new TreeMap<String, CpOrgaoUsuario>();
-		for (CpOrgaoUsuario ou : ExDao.getInstance().listarOrgaosUsuarios()) {
-			mapAcronimo.put(ou.getAcronimoOrgaoUsu(), ou);
-			mapAcronimo.put(ou.getSiglaOrgaoUsu(), ou);
+		final List<CpOrgaoUsuario> orgaosUsuarios = ExDao.getInstance().listarOrgaosUsuarios();
+		final Map<String, CpOrgaoUsuario> mapaOrgaoPorSiglasOuAcronimos = new TreeMap<String, CpOrgaoUsuario>();
+		for (final CpOrgaoUsuario orgaoUsuario : orgaosUsuarios) {
+			mapaOrgaoPorSiglasOuAcronimos.put(orgaoUsuario.getAcronimoOrgaoUsu(), orgaoUsuario);
+			mapaOrgaoPorSiglasOuAcronimos.put(orgaoUsuario.getSiglaOrgaoUsu(), orgaoUsuario);
 		}
 
 		// Edson: testes unitários para esta regex:
 		// https://regex101.com/r/NJidBr/2
 		// Ao acessar, clique em "Switch to unit tests"
-		final String acronimos = mapAcronimo.keySet().stream().collect(Collectors.joining(PIPE, PIPE, EMPTY));
-		final Pattern patternDocFinalizado = Pattern.compile(String.format(PATTERN_DOC_FINALIZADO, acronimos));
+		final Pattern patternDocFinalizado = Pattern.compile(getRegexTemplateDocFinalizado(mapaOrgaoPorSiglasOuAcronimos));
 		final Matcher m2 = PATTERN_TMP_DOC.matcher(sigla);
 		final Matcher m1 = patternDocFinalizado.matcher(sigla);
 
@@ -409,8 +427,8 @@ public class ExMobil extends AbstractExMobil implements Serializable, Selecionav
 
 			if (orgao != null && orgao.length() > 0) {
 				try {
-					if (mapAcronimo.containsKey(orgao)) {
-						getExDocumento().setOrgaoUsuario(mapAcronimo.get(orgao));
+					if (mapaOrgaoPorSiglasOuAcronimos.containsKey(orgao)) {
+						getExDocumento().setOrgaoUsuario(mapaOrgaoPorSiglasOuAcronimos.get(orgao));
 					} else {
 						CpOrgaoUsuario orgaoUsuario = new CpOrgaoUsuario();
 						orgaoUsuario.setSiglaOrgaoUsu(orgao);
@@ -458,10 +476,11 @@ public class ExMobil extends AbstractExMobil implements Serializable, Selecionav
 				Integer vshNumSubdocumento = Integer.valueOf(vsNumSubdocumento);
 				if (vshNumSubdocumento != 0) {
 					try {
-						String siglaPai = (orgao == null ? (getExDocumento().getOrgaoUsuario() != null
-								? getExDocumento().getOrgaoUsuario().getAcronimoOrgaoUsu() : "") : orgao)
-								+ (especie == null ? "" : especie) + (ano == null ? "" : ano)
-								+ ((ano != null && numero != null) ? "/" : "") + (numero == null ? "" : numero);
+						String siglaPai = (orgao == null ? (getExDocumento().getOrgaoUsuario() != null ? getExDocumento().getOrgaoUsuario().getAcronimoOrgaoUsu() : EMPTY) : orgao)
+								+ (especie == null ? EMPTY : especie)
+								+ (ano == null ? EMPTY : ano)
+								+ ((ano != null && numero != null) ? "/" : EMPTY)
+								+ (numero == null ? EMPTY : numero);
 						ExMobilDaoFiltro flt = new ExMobilDaoFiltro();
 						flt.setSigla(siglaPai);
 						ExMobil mobPai = null;
@@ -484,13 +503,12 @@ public class ExMobil extends AbstractExMobil implements Serializable, Selecionav
 				if (vsNumVia.contains("-"))
 					vsNumVia = vsNumVia.substring(vsNumVia.indexOf("-") + 1);
 				Integer vshNumVia;
-				final String alfabeto = "ABCDEFGHIJLMNOPQRSTUZ";
-				final int vi = (alfabeto.indexOf(vsNumVia)) + 1;
+				final int vi = (ALFABETO_SEM_LETRAS_KVWXY.indexOf(vsNumVia)) + 1;
 				if (vi <= 0) {
 					vshNumVia = Integer.valueOf(vsNumVia);
 				}
 				else {
-					vshNumVia = (Integer.valueOf(vi).intValue());
+					vshNumVia = Integer.valueOf(vi);
 					setExTipoMobil(ExDao.getInstance().consultar(ExTipoMobil.TIPO_MOBIL_VIA, ExTipoMobil.class, false));
 				}
 				setNumSequencia(vshNumVia);
@@ -513,12 +531,15 @@ public class ExMobil extends AbstractExMobil implements Serializable, Selecionav
 	 * @return O código do documento mais o número da via ou do volume.
 	 */
 	public String getSigla() {
-		if (getExDocumento() == null)
+		if (getExDocumento() == null) {
 			return null;
-		if (getExTipoMobil() == null)
+		}
+		if (getExTipoMobil() == null) {
 			return null;
-		if ((isVia() || isVolume()) && (getNumSequencia() == null || getNumSequencia() == 0))
-			throw new Error("Via e Volume devem possuir número válido de sequencia.");
+		}
+		if ((isVia() || isVolume()) && (getNumSequencia() == null || getNumSequencia() == 0)) {
+			throw new RuntimeException("Via e Volume devem possuir número válido de sequencia.");
+		}
 		String terminacao = getTerminacaoSigla();
 		return getExDocumento().getSigla() + (terminacao.equals("") ? "" : "-") + getTerminacaoSigla();
 	}
@@ -1159,7 +1180,8 @@ public class ExMobil extends AbstractExMobil implements Serializable, Selecionav
 		return set;
 	}
 
-	public int compareTo(Object o) {
+	@Override
+	public int compareTo(ExMobil o) {
 		if (this == o)
 			return 0;
 		ExMobil other = (ExMobil) o;

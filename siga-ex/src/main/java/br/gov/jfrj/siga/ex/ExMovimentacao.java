@@ -23,6 +23,7 @@ package br.gov.jfrj.siga.ex;
 
 import static br.gov.jfrj.siga.ex.ExTipoMovimentacao.TIPO_MOVIMENTACAO_MARCACAO;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -333,32 +334,34 @@ public class ExMovimentacao extends AbstractExMovimentacao implements
 	 *         Descrição da Movimentação.
 	 */
 	public String getObs() {
-		String s = "";
+		final StringBuilder builder = new StringBuilder();
+
 		if (getOrgaoExterno() != null)
-			s = s + getOrgaoExterno().getNmOrgao();
+			builder.append(getOrgaoExterno().getNmOrgao());
 
 		if (getObsOrgao() != null) {
-			if (s.length() > 0)
-				s = s + "; ";
+			if (builder.length() > 0) {
+				builder.append("; ");
+			}
 
-			s = s + getObsOrgao().trim();
+			builder.append(getObsOrgao().trim());
 
-			final String provObs = getObsOrgao().trim();
-			if (!provObs.endsWith(".") && !provObs.endsWith("!")
-					&& !provObs.endsWith("?"))
-				s = s + ". ";
-			else
-				s = s + " ";
+			final String provObs = trimToEmpty(getObsOrgao());
+			if (!provObs.endsWith(".") && !provObs.endsWith("!") && !provObs.endsWith("?")) {
+				builder.append(". ");
+			} else {
+				builder.append(" ");
+			}
 		}
 
 		if (getExTipoDespacho() != null)
-			s = s + getExTipoDespacho().getDescTpDespacho();
+			builder.append(getExTipoDespacho().getDescTpDespacho());
 
 		if (getDescrMov() != null) {
-			s = s + getDescrMov();
+			builder.append(getDescrMov());
 		}
 
-		return s;
+		return builder.toString();
 	}
 
 	/**
@@ -1241,9 +1244,10 @@ public class ExMovimentacao extends AbstractExMovimentacao implements
 	}
 
 	private String assertAssinaturaDigitalValida(byte[] pdf, byte[] cms, Date dtMov) throws Exception {
-		if (dtMov == null || dtMov.before(Prop.getData("data.validar.assinatura.digital")))
+		if (dtMov == null || dtMov.before(Prop.getData("data.validar.assinatura.digital"))) {
 			return "OK.";
-		
+		}
+
 		// Chamar o BluC para validar a assinatura
 		//
 		BlucService bluc = Service.getBlucService();

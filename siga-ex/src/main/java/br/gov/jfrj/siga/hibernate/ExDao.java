@@ -27,6 +27,7 @@ package br.gov.jfrj.siga.hibernate;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -768,19 +769,18 @@ public class ExDao extends CpDao {
 		try {
 			if (flt.getIdDoc() != null
 					&& (flt.getIdTipoMobil() == null || flt.getIdTipoMobil() == ExTipoMobil.TIPO_MOBIL_GERAL)) {
-				final ExDocumento d = consultar(flt.getIdDoc(),
-						ExDocumento.class, false);
-				
+				final ExDocumento d = consultar(flt.getIdDoc(), ExDocumento.class, false);
 				try {
 					return d.getMobilGeral();
 				} catch (Exception e2) {
 					throw new AplicacaoException("Não foi possível localizar o documento");
 				}
-				
 			}
 
-			if (flt.getAnoEmissao() == null)
-				flt.setAnoEmissao(Long.valueOf(new Date().getYear()) + 1900);
+			if (flt.getAnoEmissao() == null) {
+				final Integer anoAtual = Year.now().getValue();
+				flt.setAnoEmissao(anoAtual.longValue());
+			}
 
 			if (flt.getNumSequencia() == null) {
 				final Query query = em().createNamedQuery(

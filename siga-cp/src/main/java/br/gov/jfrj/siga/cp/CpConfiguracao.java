@@ -28,11 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -45,6 +44,7 @@ import br.gov.jfrj.siga.sinc.lib.SincronizavelSuporte;
 
 @Entity
 @Table(name = "corporativo.cp_configuracao")
+@Cacheable
 @Inheritance(strategy = InheritanceType.JOINED)
 public class CpConfiguracao extends AbstractCpConfiguracao implements CpConvertableEntity {
 

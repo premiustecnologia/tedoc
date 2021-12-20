@@ -2199,7 +2199,9 @@ public class CpDao extends ModeloDao {
 			query.where(predicate);
 		}
 
-		return query.orderBy(qCpOrgaoUsuario.nmOrgaoUsu.asc()).fetch();
+		return query.setHint(QueryHints.CACHEABLE, true)
+				.setHint(QueryHints.CACHE_REGION, CACHE_QUERY_HOURS)
+				.orderBy(qCpOrgaoUsuario.nmOrgaoUsu.asc()).fetch();
 	}
 
 	@SuppressWarnings("unchecked")
