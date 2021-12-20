@@ -41,7 +41,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import br.gov.jfrj.siga.cp.model.HistoricoAuditavelSuporte;
 import br.gov.jfrj.siga.dp.CpOrgaoUsuario;
@@ -148,7 +147,7 @@ public abstract class AbstractCpConfiguracao extends HistoricoAuditavelSuporte
 	@NaoRecursivo
 	private CpServico cpServico;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_IDENTIDADE")
 	@NaoRecursivo
 	private CpIdentidade cpIdentidade;
