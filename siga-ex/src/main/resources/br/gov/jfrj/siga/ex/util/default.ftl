@@ -2162,13 +2162,13 @@ Pede deferimento.</span><br/><br/><br/>
 
 [#macro inicioSubscritor sigla subscritor]
     <!-- INICIO SUBSCRITOR [#nested/] -->
-	<a class="doc-sign" href="/siga/app/pessoa/exibir?sigla=${subscritor.sesbPessoa}${subscritor.matricula}">
+    <a class="doc-sign" href="/siga/app/pessoa/exibir?sigla=${subscritor.sesbPessoa}${subscritor.matricula}">
 [/#macro]
 
 
 [#macro fimSubscritor]
     <!-- FIM SUBSCRITOR [#nested/] -->
-	</a>
+    </a>
 [/#macro]
 
 [#macro cabecalhoCentralizadoPrimeiraPagina orgaoCabecalho=false]
