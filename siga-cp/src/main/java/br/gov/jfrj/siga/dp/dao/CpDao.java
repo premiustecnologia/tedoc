@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.persistence.FlushModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -1784,8 +1785,12 @@ public class CpDao extends ModeloDao {
 		final Query qry = em().createNamedQuery("consultarPorCpfMatricula");
 		qry.setParameter("cpfPessoa", cpf);
 		qry.setParameter("matricula", matricula);
-		final DpPessoa pes = (DpPessoa) qry.getSingleResult();
-		return pes;
+
+		try {
+			return (DpPessoa) qry.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	public Date consultarDataEHoraDoServidor() {

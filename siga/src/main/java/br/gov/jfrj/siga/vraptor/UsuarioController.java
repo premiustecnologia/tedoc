@@ -1,5 +1,8 @@
 package br.gov.jfrj.siga.vraptor;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -9,6 +12,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 
 import br.com.caelum.vraptor.Controller;
@@ -34,7 +38,7 @@ import br.gov.jfrj.siga.integracao.ldap.IntegracaoLdap;
 @Controller
 public class UsuarioController extends SigaController {
 
-	private static final Logger LOG = Logger.getLogger(UsuarioAction.class);
+	private static final Logger log = Logger.getLogger(UsuarioController.class);
 
 	/**
 	 * @deprecated CDI eyes only
@@ -256,7 +260,7 @@ public class UsuarioController extends SigaController {
 				try {
 					IntegracaoLdap.getInstancia().atualizarSenhaLdap(idNova, usuario.getSenhaNova());
 				} catch (Exception e) {
-					LOG.error("Não foi possível definir a sua senha de rede e e-mail. "
+					log.error("Não foi possível definir a sua senha de rede e e-mail. "
 							+ "Tente novamente em alguns instantes", e);
 				}
 			}
@@ -267,8 +271,8 @@ public class UsuarioController extends SigaController {
 					usuario.getMatricula(), usuario.getCpf(), usuario.getSenhaNova())) {
 				String mensagem = "Não foi possível alterar a senha!<br/>"
 						+ "1) As pessoas informadas não podem ser as mesmas;<br/>"
-						+ "2) Verifique se as matrículas e senhas foram informadas corretamente;<br/>"
-						+ "3) Verifique se as pessoas são da mesma lotação ou da lotação imediatamente superior em relação à matrícula que terá a senha alterada;<br/>";
+						+ "2) Verifique se os códigos de usuários e senhas foram informados corretamente;<br/>"
+						+ "3) Verifique se as pessoas são da mesma lotação ou da lotação imediatamente superior em relação ao código de usuário que terá a senha alterada;<br/>";
 				result.include("mensagem", mensagem);
 				result.redirectTo("/app/usuario/incluir_usuario");
 			} else {
@@ -355,8 +359,8 @@ public class UsuarioController extends SigaController {
 					usuario.getSenhaNova())) {
 				String mensagem = "Não foi possível alterar a senha!<br/>"
 						+ "1) As pessoas informadas não podem ser as mesmas;<br/>"
-						+ "2) Verifique se as matrículas e senhas foram informadas corretamente;<br/>"
-						+ "3) Verifique se as pessoas são da mesma lotação ou da lotação imediatamente superior em relação à matrícula que terá a senha alterada;<br/>";
+						+ "2) Verifique se os códigos de usuário e senhas foram informadas corretamente;<br/>"
+						+ "3) Verifique se as pessoas são da mesma lotação ou da lotação imediatamente superior em relação aos códigos de usuários que terão suas senhas alteradas;<br/>";
 				result.include("mensagemCabec", mensagem);
 				result.include("msgCabecClass", "alert-danger");
 				result.redirectTo("/app/usuario/esqueci_senha");
@@ -405,7 +409,7 @@ public class UsuarioController extends SigaController {
 		CpOrgaoUsuario orgaoFlt = new CpOrgaoUsuario();
 
 		if (matricula == null || matricula.length() < 2) {
-			LOG.warn("A matrícula informada é nula ou inválida");
+			log.warn("A matrícula informada é nula ou inválida");
 			throw new AplicacaoException("A matrícula informada é nula ou inválida.");
 		}
 
@@ -427,50 +431,56 @@ public class UsuarioController extends SigaController {
 			} else {
 				result.use(Results.page()).forwardTo("/WEB-INF/jsp/ajax_retorno.jsp");
 			}
-
 		} catch (Exception e) {
 			result.include("ajaxMsgErro", e.getMessage());
 			result.use(Results.page()).forwardTo("/WEB-INF/jsp/ajax_msg_erro.jsp");
 		}
 	}
 
-	private boolean isEmailValido(String matricula) {
+	private boolean isEmailValido(String usuario) {
 
-		CpOrgaoUsuario orgaoFlt = new CpOrgaoUsuario();
-
-		if (matricula == null || matricula.length() < 2) {
-			LOG.warn("A matrícula informada é nula ou inválida");
-			throw new AplicacaoException("A matrícula informada é nula ou inválida.");
+		if (isBlank(usuario)) {
+			final String message = "O usuário \"" + usuario + "\" é nulo ou inválido";
+			log.warn(message);
+			throw new AplicacaoException(message);
 		}
 
-		orgaoFlt.setSiglaOrgaoUsu(MatriculaUtils.getSiglaDoOrgaoDaMatricula(matricula));
-		CpOrgaoUsuario orgaoUsu = dao.consultarPorSigla(orgaoFlt);
+		final String siglaOrgao = MatriculaUtils.getSiglaDoOrgaoDaMatricula(usuario);
+		if (isBlank(siglaOrgao)) {
+			final String message = "Não foi possível extrair a sigla do órgão para o usuário \"" + usuario + "\"";
+			log.warn(message);
+			throw new AplicacaoException(message);
+		}
+
+		final CpOrgaoUsuario orgaoFlt = new CpOrgaoUsuario();
+		orgaoFlt.setSiglaOrgaoUsu(siglaOrgao);
+		final CpOrgaoUsuario orgaoUsu = dao.consultarPorSigla(orgaoFlt);
 
 		if (orgaoUsu == null) {
 			throw new AplicacaoException("O órgão informado é nulo ou inválido.");
 		}
 
-		List<DpPessoa> lstPessoa = null;
+		List<DpPessoa> pessoas = null;
 		try {
-			lstPessoa = dao.consultarPorMatriculaEOrgao(MatriculaUtils.getParteNumericaDaMatricula(matricula),
-					orgaoUsu.getId(), false, false);
+			final Long numerosMatricula = MatriculaUtils.getParteNumericaDaMatricula(usuario);
+			pessoas = dao.consultarPorMatriculaEOrgao(numerosMatricula, orgaoUsu.getId(), false, false);
 		} catch (Exception e) {
-			throw new AplicacaoException("Formato de matrícula inválida.", 9, e);
+			throw new AplicacaoException("Formato do código de usuário inválido.", 9, e);
 		}
 
-		if (lstPessoa.size() == 0){
+		if (CollectionUtils.isEmpty(pessoas)){
 			throw new AplicacaoException(SigaMessages.getMessage("usuario.erro.naocadastrado"));
 		}
 
-		if (lstPessoa != null && lstPessoa.size() == 1) {
-			DpPessoa p = lstPessoa.get(0);
-			if (p.getEmailPessoaAtual() != null && p.getEmailPessoaAtual().trim().length() > 0) {
+		if (pessoas.size() == 1) {
+			final DpPessoa pessoa = pessoas.get(0);
+			final String emailPessoa = pessoa.getEmailPessoaAtual();
+			if (isNotBlank(emailPessoa)) {
 				return true;
 			} else {
 				throw new AplicacaoException("Você ainda não possui um e-mail válido. Tente mais tarde.");
 			}
 		}
-
 		return false;
 	}
 
