@@ -154,6 +154,7 @@ ${meta}
 </c:choose>
 
 <link rel="stylesheet" href="/siga/css/style_siga.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="/siga/css/style_siga_print.css" type="text/css" media="print">
 <link rel="shortcut icon" href="${ico_siga}" />
 
 <c:catch>

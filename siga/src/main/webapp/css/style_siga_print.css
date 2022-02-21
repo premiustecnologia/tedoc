@@ -1,0 +1,13 @@
+@media print {
+
+	@page :footer {
+	}
+    @page :header {
+    }
+
+    #sigaModalAlerta,
+    #sigaModalSpinner {
+        display: none !important;
+    }
+
+}
