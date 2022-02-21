@@ -2160,15 +2160,15 @@ Pede deferimento.</span><br/><br/><br/>
     FIM TITULO -->
 [/#macro]
 
-[#macro inicioSubscritor sigla]
+[#macro inicioSubscritor sigla subscritor]
     <!-- INICIO SUBSCRITOR [#nested/] -->
-    <a class="doc-sign" href="/sigaex/app/validar-assinatura?pessoa=[#nested/]&sigla=${sigla}">
+	<a class="doc-sign" href="/siga/app/pessoa/exibir?sigla=${subscritor.sesbPessoa}${subscritor.matricula}">
 [/#macro]
 
 
 [#macro fimSubscritor]
     <!-- FIM SUBSCRITOR [#nested/] -->
-    </a>
+	</a>
 [/#macro]
 
 [#macro cabecalhoCentralizadoPrimeiraPagina orgaoCabecalho=false]
@@ -2430,7 +2430,7 @@ Pede deferimento.</span><br/><br/><br/>
 <p style="font-family: Arial; font-size: 11pt;" align="center">
 	<br/>
     [#if (doc.subscritor)??]
-       [@inicioSubscritor sigla=doc.codigoCompacto]${(doc.subscritor.idPessoa)!}[/@inicioSubscritor]
+       [@inicioSubscritor subscritor=doc.subscritor sigla=doc.codigoCompacto]${(doc.subscritor.idPessoa)!}[/@inicioSubscritor]
     [/#if]
     [#if (doc.nmSubscritor)??]
         ${doc.nmSubscritor}
@@ -2473,7 +2473,7 @@ Pede deferimento.</span><br/><br/><br/>
                 [#if (doc.mobilGeral.exMovimentacaoSet)??]
         [#list doc.mobilGeral.exMovimentacaoSet as mov]
                     [#if (mov.exTipoMovimentacao.idTpMov)! == 24]
-                        [@inicioSubscritor sigla=doc.codigoCompacto]${(mov.subscritor.idPessoa)}[/@inicioSubscritor]
+                        [@inicioSubscritor subscritor=mov.subscritor sigla=doc.codigoCompacto]${(mov.subscritor.idPessoa)}[/@inicioSubscritor]
                         <br/><br/><br/>
                         [#if mov.nmSubscritor??]
                             ${mov.nmSubscritor}
