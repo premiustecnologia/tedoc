@@ -19,15 +19,16 @@
 package br.gov.jfrj.siga.base;
 
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.apache.commons.lang.StringUtils.stripToNull;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.logging.Logger;
 
 public class Contexto {
@@ -72,34 +73,39 @@ public class Contexto {
 	}
 
 	public static String urlBase(HttpServletRequest request) {
-		return urlBase(request, true);
-	}
-
-	public static String urlBase(HttpServletRequest request, boolean considerarPropriedadeSigaBaseUrl) {
 		final String baseUrl = stripToNull(Prop.get("/siga.base.url"));
-		return urlBase(request, baseUrl, considerarPropriedadeSigaBaseUrl);
+		return urlBase(request, baseUrl);
 	}
 
-	public static String urlBasePdf(HttpServletRequest request, boolean considerarPropriedadeSigaBaseUrl) {
-		final String baseUrl = ofNullable(stripToNull(Prop.get("/siga.pdf.base.url")))
+	public static String urlBaseLocal() {
+		final String baseUrl = ofNullable(stripToNull(Prop.get("/siga.local.base.url")))
 				.orElseGet(() -> stripToNull(Prop.get("/siga.base.url")));
-		return urlBase(request, baseUrl, considerarPropriedadeSigaBaseUrl);
+		return urlBase(null, baseUrl);
 	}
 
-	public static String urlBase(HttpServletRequest request, String baseUrl, boolean considerarPropriedadeSigaBaseUrl) {
+	public static String urlBase(HttpServletRequest request, String baseUrl) {
 		String visibleSchema = null;
 		if (baseUrl != null) {
-			if (considerarPropriedadeSigaBaseUrl) {
+			if (request == null) {
 				return baseUrl;
 			}
+
+			// Utiliza o valor da propriedade "baseUrl" apenas para capturar o schema
 			visibleSchema = baseUrl.substring(0, baseUrl.indexOf("://"));
 		}
 		return baseUrlFrom(request, visibleSchema);
 	}
 
 	public static String baseUrlFrom(HttpServletRequest request, String visibleScheme) {
-		StringBuilder baseUrlBuilder = new StringBuilder()
-			.append(isNotEmpty(visibleScheme) ? visibleScheme : request.getScheme())
+		Objects.requireNonNull(request, () -> "É necessário informar uma HttpServletRequest para esta rotina");
+
+		final String schema = ofNullable(visibleScheme)
+				.map(StringUtils::stripToNull)
+				.filter(Objects::nonNull)
+				.orElseGet(() -> request.getScheme());
+
+		final StringBuilder baseUrlBuilder = new StringBuilder()
+			.append(schema)
 			.append("://")
 			.append(request.getServerName());
 

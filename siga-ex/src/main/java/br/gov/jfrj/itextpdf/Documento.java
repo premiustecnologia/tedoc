@@ -18,7 +18,6 @@
  ******************************************************************************/
 package br.gov.jfrj.itextpdf;
 
-import static br.gov.jfrj.siga.base.Prop.isAmbienteReal;
 import static br.gov.jfrj.siga.ex.util.ProcessadorHtml.novoHtmlPersonalizado;
 
 import java.io.BufferedWriter;
@@ -670,12 +669,13 @@ public class Documento {
 
 	public static String realPath() {
 
-		RequestInfo ri = CurrentRequest.get();		
-		String realPath = Contexto.urlBasePdf(ri.getRequest(), false) + ri.getRequest().getContextPath();
-		
-		if (realPath.endsWith("/siga-le"))
+		RequestInfo ri = CurrentRequest.get();
+		String realPath = Contexto.urlBaseLocal() + ri.getRequest().getContextPath();
+
+		if (realPath.endsWith("/siga-le")) {
 			realPath = realPath.replace("/siga-le", "/sigaex");
-		
+		}
+
 		return realPath;
 	}
 

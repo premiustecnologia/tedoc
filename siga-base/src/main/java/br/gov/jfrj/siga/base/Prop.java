@@ -81,7 +81,7 @@ public class Prop {
 
 	public static void defineGlobalProperties() {
 		provider.addPublicProperty("/siga.base.url", DEFAULT_URL);
-		provider.addPublicProperty("/siga.pdf.base.url", DEFAULT_URL);
+		provider.addPublicProperty("/siga.local.base.url", DEFAULT_URL);
 
 		String base = get("/siga.base.url");
 

@@ -29,7 +29,6 @@ import br.gov.jfrj.siga.base.Data;
 import br.gov.jfrj.siga.base.Prop;
 import br.gov.jfrj.siga.base.SigaHTTP;
 import br.gov.jfrj.siga.cp.CpAcesso;
-import br.gov.jfrj.siga.cp.bl.Cp;
 import br.gov.jfrj.siga.dp.CpOrgaoUsuario;
 import br.gov.jfrj.siga.dp.DpLotacao;
 import br.gov.jfrj.siga.dp.DpPessoa;
@@ -162,7 +161,7 @@ public class PrincipalController extends SigaController {
 		if (incluirMatricula == null)
 			incluirMatricula = "";
 
-		String urlBase = Contexto.urlBase(request);
+		final String urlBase = Contexto.urlBaseLocal();
 
 		List<String> lurls = new ArrayList<>();
 
