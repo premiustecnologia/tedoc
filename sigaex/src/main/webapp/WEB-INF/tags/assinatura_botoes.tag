@@ -76,7 +76,7 @@
 				</div>
 			</c:if>
 			
-			<c:if test="${f:podeUtilizarServicoPorConfiguracao(titular,lotaTitular,'SIGA;DOC;ASS')}">
+			<c:if test="false">
 				<div class="custom-control custom-radio">
 					<input class="custom-control-input" type="radio" 
 						accesskey="d" name="radioProviderAssinatura" id="ad_certificado_0" 

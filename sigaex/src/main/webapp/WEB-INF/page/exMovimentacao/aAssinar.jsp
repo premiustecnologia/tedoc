@@ -125,7 +125,7 @@
 							
 							<c:set var="podeAssinarComSenha" value="${assinando and f:podeAssinarComSenha(titular,lotaTitular,doc.mobilGeral) }" />
 							<c:set var="podeAutenticarComSenha" value="${autenticando and f:podeAutenticarComSenha(titular,lotaTitular,doc.mobilGeral) }" />
-							<c:set var="defaultAssinarComSenha" value="${f:deveAssinarComSenha(titular,lotaTitular,doc.mobilGeral) }" />
+							<c:set var="defaultAssinarComSenha" value="true" />
 							<c:set var="defaultAutenticarComSenha" value="${f:deveAutenticarComSenha(titular,lotaTitular,doc.mobilGeral) }" />
 							
 							<c:set var="podeUtilizarSegundoFatorPin" value="${f:podeUtilizarSegundoFatorPin(cadastrante,cadastrante.lotacao)}" />
