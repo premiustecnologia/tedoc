@@ -115,6 +115,9 @@ public class ExMesa2Controller extends ExController {
 		List<Mesa2.GrupoItem> gruposMesa = new ArrayList<Mesa2.GrupoItem>();
 		result.include("ehPublicoExterno", AcessoConsulta.ehPublicoExterno(getTitular()));
 		List<Integer> marcasAIgnorar = new ArrayList<Integer>();
+		
+		if (!trazerCancelados) 
+			marcasAIgnorar.add((int) CpMarcadorEnum.CANCELADO.getId());
 
 		if (SigaMessages.isSigaSP()) { 
 			if (!trazerArquivados) {
@@ -122,8 +125,6 @@ public class ExMesa2Controller extends ExController {
 				marcasAIgnorar.add((int) CpMarcadorEnum.ARQUIVADO_INTERMEDIARIO.getId()); 
 				marcasAIgnorar.add((int) CpMarcadorEnum.ARQUIVADO_PERMANENTE.getId()); 
 			}
-			if (!trazerCancelados) 
-				marcasAIgnorar.add((int) CpMarcadorEnum.CANCELADO.getId());
 		}
 		try {
 			if (parms != null) {
