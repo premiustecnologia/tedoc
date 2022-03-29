@@ -26,6 +26,7 @@ public class PBDocNewDocumentPage extends PBDocSeleniumController {
 	private final Query buttonOrg = new Query().defaultLocator(By.id("orgaoExternoDestinatarioSelButton"));
 	private final Query buttonRecord = new Query().defaultLocator(By.cssSelector(".btn-primary > u"));
 	private final Query checkboxSubstitute = new Query().defaultLocator(By.name("exDocumentoDTO.substituicao"));
+	private final Query checkboxPersonalized = new Query().defaultLocator(By.name("exDocumentoDTO.personalizacao"));
 	private final Query dropdownAccess = new Query().defaultLocator(By.name("exDocumentoDTO.nivelAcesso"));
 	private final Query dropdownModel = new Query().defaultLocator(By.cssSelector(".selected-label"));
 	private final Query dropdownReceiver = new Query().defaultLocator(By.name("exDocumentoDTO.tipoDestinatario"));
@@ -34,6 +35,10 @@ public class PBDocNewDocumentPage extends PBDocSeleniumController {
 	//private final Query inputReceiver = new Query().defaultLocator(By.name("exDocumentoDTO.nmDestinatario"));
 	private final Query inputReceiver = new Query().defaultLocator(By.id("formulario_exDocumentoDTO.destinatarioSel_sigla"));
 	private final Query inputReceiverInitials = new Query().defaultLocator(By.name("exDocumentoDTO.destinatarioSel.sigla"));
+	private final Query inputFunction = new Query().defaultLocator(By.id("personalizarFuncao"));
+	private final Query inputUnit = new Query().defaultLocator(By.id("personalizarUnidade"));
+	private final Query inputLocale = new Query().defaultLocator(By.id("personalizarLocalidade"));
+	private final Query inputName = new Query().defaultLocator(By.id("personalizarNome"));
 	private final Query textareaDescription = new Query().defaultLocator(By.id("descrDocumento"));
 
 	public PBDocNewDocumentPage() throws Exception {
@@ -108,6 +113,19 @@ public class PBDocNewDocumentPage extends PBDocSeleniumController {
 
 	public PBDocNewDocumentPage clickSubstitute() {
 		checkboxSubstitute.findWebElement().click();
+		return this;
+	}
+
+	public PBDocNewDocumentPage clickPersonalized() {
+		checkboxPersonalized.findWebElement().click();
+		return fillPersonalized();
+	}
+
+	public PBDocNewDocumentPage fillPersonalized() {
+		inputFunction.findWebElement().sendKeys("Função Teste Automatizado");
+		inputLocale.findWebElement().sendKeys("Localidade Teste Automatizado");
+		inputUnit.findWebElement().sendKeys("Cidade Teste Automatizado");
+		inputName.findWebElement().sendKeys("Nome Teste Automatizado");
 		return this;
 	}
 

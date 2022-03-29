@@ -34,7 +34,7 @@ public class PBDocSignDocumentPage {
 
 	public PBDocSignDocumentPage signDocument() throws Exception {
 		WebDriver driver = DriverBase.getDriver();
-		passwordRadio.findWebElement().click();//Clicar na opção usando senha no radio (Opção não default)
+		//passwordRadio.findWebElement().click();//Clicar na opção usando senha no radio (Opção não default)
 		signButton.findWebElement().click();
 		{
 			WebElement element = signButton.findWebElement();

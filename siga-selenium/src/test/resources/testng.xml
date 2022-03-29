@@ -3,13 +3,10 @@
 <suite name="Selenium Automation" parallel="false">
 	<test name="Test1">
 		<classes>
-			<!--
 			<class name="br.gov.pb.codata.selenium.tests.LoginPBDocIT"/>
-			-->
+			<class name="br.gov.pb.codata.selenium.tests.MesaVirtualIT"/>
 			<class name="br.gov.pb.codata.selenium.tests.NewDocumentIT"/>
-			<!--
-			<class name="br.gov.pb.codata.selenium.tests.CadastroOrgaoIT"/>
-			-->
+			<!-- <class name="br.gov.pb.codata.selenium.tests.CadastroOrgaoIT"/> -->
 
 			<!-- Testes rodando -->
 			<!--
@@ -37,7 +34,7 @@
 			<class name="br.gov.pb.codata.selenium.tests.IdentidadesIT"/> 
 			<class name="br.gov.pb.codata.selenium.tests.IncluirdocumentoIT"/> 
 			<class name="br.gov.pb.codata.selenium.tests.InclusaoCossignatarioIT"/>
-			<class name="br.gov.pb.codata.selenium.tests.MesaVirtualIT"/> 
+			 
 			<class name="br.gov.pb.codata.selenium.tests.PaginaInicialIT"/> 
 			<class name="br.gov.pb.codata.selenium.tests.PrimeiroAcessoIT"/> 
 			<class name="br.gov.pb.codata.selenium.tests.TransferirEmLoteIT"/> 

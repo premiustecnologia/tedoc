@@ -15,6 +15,7 @@ public final class Dictionary {
 	public static final String CODATA = "CODATA - CIA DE PROCESSAMENTO DE DADOS DA PARAIBA";
 	public static final String ORGAO_TESTE = "ORGAO TESTE ZZZ";
 	public static final String DEFINIR_ACOMPANHAMENTO = "Definir Acompanhamento";
+	public static final String EXCLUIR = "Excluir";
 	public static final String ERRO_GERAL = "PBDoc - Erro Geral";
 	public static final String EXTERNO = "Externo";
 	public static final String FINALIZAR = "Finalizar";
@@ -30,4 +31,8 @@ public final class Dictionary {
 	public static final String ORGAO_INTEGRADO = "Órgão Integrado";
 	public static final String PUBLICO = "Público";
 	public static final String USUARIO = "Usuário";
+	public static final String AUDITAR = "Auditar";
+	public static final String TRAMITAR = "Tramitar";
+	public static final String CPF_USUARIO = "CPF ou Usuário";
+
 }
