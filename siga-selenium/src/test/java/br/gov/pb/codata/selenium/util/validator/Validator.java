@@ -1,7 +1,9 @@
 package br.gov.pb.codata.selenium.util.validator;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -40,6 +42,14 @@ public class Validator extends DriverBase {
 	
 	public ExpectedCondition<Boolean> pageURLContains(String url){
 		return driver -> driver.getCurrentUrl().contains(url);
+	}
+	
+	public void acceptAlert() throws Exception {
+		getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		Alert alert = getDriver().switchTo().alert();
+		String alertText = alert.getText();
+		System.out.println("Alert data: " + alertText);
+		alert.accept();
 	}
 
 }

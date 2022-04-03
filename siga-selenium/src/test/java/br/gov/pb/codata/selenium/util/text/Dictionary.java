@@ -15,12 +15,14 @@ public final class Dictionary {
 	public static final String CODATA = "CODATA - CIA DE PROCESSAMENTO DE DADOS DA PARAIBA";
 	public static final String ORGAO_TESTE = "ORGAO TESTE ZZZ";
 	public static final String DEFINIR_ACOMPANHAMENTO = "Definir Acompanhamento";
+	public static final String DUPLICAR = "Duplicar";
 	public static final String EXCLUIR = "Excluir";
 	public static final String ERRO_GERAL = "PBDoc - Erro Geral";
 	public static final String EXTERNO = "Externo";
 	public static final String FINALIZAR = "Finalizar";
 	public static final String FOLHA_DE_ROSTO = "Interno Folha de Rosto";
 	public static final String GEDES = "GEDES";
+	public static final String GRAVAR = "Gravar";
 	public static final String INTERESSADO = "Interessado";
 	public static final String INTERNO_PRODUZIDO = "Interno Produzido";
 	public static final String LIMITADO_DIVISAO_DIVISAO = "Limitado de divisão para divisão";

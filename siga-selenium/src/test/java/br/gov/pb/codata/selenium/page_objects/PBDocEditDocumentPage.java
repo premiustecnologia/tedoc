@@ -2,10 +2,7 @@ package br.gov.pb.codata.selenium.page_objects;
 
 import static com.lazerycode.selenium.util.AssignDriver.initQueryObjects;
 
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.lazerycode.selenium.util.Query;
@@ -29,6 +26,8 @@ public class PBDocEditDocumentPage extends DriverBase {
 	private final Query linkHistoryDocument = new Query().defaultLocator(By.xpath("//*[@id='hist-oacute-rico']"));
 	private final Query linkTramitDocument = new Query().defaultLocator(By.xpath("//*[@id='tramitar']"));
 	private final Query linkExcludeDocument = new Query().defaultLocator(By.xpath("//*[@id='excluir']"));
+	private final Query linkDuplicateDocument = new Query().defaultLocator(By.xpath("//*[@id='duplicar']"));
+	private final Query docTitleH2 = new Query().defaultLocator(By.xpath("//*[@id=\"page\"]/div[1]/div/h2"));
 
 	public PBDocEditDocumentPage() throws Exception {
 		initQueryObjects(this, DriverBase.getDriver());
@@ -67,23 +66,42 @@ public class PBDocEditDocumentPage extends DriverBase {
 			tramitDocumentIt.tramitDocument();
 			break;
 		case Dictionary.EXCLUIR:
+			linkExcludeDocument.findWebElement().click();
 			try {
-				linkExcludeDocument.findWebElement().click();
-				PBDocSeleniumController.checkNoError("EditDocumentIt.edit:" + action);
-			} catch (UnhandledAlertException f) {
-				try {
-					wait.wait(100);
-					Alert alert = getDriver().switchTo().alert();
-					String alertText = alert.getText();
-					System.out.println("Alert data: " + alertText);
-					alert.accept();
-				} catch (NoAlertPresentException e) {
-					e.printStackTrace();
-				}
+				validator.acceptAlert();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new PBDocGenericError("Falha ao tentar excluir documento");
 			}
+			PBDocSeleniumController.checkNoError("EditDocumentIt.edit:" + action);
+			break;
+		case Dictionary.DUPLICAR:
+			duplicar();
 			break;
 		default:
 			break;
+		}
+	}
+	
+	private String getDocTitle() {
+		return docTitleH2.findWebElement().getText();
+	}
+	
+	private void duplicar() throws Exception {
+		String docOrigial = getDocTitle();
+		System.out.println("ORiginal: " + docOrigial);
+		String docDuplicado = "TMP-" + (Integer.parseInt(docOrigial.substring(4)) + 1);
+		System.out.println("ORiginal: " + docDuplicado);
+		linkDuplicateDocument.findWebElement().click();
+		try {
+			validator.acceptAlert();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new PBDocGenericError("Falha ao tentar duplicar documento");
+		}
+		PBDocSeleniumController.checkNoError("EditDocumentIt.edit: Duplicar");
+		if(!docDuplicado.equals(getDocTitle())) {
+			throw new PBDocGenericError("Falha ao tentar duplicar documento. Titulos dos documentos fora do padrão");
 		}
 	}
 }
