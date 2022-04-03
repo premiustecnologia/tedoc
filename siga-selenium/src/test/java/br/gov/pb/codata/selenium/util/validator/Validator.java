@@ -37,5 +37,9 @@ public class Validator extends DriverBase {
 	    }
 	    driver.switchTo().window(originalHandle);
 	}
+	
+	public ExpectedCondition<Boolean> pageURLContains(String url){
+		return driver -> driver.getCurrentUrl().contains(url);
+	}
 
 }

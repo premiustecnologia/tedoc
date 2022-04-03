@@ -23,7 +23,7 @@ public class NewDocumentIT extends DriverBase {
 	private String classificationNumber = "01.01.01.02";
 
 	//@Test
-	public void duplicateAndexcludeDocument() throws Exception {
+	public void duplicateAndExcludeDocument() throws Exception {
 		String model = "DespachoDespacho";
 		PBDocSeleniumController.start();
 		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();
@@ -42,8 +42,30 @@ public class NewDocumentIT extends DriverBase {
 		editDocument.edit(Dictionary.EXCLUIR);
 	}
 	
-	//@Test
+	@Test
 	public void newDispatchDocument() throws Exception {
+		String model = "DespachoDespacho";
+		PBDocSeleniumController.start();
+		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();
+		mesaVirtualPage.clicarCriarNovo();
+		PBDocNewDocumentPage newDocumentPage = new PBDocNewDocumentPage();
+		newDocumentPage.selectModel(model);
+		newDocumentPage.selectAccess(Dictionary.LIMITADO_PESSOAS);
+		newDocumentPage.selectReceiver(Dictionary.USUARIO);
+		newDocumentPage.clickPersonalized();
+		newDocumentPage.informReceiverInitials(usuario2);
+		newDocumentPage.selectClassification(classificationNumber, 1);
+		newDocumentPage.fillDescriptionTextarea("Teste Selenium. Texto de descrição para despacho.");
+		newDocumentPage.recordDocument();
+		PBDocSeleniumController.checkNoError("NewDocumentIT.newDispatchDocument");
+		EditDocumentIt editDocument = new EditDocumentIt();
+		editDocument.edit(Dictionary.FINALIZAR);
+		editDocument.edit(Dictionary.ASSINAR);
+		editDocument.edit(Dictionary.AUDITAR);
+	}
+	
+	//@Test
+	public void newDispatchDocument2() throws Exception {
 		String model = "DespachoDespacho";
 		PBDocSeleniumController.start();
 		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();

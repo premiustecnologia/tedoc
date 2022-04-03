@@ -3,8 +3,8 @@
 <suite name="Selenium Automation" parallel="false">
 	<test name="Test1">
 		<classes>
-			<class name="br.gov.pb.codata.selenium.tests.LoginPBDocIT"/>
-			<class name="br.gov.pb.codata.selenium.tests.MesaVirtualIT"/>
+			<!-- <class name="br.gov.pb.codata.selenium.tests.LoginPBDocIT"/> -->
+			<!-- <class name="br.gov.pb.codata.selenium.tests.MesaVirtualIT"/> -->
 			<class name="br.gov.pb.codata.selenium.tests.NewDocumentIT"/>
 			<!-- <class name="br.gov.pb.codata.selenium.tests.CadastroOrgaoIT"/> -->
 

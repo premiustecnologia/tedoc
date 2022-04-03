@@ -6,7 +6,6 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.UnhandledAlertException;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.lazerycode.selenium.util.Query;
@@ -19,9 +18,11 @@ import br.gov.pb.codata.selenium.tests.SignDocumentIT;
 import br.gov.pb.codata.selenium.tests.TramitDocumentIt;
 import br.gov.pb.codata.selenium.tests.exceptions.PBDocGenericError;
 import br.gov.pb.codata.selenium.util.text.Dictionary;
+import br.gov.pb.codata.selenium.util.validator.Validator;
 
-public class PBDocEditDocumentPage extends DriverBase{
+public class PBDocEditDocumentPage extends DriverBase {
 
+	private Validator validator = new Validator();
 	private final Query linkSignDocument = new Query().defaultLocator(By.xpath("//*[@id='assinar']"));
 	private final Query linkFinishDocument = new Query().defaultLocator(By.xpath("//*[@id='finalizar']"));
 	private final Query linkAttachDocument = new Query().defaultLocator(By.xpath("//*[@id='anexar']"));
@@ -34,6 +35,7 @@ public class PBDocEditDocumentPage extends DriverBase{
 	}
 
 	public void doAction(String action) throws PBDocGenericError, Exception {
+		WebDriverWait wait = new WebDriverWait(getDriver(), 5, 100);
 		switch (action) {
 		case Dictionary.ASSINAR:
 			linkSignDocument.findWebElement().click();
@@ -54,6 +56,7 @@ public class PBDocEditDocumentPage extends DriverBase{
 		case Dictionary.AUDITAR:
 			linkHistoryDocument.findWebElement().click();
 			PBDocSeleniumController.checkNoError("EditDocumentIt.edit:" + action);
+			wait.until(validator.pageTitleStartsWith("PBdoc - Documento"));
 			HistoryDocumentIt historyDocumentIt = new HistoryDocumentIt();
 			historyDocumentIt.auditDocument();
 			break;
@@ -68,16 +71,15 @@ public class PBDocEditDocumentPage extends DriverBase{
 				linkExcludeDocument.findWebElement().click();
 				PBDocSeleniumController.checkNoError("EditDocumentIt.edit:" + action);
 			} catch (UnhandledAlertException f) {
-			    try {
-			    	WebDriverWait wait = new WebDriverWait(getDriver(), 5, 100);
-			    	wait.wait(100);
-			    	Alert alert = getDriver().switchTo().alert();
-			        String alertText = alert.getText();
-			        System.out.println("Alert data: " + alertText);
-			        alert.accept();
-			    } catch (NoAlertPresentException e) {
-			        e.printStackTrace();
-			    }
+				try {
+					wait.wait(100);
+					Alert alert = getDriver().switchTo().alert();
+					String alertText = alert.getText();
+					System.out.println("Alert data: " + alertText);
+					alert.accept();
+				} catch (NoAlertPresentException e) {
+					e.printStackTrace();
+				}
 			}
 			break;
 		default:
