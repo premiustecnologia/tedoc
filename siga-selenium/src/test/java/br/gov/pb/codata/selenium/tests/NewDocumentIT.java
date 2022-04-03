@@ -20,7 +20,7 @@ public class NewDocumentIT extends DriverBase {
 	private String usuario2 = System.getenv("USUARIO2");
 	private String classificationNumber = "01.01.01.02";
 
-	// @Test
+	@Test
 	public void newDispatchDocument() throws Exception {
 		String model = "DespachoDespacho";
 		PBDocSeleniumController.start();
@@ -37,12 +37,15 @@ public class NewDocumentIT extends DriverBase {
 		newDocumentPage.recordDocument();
 		PBDocSeleniumController.checkNoError("NewDocumentIT.newDispatchDocument");
 		EditDocumentIt editDocument = new EditDocumentIt();
+		//editDocument.edit(Dictionary.TRAMITAR);
 		editDocument.edit(Dictionary.FINALIZAR);
-		editDocument.edit(Dictionary.ASSINAR);
-		editDocument.edit(Dictionary.AUDITAR);
+		editDocument.edit(Dictionary.DEFINIR_MARCADOR);
+		//editDocument.edit(Dictionary.ASSINAR);
+		//editDocument.edit(Dictionary.AUDITAR);
+		//editDocument.edit(Dictionary.ANEXAR);
 	}
 
-	@Test
+	//@Test
 	public void newDispatchDocument2() throws Exception {
 		String model = "DespachoDespacho";
 		PBDocSeleniumController.start();
@@ -60,30 +63,6 @@ public class NewDocumentIT extends DriverBase {
 		PBDocSeleniumController.checkNoError("NewDocumentIT.newDispatchDocument");
 		EditDocumentIt editDocument = new EditDocumentIt();
 		editDocument.edit(Dictionary.DUPLICAR);
-	}
-
-	// @Test
-	public void newDispatchDocument3() throws Exception {
-		String model = "DespachoDespacho";
-		PBDocSeleniumController.start();
-		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();
-		mesaVirtualPage.clicarCriarNovo();
-		PBDocNewDocumentPage newDocumentPage = new PBDocNewDocumentPage();
-		newDocumentPage.selectModel(model);
-		newDocumentPage.selectAccess(Dictionary.LIMITADO_PESSOAS);
-		newDocumentPage.selectReceiver(Dictionary.USUARIO);
-		newDocumentPage.clickPersonalized();
-		newDocumentPage.informReceiverInitials(usuario2);
-		newDocumentPage.selectClassification(classificationNumber, 1);
-		newDocumentPage.fillDescriptionTextarea("Teste Selenium. Texto de descrição para despacho.");
-		newDocumentPage.recordDocument();
-		PBDocSeleniumController.checkNoError("NewDocumentIT.newDispatchDocument");
-		EditDocumentIt editDocument = new EditDocumentIt();
-		editDocument.edit(Dictionary.AUDITAR);
-		editDocument.edit(Dictionary.TRAMITAR);
-		editDocument.edit(Dictionary.FINALIZAR);
-		editDocument.edit(Dictionary.ANEXAR);
-		editDocument.edit(Dictionary.ASSINAR);
 	}
 
 	// @Test
