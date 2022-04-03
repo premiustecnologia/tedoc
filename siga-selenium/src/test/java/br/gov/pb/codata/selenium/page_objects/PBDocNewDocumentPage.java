@@ -41,6 +41,7 @@ public class PBDocNewDocumentPage extends PBDocSeleniumController {
 	private final Query inputName = new Query().defaultLocator(By.id("personalizarNome"));
 	private final Query textareaDescription = new Query().defaultLocator(By.id("descrDocumento"));
 	private final Query linkSaveDocument = new Query().defaultLocator(By.xpath("//*[@id='btnGravar']"));
+	private final Query buttonFinalizarAssinar = new Query().defaultLocator(By.xpath("//*[@id=\"frm\"]/div[11]/div/button[2]"));
 
 	public PBDocNewDocumentPage() throws Exception {
 		initQueryObjects(this, DriverBase.getDriver());
@@ -208,6 +209,11 @@ public class PBDocNewDocumentPage extends PBDocSeleniumController {
 	
 	public PBDocNewDocumentPage saveDocument() {
 		linkSaveDocument.findWebElement().click();
+		return this;
+	}
+	
+	public PBDocNewDocumentPage finalizarAssinar() {
+		buttonFinalizarAssinar.findWebElement().click();
 		return this;
 	}
 

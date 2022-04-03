@@ -24,6 +24,7 @@ public final class Dictionary {
 	public static final String FOLHA_DE_ROSTO = "Interno Folha de Rosto";
 	public static final String GEDES = "GEDES";
 	public static final String GRAVAR = "Gravar";
+	public static final String INCLUIR_DOCUMENTO = "Incluir Documento";
 	public static final String INTERESSADO = "Interessado";
 	public static final String INTERNO_PRODUZIDO = "Interno Produzido";
 	public static final String LIMITADO_DIVISAO_DIVISAO = "Limitado de divisão para divisão";

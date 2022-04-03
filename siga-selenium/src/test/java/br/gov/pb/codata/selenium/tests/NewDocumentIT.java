@@ -40,6 +40,7 @@ public class NewDocumentIT extends DriverBase {
 		//editDocument.edit(Dictionary.TRAMITAR);
 		editDocument.edit(Dictionary.FINALIZAR);
 		editDocument.edit(Dictionary.DEFINIR_MARCADOR);
+		editDocument.edit(Dictionary.INCLUIR_DOCUMENTO);
 		//editDocument.edit(Dictionary.ASSINAR);
 		//editDocument.edit(Dictionary.AUDITAR);
 		//editDocument.edit(Dictionary.ANEXAR);

@@ -32,6 +32,7 @@ public class PBDocEditDocumentPage extends DriverBase {
 	private final Query linkExcludeDocument = new Query().defaultLocator(By.xpath("//*[@id='excluir']"));
 	private final Query linkDuplicateDocument = new Query().defaultLocator(By.xpath("//*[@id='duplicar']"));
 	private final Query linkDefinirMarcador = new Query().defaultLocator(By.xpath("//*[@id='definir-marcador']"));
+	private final Query linkIncluirDocumento = new Query().defaultLocator(By.xpath("//*[@id='incluir-documento']"));
 	private final Query docTitleH2 = new Query().defaultLocator(By.xpath("//*[@id=\"page\"]/div[1]/div/h2"));
 
 	public PBDocEditDocumentPage() throws Exception {
@@ -79,6 +80,9 @@ public class PBDocEditDocumentPage extends DriverBase {
 		case Dictionary.DEFINIR_MARCADOR:
 			definirMarcador();
 			break;
+		case Dictionary.INCLUIR_DOCUMENTO:
+			incluirDocumento();
+			break;
 		default:
 			break;
 		}
@@ -100,10 +104,10 @@ public class PBDocEditDocumentPage extends DriverBase {
 			e.printStackTrace();
 			throw new PBDocGenericError("Falha ao tentar duplicar documento");
 		}
-		PBDocSeleniumController.checkNoError("EditDocumentIt.edit: Duplicar");
 		if(!docDuplicado.equals(getDocTitle())) {
 			throw new PBDocGenericError("Falha ao tentar duplicar documento. Titulos dos documentos fora do padrão");
 		}
+		PBDocSeleniumController.checkNoError("EditDocumentIt.edit: Duplicar");
 	}
 	
 	private void excluir() throws Exception {
@@ -143,5 +147,15 @@ public class PBDocEditDocumentPage extends DriverBase {
 		}catch (Exception e) {
 			throw new PBDocGenericError("Falha ao procurar marcador na página");
 		}
+		PBDocSeleniumController.checkNoError("EditDocumentIt.edit: Definir Marcador");
+	}
+	
+	private void incluirDocumento() throws Exception {
+		linkIncluirDocumento.findWebElement().click();
+		PBDocNewDocumentPage newDocumentPage = new PBDocNewDocumentPage();
+		newDocumentPage.selectReceiver(Dictionary.USUARIO);
+		newDocumentPage.informReceiverInitials(System.getenv("USUARIO2"));
+		newDocumentPage.finalizarAssinar();
+		PBDocSeleniumController.checkNoError("EditDocumentIt.edit: Incluir Documento");
 	}
 }
