@@ -4,8 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import br.gov.pb.codata.selenium.DriverBase;
-import br.gov.pb.codata.selenium.PBDocSeleniumController;
 import br.gov.pb.codata.selenium.page_objects.SigadocStartUp;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 
 public class EnvioEmailNovosUsuariosIT extends DriverBase {
 
@@ -22,7 +22,7 @@ public class EnvioEmailNovosUsuariosIT extends DriverBase {
 
 		WebDriver driver = SigadocStartUp.startUp();
 
-		driver.get(System.getenv("PBDOC_URL") + "siga/app/pessoa/enviarEmail");
+		driver.get(Dictionary.PBDOC_URL + "siga/app/pessoa/enviarEmail");
 		driver.findElement(By.id("nome")).click();
 		driver.findElement(By.id("nome")).sendKeys("allysson");
 		driver.findElement(By.cssSelector(".col-sm-2 > .btn")).click();

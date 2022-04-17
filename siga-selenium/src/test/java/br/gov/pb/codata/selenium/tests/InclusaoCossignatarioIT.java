@@ -8,8 +8,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 import br.gov.pb.codata.selenium.DriverBase;
-import br.gov.pb.codata.selenium.PBDocSeleniumController;
 import br.gov.pb.codata.selenium.page_objects.SigadocStartUp;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 
 public class InclusaoCossignatarioIT extends DriverBase {
 
@@ -19,11 +19,11 @@ public class InclusaoCossignatarioIT extends DriverBase {
 	 * @author Allysson Cruz
 	 */
 
-	//@Test
+	// @Test
 	public void inclusaoConssignatario() throws Exception {
 
 		WebDriver driver = SigadocStartUp.startUp();
-		driver.get(System.getenv("PBDOC_URL") + "sigaex/app/expediente/doc/editar");
+		driver.get(Dictionary.PBDOC_URL + "sigaex/app/expediente/doc/editar");
 		driver.manage().window().setSize(new Dimension(1440, 812));
 		driver.findElement(By.cssSelector(".selected-label")).click();
 		driver.findElement(By.linkText("Processo AdministrativoGenérico")).click();
@@ -59,7 +59,7 @@ public class InclusaoCossignatarioIT extends DriverBase {
 	@Test
 	public void ValidarCamposEmBranco() throws Exception {
 		WebDriver driver = SigadocStartUp.startUp();
-		driver.get(System.getenv("PBDOC_URL") + "sigaex/app/expediente/doc/editar");
+		driver.get(Dictionary.PBDOC_URL + "sigaex/app/expediente/doc/editar");
 		driver.manage().window().setSize(new Dimension(1440, 812));
 		driver.findElement(By.cssSelector(".selected-label")).click();
 		driver.findElement(By.linkText("Processo AdministrativoGenérico")).click();

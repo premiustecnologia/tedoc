@@ -1,11 +1,13 @@
 package br.gov.pb.codata.selenium.tests;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
 import br.gov.pb.codata.selenium.DriverBase;
 import br.gov.pb.codata.selenium.PBDocSeleniumController;
 import br.gov.pb.codata.selenium.page_objects.SigadocMesaVirtualPage;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 import br.gov.pb.codata.selenium.util.validator.Validator;
 
 public class MesaVirtualIT extends DriverBase {
@@ -47,21 +49,14 @@ public class MesaVirtualIT extends DriverBase {
 	
 	@Test
 	public void menuLogoff() throws Exception {
+		WebDriver driver = getDriver();
 		PBDocSeleniumController.start();
-		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();
-		mesaVirtualPage.logoff();
+		driver.get(Dictionary.PBDOC_URL + "siga/public/app/logout");
 		WebDriverWait wait = new WebDriverWait(getDriver(), 1, 100);
 		wait.until(validator.pageTitleStartsWith("PBdoc - Página de Login"));
 	}
 	
-	//@Test
-	public void configuracoes() throws Exception {
-		PBDocSeleniumController.start();
-		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();
-		mesaVirtualPage.clickConfigButton();
-	}
-	
-	//@Test
+	@Test
 	public void exibirViasCanceladas() throws Exception {
 		PBDocSeleniumController.start();
 		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();
@@ -69,7 +64,7 @@ public class MesaVirtualIT extends DriverBase {
 		mesaVirtualPage.checkViasCanceladas();
 	}
 	
-	//@Test
+	@Test
 	public void exibirOrdemCrescente() throws Exception {
 		PBDocSeleniumController.start();
 		SigadocMesaVirtualPage mesaVirtualPage = new SigadocMesaVirtualPage();

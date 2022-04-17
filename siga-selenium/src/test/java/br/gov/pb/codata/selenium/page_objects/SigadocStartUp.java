@@ -5,11 +5,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.gov.pb.codata.selenium.DriverBase;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 
-/**
-*
-* @author Thomas Ribeiro
-*/
 public class SigadocStartUp extends DriverBase {
 
 	private static ExpectedCondition<Boolean> pageTitleStartsWith(final String searchString) {
@@ -19,7 +16,7 @@ public class SigadocStartUp extends DriverBase {
 	public static WebDriver startUp() throws Exception {
 		WebDriver driver = getDriver();
 		driver.manage().window().maximize();
-		driver.get(System.getenv("PBDOC_URL"));
+		driver.get(Dictionary.PBDOC_URL);
 		SigadocLoginPage loginPage = new SigadocLoginPage();
 
 		WebDriverWait wait = new WebDriverWait(driver, 30, 100);

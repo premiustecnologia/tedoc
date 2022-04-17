@@ -18,8 +18,8 @@ public class Validator extends DriverBase {
 		return driver -> driver.getTitle().toLowerCase().startsWith(searchString.toLowerCase());
 	}
 
-	public ExpectedCondition<Boolean> paginaDeveMostrarMensagem(final String msg) {
-		return driver -> driver.findElement(By.className("login-invalido-titulo")).getText().equalsIgnoreCase(msg);
+	public ExpectedCondition<Boolean> findMessageByXPath(final String msg, String xpath) {
+		return driver -> driver.findElement(By.xpath(xpath)).getText().equalsIgnoreCase(msg);
 	}
 
 	public void switchTabs(WebDriver driver, int expectedWindowsCount, int SwitchtoWindow) throws Exception {

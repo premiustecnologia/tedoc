@@ -7,21 +7,15 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 import br.gov.pb.codata.selenium.DriverBase;
-import br.gov.pb.codata.selenium.PBDocSeleniumController;
 import br.gov.pb.codata.selenium.page_objects.SigadocStartUp;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 
 public class CadastroOrgaoIT extends DriverBase {
 
-	/**
-	 * Caminho: Ferramentas > Cadastro de Orgao > Incluir/pesquisar/alterar
-	 * 
-	 * @author Allysson Cruz
-	 */
-
-	//@Test1
+	@Test
 	public void incluirOrgao() throws Exception {
 		WebDriver driver = SigadocStartUp.startUp();
-		driver.get(System.getenv("PBDOC_URL") + "siga/app/orgaoUsuario/editar");
+		driver.get(Dictionary.PBDOC_URL + "siga/app/orgaoUsuario/editar");
 		driver.findElement(By.id("id")).click();
 		driver.findElement(By.id("id")).sendKeys("5");
 		driver.findElement(By.id("nmOrgaoUsuario")).click();
@@ -52,23 +46,19 @@ public class CadastroOrgaoIT extends DriverBase {
 	@Test
 	public void pesquisarOrgao() throws Exception {
 		WebDriver driver = SigadocStartUp.startUp();
-		driver.get(System.getenv("PBDOC_URL") + "siga/app/orgaoUsuario/listar");
-		// nome
+		driver.get(Dictionary.PBDOC_URL + "siga/app/orgaoUsuario/listar");
 		driver.findElement(By.id("nome")).sendKeys("tes");
-		// pesquisar
 		driver.findElement(By.xpath("//input[@value='Pesquisar']")).click();
 	}
 
 	@Test
 	public void alterarOrgao() throws Exception {
 		WebDriver driver = SigadocStartUp.startUp();
-		driver.get(System.getenv("PBDOC_URL") + "siga/app/orgaoUsuario/listar");
+		driver.get(Dictionary.PBDOC_URL + "siga/app/orgaoUsuario/listar");
 		driver.findElement(By.id("nome")).sendKeys("oku");
-		// pesquisar
 		driver.findElement(By.xpath("//input[@value='Pesquisar']")).click();
-		driver.get(System.getenv("PBDOC_URL") + "siga/app/orgaoUsuario/editar?editar?id=3");
+		driver.get(Dictionary.PBDOC_URL + "siga/app/orgaoUsuario/editar?editar?id=3");
 		driver.findElement(By.id("nmOrgaoUsuario")).sendKeys("Nodsm22");
-		// sigla
 		driver.findElement(By.id("siglaOrgaoUsuarioCompleta")).sendKeys("siglvs correta");
 		driver.findElement(By.xpath("//input[@value='Ok']")).click();
 	}

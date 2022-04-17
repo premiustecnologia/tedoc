@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import br.gov.pb.codata.selenium.DriverBase;
 import br.gov.pb.codata.selenium.page_objects.SigadocLoginPage;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 import br.gov.pb.codata.selenium.util.validator.Validator;
 
 public class LoginPBDocIT extends DriverBase {
@@ -19,7 +20,7 @@ public class LoginPBDocIT extends DriverBase {
 	public void hyperlinks() throws Exception {
 		WebDriver driver = getDriver();
 		driver.manage().window().maximize();
-		driver.get(System.getenv("PBDOC_URL"));
+		driver.get(Dictionary.PBDOC_URL);
 		SigadocLoginPage loginPage = new SigadocLoginPage();
 		WebDriverWait wait = new WebDriverWait(driver, 30, 100);
 		wait.until(validator.pageTitleStartsWith("PBdoc - Página de Login"));
@@ -30,12 +31,12 @@ public class LoginPBDocIT extends DriverBase {
 		validator.closeAllTabsExcepCurrent();
 	}
 
-	// @Test1
+	@Test
 	public void loginComSucesso() throws Exception {
 		WebDriver driver = getDriver();
 		driver.manage().window().setSize(new Dimension(1920, 1080));
 
-		driver.get(System.getenv("PBDOC_URL"));
+		driver.get(Dictionary.PBDOC_URL);
 
 		SigadocLoginPage loginPage = new SigadocLoginPage();
 
@@ -45,27 +46,24 @@ public class LoginPBDocIT extends DriverBase {
 		wait.until(validator.pageTitleStartsWith("PBDoc - Mesa Virtual"));
 	}
 
-	// @Test
+	@Test
 	public void loginInvalido() throws Exception {
 		WebDriver driver = getDriver();
-		driver.manage().window().setSize(new Dimension(1920, 1080));
-		driver.get(System.getenv("PBDOC_URL"));
+		driver.manage().window().maximize();
+		driver.get(Dictionary.PBDOC_URL);
 		SigadocLoginPage loginPage = new SigadocLoginPage();
 		loginPage.digitarCredenciais("usuarioNaoCadastrado", "Senha123").enviarAutenticacao();
 		WebDriverWait wait = new WebDriverWait(driver, 15, 100);
-		wait.until(validator.paginaDeveMostrarMensagem(
-				"Ocorreu um erro tentando localizar a identidade do usuario 'usuarioNaoCadastrado'."));
+		wait.until(validator.findMessageByXPath("Não foi possível localizar o usuario 'usuarioNaoCadastrado'.",
+				"/html/body/div[4]/div/div/div/div[2]/div[1]"));
 	}
 
-	// @Test
+	@Test
 	public void validacaoDeInputs() throws Exception {
 		WebDriver driver = getDriver();
 		driver.manage().window().setSize(new Dimension(1920, 1080));
-
-		driver.get(System.getenv("PBDOC_URL"));
-
+		driver.get(Dictionary.PBDOC_URL);
 		SigadocLoginPage loginPage = new SigadocLoginPage();
-
 		loginPage.digitarCredenciais(oneHundredChars, oneHundredChars).enviarAutenticacao();
 	}
 

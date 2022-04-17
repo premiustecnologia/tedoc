@@ -8,8 +8,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 
 import br.gov.pb.codata.selenium.DriverBase;
-import br.gov.pb.codata.selenium.PBDocSeleniumController;
 import br.gov.pb.codata.selenium.page_objects.SigadocStartUp;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 
 public class FinalizarDocumentoExternoIT extends DriverBase {
 
@@ -19,11 +19,11 @@ public class FinalizarDocumentoExternoIT extends DriverBase {
 	 * @author Allysson Cruz
 	 */
 
-	//@Test
+	// @Test
 	public void finalizar() throws Exception {
 
 		WebDriver driver = SigadocStartUp.startUp();
-		driver.get(System.getenv("PBDOC_URL") + "sigaex/app/expediente/doc/editar");
+		driver.get(Dictionary.PBDOC_URL + "sigaex/app/expediente/doc/editar");
 		driver.manage().window().setSize(new Dimension(1440, 812));
 		{
 			WebElement element = driver.findElement(By.cssSelector(".selected-label"));
@@ -51,7 +51,7 @@ public class FinalizarDocumentoExternoIT extends DriverBase {
 	@Test
 	public void finalizarSemClassificacaoDocumental() throws Exception {
 		WebDriver driver = SigadocStartUp.startUp();
-		driver.get(System.getenv("PBDOC_URL") + "sigaex/app/expediente/doc/editar");
+		driver.get(Dictionary.PBDOC_URL + "sigaex/app/expediente/doc/editar");
 		driver.manage().window().setSize(new Dimension(1440, 812));
 		driver.findElement(By.cssSelector(".selected-label")).click();
 		driver.findElement(By.linkText("Processo AdministrativoGenérico")).click();

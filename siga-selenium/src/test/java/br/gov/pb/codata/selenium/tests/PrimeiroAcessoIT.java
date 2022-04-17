@@ -5,11 +5,10 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.Test;
 
 import br.gov.pb.codata.selenium.DriverBase;
-import br.gov.pb.codata.selenium.PBDocSeleniumController;
 import br.gov.pb.codata.selenium.page_objects.SigadocLoginPage;
+import br.gov.pb.codata.selenium.util.text.Dictionary;
 
 public class PrimeiroAcessoIT extends DriverBase {
 
@@ -22,12 +21,12 @@ public class PrimeiroAcessoIT extends DriverBase {
 	 * email válido Enviar email Receber usuário e código por email
 	 */
 
-	//@Test
+	// @Test
 	public void primeiroAcesso() throws Exception {
 		WebDriver driver = getDriver();
 		driver.manage().window().setSize(new Dimension(1920, 1080));
 
-		driver.get(System.getenv("PBDOC_URL"));
+		driver.get(Dictionary.PBDOC_URL);
 
 		SigadocLoginPage loginPage = new SigadocLoginPage();
 

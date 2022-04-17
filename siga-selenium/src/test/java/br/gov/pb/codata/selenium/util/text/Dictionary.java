@@ -6,6 +6,8 @@ package br.gov.pb.codata.selenium.util.text;
 */
 public final class Dictionary {
 
+	public static final String PBDOC_URL = "https://homolog.pbdoc.pb.gov.br/";
+	
 	public static final String oneHundredChars = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
 	public static final String ANEXAR = "Anexar";
