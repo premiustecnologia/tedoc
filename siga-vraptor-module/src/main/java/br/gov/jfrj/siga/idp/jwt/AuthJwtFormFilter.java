@@ -1,12 +1,22 @@
 package br.gov.jfrj.siga.idp.jwt;
 
+import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Collections.unmodifiableSet;
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
+import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,20 +28,52 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.MediaType;
+
+import org.jboss.logging.Logger;
 
 import com.auth0.jwt.JWTExpiredException;
 import com.auth0.jwt.JWTVerifyException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.caelum.vraptor.controller.HttpMethod;
 import br.gov.jfrj.siga.base.Prop;
 import br.gov.jfrj.siga.base.SigaMessages;
 import br.gov.jfrj.siga.model.ContextoPersistencia;
 
 public class AuthJwtFormFilter implements Filter {
 
-	public static final String SIGA_JWT_AUTH_COOKIE_NAME = "siga-jwt-auth";
-	static final String PROVIDER_ISSUER = "sigaidp";
+	private static final Logger log = Logger.getLogger(AuthJwtFormFilter.class);
 
-	private FilterConfig filterConfig;
+	private static ObjectMapper JSON_MAPPER = new ObjectMapper();
+	private static final String X_REQUESTED_WITH = "X-Requested-With";
+	private static final String SIGA_JWT_AUTH_COOKIE_NAME = "siga-jwt-auth";
+	private static final Set<String> USER_AGENT_BROWSERS = unmodifiableSet(newHashSet(
+			"Chrome",
+			"Chromium",
+			"Firefox",
+			"Edg",
+			"Edge",
+			"Safari",
+			"OPR",
+			"Opera",
+			"MSIE",
+			"Trident",
+			"Seamonkey"
+	));
+
+	private FilterConfig config;
+
+	@Override
+	public void init(FilterConfig config) throws ServletException {
+		this.config = config;
+		log.infov("Initializing Filter {0}", this.config.getFilterName());
+	}
+
+	@Override
+	public void destroy() {
+		log.infov("Destroying filter {0}", this.config.getFilterName());
+	}
 
 	public static Map<String, Object> validarToken(String token)
 			throws IllegalArgumentException, SigaJwtInvalidException, SigaJwtProviderException, InvalidKeyException,
@@ -63,13 +105,13 @@ public class AuthJwtFormFilter implements Filter {
 	}
 
 	public static String extrairAuthorization(HttpServletRequest request) {
-		String auth = request.getHeader("Authorization");
+		String auth = request.getHeader(AUTHORIZATION);
 		if (auth != null) {
-			return request.getHeader("Authorization").replaceAll(".* ", "").trim();
+			return auth.replaceAll(".* ", "").trim();
 		}
 		Cookie[] cookies = request.getCookies();
 		String token = null;
-		ArrayList<String> tokens = new ArrayList<String>();
+		List<String> tokens = new ArrayList<>();
 
 		if (cookies != null) {
 			// Percorre lista cookie e extrai tokens
@@ -98,10 +140,6 @@ public class AuthJwtFormFilter implements Filter {
 			}
 		}
 		return null; // Se não há Tokens
-	}
-
-	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -182,13 +220,13 @@ public class AuthJwtFormFilter implements Filter {
 		return cookie;
 	}
 
-	private void redirecionarParaFormDeLogin(HttpServletRequest req, HttpServletResponse resp, Exception e)
-			throws IOException {
-		if (req.getHeader("X-Requested-With") != null) {
+	private void redirecionarParaFormDeLogin(HttpServletRequest req, HttpServletResponse resp, Exception e) throws IOException {
+
+		if (req.getHeader(X_REQUESTED_WITH) != null) {
 			informarAutenticacaoInvalida(resp, e);
 			return;
 		}
-		if (!"GET".equalsIgnoreCase(req.getMethod())) {
+		if (!isBrowser(req)) {
 			informarAutenticacaoInvalida(resp, e);
 			return;
 		}
@@ -202,37 +240,44 @@ public class AuthJwtFormFilter implements Filter {
 							: "");
 		}
 
-		String cont = req.getRequestURL() + (req.getQueryString() != null ? "?" + req.getQueryString() : "");
-		String base = Prop.get("/siga.base.url");
-		if (base != null && base.startsWith("https:") && cont.startsWith("http:"))
-			cont = "https" + cont.substring(4);
+		final HttpMethod method = HttpMethod.of(req);
+		if (method == HttpMethod.GET) {
+			final String base = Prop.get("/siga.base.url");
+			String cont = req.getRequestURL() + (req.getQueryString() != null ? "?" + req.getQueryString() : "");
+			if (base != null && base.startsWith("https:") && cont.startsWith("http:")) {
+				cont = "https" + cont.substring(4);
+			}
+			resp.sendRedirect("/siga/public/app/login?cont=" + URLEncoder.encode(cont, "UTF-8"));
+		} else {
+			resp.sendRedirect("/siga/public/app/login");
+		}
+	}
 
-		resp.sendRedirect("/siga/public/app/login?cont=" + URLEncoder.encode(cont, "UTF-8"));
+	private JsonErrorPayload preencherPayload(String message, Exception exception) {
+		final JsonErrorPayload payload = new JsonErrorPayload(message);
+		final List<String> details = new ArrayList<>();
+		if (exception != null) {
+			details.add(exception.getLocalizedMessage());
+			if (exception.getCause() != null) {
+				details.add(exception.getCause().getLocalizedMessage());
+			}
+		}
+		payload.setDetails(details);
+		return payload;
 	}
 
 	private void informarAutenticacaoInvalida(HttpServletResponse resp, Exception e) throws IOException {
-		String mensagem = "Não foi possível autenticar o usuário, se não quiser perder o trabalho, use uma outra janela do navegador para entrar no sistema e fazer um novo login, depois volte nessa página e clique no botão de atualizar: ";
-		if (e.getCause() == null)
-			mensagem += e.getLocalizedMessage();
-		else
-			mensagem += e.getCause().getLocalizedMessage();
-		resp.setStatus(401); // 401 Unauthorized - authentication is required
-								// and has failed or has not yet been provided.
-		resp.getWriter().write(mensagem);
+		final JsonErrorPayload payload = preencherPayload("Não foi possível autenticar o usuário: efetue o login novamente para continuar no sistema.", e);
+		resp.setContentType(MediaType.APPLICATION_JSON);
+		resp.setStatus(SC_UNAUTHORIZED); // 401 Unauthorized - authentication is required and has failed or has not yet been provided.
+		resp.getWriter().write(JSON_MAPPER.writeValueAsString(payload));
 	}
 
 	private void informarAutenticacaoProibida(HttpServletResponse resp, Exception e) throws IOException {
-		String mensagem = e.getCause() != null ? e.getCause().getLocalizedMessage() : e.getLocalizedMessage();
-		resp.setStatus(403); // 403 Forbidden - The request was valid, but the
-								// server is refusing action. The user might not
-								// have the necessary permissions for a
-								// resource, or may need an account of some sort
-		resp.getWriter().write(mensagem);
-		return;
-	}
-
-	public void init(FilterConfig fConfig) throws ServletException {
-		this.filterConfig = fConfig;
+		final JsonErrorPayload payload = preencherPayload("O acesso a este recurso é restrito.", e);
+		resp.setContentType(MediaType.APPLICATION_JSON);
+		resp.setStatus(SC_FORBIDDEN); // 403 Forbidden
+		resp.getWriter().write(JSON_MAPPER.writeValueAsString(payload));
 	}
 
 	/**
@@ -254,9 +299,19 @@ public class AuthJwtFormFilter implements Filter {
 		}
 		return nameCookie;
 	}
-	
+
 	private static String getCookieDomain() {
 		return Prop.get("/siga.jwt.cookie.domain");
+	}
+
+	private static boolean isBrowser(HttpServletRequest request) {
+		final String userAgent = String.valueOf(request.getHeader(USER_AGENT));
+		for (String browser : USER_AGENT_BROWSERS) {
+			if (containsIgnoreCase(userAgent, browser)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
