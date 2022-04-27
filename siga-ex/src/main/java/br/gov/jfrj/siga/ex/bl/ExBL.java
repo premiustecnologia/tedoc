@@ -6508,27 +6508,26 @@ public class ExBL extends CpBL {
 		// documento
 
 		for (ExMobil m : doc.getExMobilSet()) {
-			if(!m.isGeral() && !m.isCancelada()) { //Retirada as vias que foram canceladas					
-				
+			if(!m.isGeral() && !m.isCancelada()) { // Retirada as vias que foram canceladas					
 				if (!getComp().podeMovimentar(cadastrante, lotaCadastrante, m)) {
-					throw new RegraNegocioException("Cancelamento não permitido. Você não possui permissão para executar essa operação no documento");
+					throw new RegraNegocioException("Não foi possível efetuar o cancelamento, pois o documento está em tramitação. Para que o cancelamento seja feito é necessário desfazer a tramitação.");
 				}
-				
+
 				if (m.isJuntado()) {
-					throw new RegraNegocioException("Não é possível efetuar o cancelamento, pois o documento está juntado");
+					throw new RegraNegocioException("Não foi possível efetuar o cancelamento, pois o documento está juntado");
 				}
-				
+
 				if (m.temDocumentosJuntados()) {
-					throw new RegraNegocioException("Não é possível efetuar o cancelamento, pois o documento possui documento(s) juntado(s)");
+					throw new RegraNegocioException("Não foi possível efetuar o cancelamento, pois o documento possui documento(s) juntado(s). Para que o cancelamento seja feito é necessário efetuar o desentranhamento do documento juntado.");
 				}
-				
+
 				if (m.isApensado()) {
-					throw new RegraNegocioException("Não é possível efetuar o cancelamento, pois o documento está apensado");
+					throw new RegraNegocioException("Não foi possível efetuar o cancelamento, pois o documento está apensado");
 				}
-				
+
 				if (m.temApensos()) {
-					throw new RegraNegocioException("Não é possível efetuar o cancelamento, pois o documento possui documento(s) apensado(s)");
-				}							
+					throw new RegraNegocioException("Não foi possível efetuar o cancelamento, pois o documento possui documento(s) apensado(s)");
+				}
 			}
 		}
 
