@@ -80,6 +80,7 @@ public class ExTipoMovimentacao extends AbstractExTipoMovimentacao implements Se
 
 	final static public long TIPO_MOVIMENTACAO_JUNTADA_EXTERNO = 31;
 
+	// Este é o tipo de movimentação de DESENTRANHAMENTO
 	final static public long TIPO_MOVIMENTACAO_CANCELAMENTO_JUNTADA = 13;
 
 	final static public long TIPO_MOVIMENTACAO_CANCELAMENTO_DE_MOVIMENTACAO = 14;
