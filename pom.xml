@@ -133,7 +133,7 @@
 		<!-- repositorio adicionado para a swetake -->
 		<repository>
 			<id>swetake</id>
-			<url>http://itrc.jju.edu.cn/nexus-2.0.6/content/repositories/thirdparty/</url>
+			<url>http://develop.centit.com/nexus/content/repositories/centit-releases</url>
 		</repository>
 
 		<!-- repositorio adicionado para a simplecaptcha -->
@@ -524,9 +524,9 @@
 				<artifactId>pd4ml-taglib</artifactId> <version>3.2.3fx5</version> </dependency> -->
 
 			<dependency>
-				<groupId>swetake</groupId>
-				<artifactId>qrcode</artifactId>
-				<version>0.1</version>
+				<groupId>QRCode</groupId>
+				<artifactId>QRCode_swetake</artifactId>
+				<version>3.0.0</version>
 			</dependency>
 
 			<dependency>
