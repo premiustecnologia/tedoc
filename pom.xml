@@ -132,7 +132,7 @@
 
 		<!-- repositorio adicionado para a swetake -->
 		<repository>
-			<id>swetake</id>
+			<id>CentIT</id>
 			<url>http://develop.centit.com/nexus/content/repositories/centit-releases</url>
 		</repository>
 
