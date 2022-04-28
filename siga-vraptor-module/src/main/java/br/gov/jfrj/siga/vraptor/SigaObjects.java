@@ -151,6 +151,7 @@ public class SigaObjects implements ConheceUsuario {
 
 	public DpPessoa daoPes(String sigla) {
 		DpPessoaDaoFiltro flt = new DpPessoaDaoFiltro();
+		flt.setBuscarSemLimitarOrgaoOrigem(true);
 		flt.setSigla(sigla);
 		return (DpPessoa) dao().consultarPorSigla(flt);
 	}
