@@ -4,9 +4,9 @@
   "private": true,
   "author": "Renato Crivano <renato.crivano@gmail.com>",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "rimraf ../webapp/precache* && vue-cli-service build --no-clean",
-    "lint": "vue-cli-service lint"
+    "serve": "node_modules/.bin/vue-cli-service serve --port 3000",
+    "build": "node_modules/.bin/rimraf ../webapp/precache* && node_modules/.bin/vue-cli-service build --no-clean",
+    "lint": "node_modules/.bin/vue-cli-service lint"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
@@ -30,7 +30,7 @@
     "register-service-worker": "^1.7.1",
     "v-autocomplete": "^1.8.2",
     "vee-validate": "^3.3.11",
-    "vue": "^2.6.12",
+    "vue": "2.6.11",
     "vue-clip": "^1.0.0",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.4.3",
@@ -58,7 +58,7 @@
     "rimraf": "^3.0.0",
     "sass": "^1.26.12",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "2.6.12",
+    "vue-template-compiler": "2.6.11",
     "webpack": "^4.44.1"
   }
 }
