@@ -120,6 +120,10 @@ public class ExDao extends CpDao {
 
 	private static final Logger log = Logger.getLogger(ExDao.class);
 
+	private static final Long ID_MARCADOR_A_RECEBER = 3L;
+	private static final Long ID_MARCADOR_CAIXA_DE_ENTRADA = 14L;
+	private static final Long ID_MARCADOR_COMO_SUBSCRITOR = 25L;
+
 	private static final QExMobil qExMobil = QExMobil.exMobil;
 	private static final QExMarca qExMarca = QExMarca.exMarca;
 	private static final QExDocumento qExDocumento = QExDocumento.exDocumento;
@@ -801,15 +805,10 @@ public class ExDao extends CpDao {
 			predicates.and(qExMarca.dtFimMarca.isNull()
 					.or(qExMarca.dtFimMarca.gt(currentTimestamp())));
 		} else {
-			// FIXME generalizar estas constantes
-			final Long MARCADOR_A_RECEBER = 3L;
-			final Long MARCADOR_CAIXA_DE_ENTRADA = 14L;
-			final Long MARCADOR_COMO_SUBSCRITOR = 25L;
-
-			predicates.and(qExMarca.cpMarcador.idMarcador.in(
-					MARCADOR_A_RECEBER,
-					MARCADOR_CAIXA_DE_ENTRADA,
-					MARCADOR_COMO_SUBSCRITOR
+			predicates.and(qExMarca.cpMarcador.idMarcador.notIn(
+					ID_MARCADOR_A_RECEBER,
+					ID_MARCADOR_CAIXA_DE_ENTRADA,
+					ID_MARCADOR_COMO_SUBSCRITOR
 			));
 		}
 
