@@ -889,8 +889,17 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 					CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR, null, null, null, null, null, null))
 				return false;				
 		} else {
-			if(mob.doc().getSubscritor() == null || !mob.doc().getSubscritor().equivale(titular))
-				return false;
+			if(!mob.doc().isDocFilhoJuntadoAoPai() && mob.doc().getSubscritor().equivale(titular)) {
+			} else {
+				if(mob.doc().getSubscritor() == null || !mob.doc().getSubscritor().equivale(titular)) {
+					return false;
+				} else {
+					if (podeSerTransferido(mob)) { } 
+					else {
+						return false;
+					}
+				}
+			}
 		}
 			
 		//Verifica se o documento está com pedido de publicação no DJE ou BIE.
