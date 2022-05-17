@@ -889,8 +889,12 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 					CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR, null, null, null, null, null, null))
 				return false;				
 		} else {
-			if(mob.doc().getSubscritor() == null || !mob.doc().getSubscritor().equivale(titular))
+			if(mob.doc().getSubscritor() != null && !mob.doc().getSubscritor().equivale(titular)) {
 				return false;
+			}
+			if (podeSerTransferido(mob)) {  
+				return false;
+			}
 		}
 			
 		//Verifica se o documento está com pedido de publicação no DJE ou BIE.
