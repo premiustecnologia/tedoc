@@ -891,13 +891,15 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 		} else {
 			if(!mob.doc().getSubscritor().equivale(titular)) {
 				return false;
-			} else {
-				if (podeSerTransferido(mob)) {  
-					return false;
+			} 
+			if (!podeSerTransferido(mob) && mob.doc().isDocFilhoJuntadoAoPai()) {  
+				return false;
+				} 
+			if (mob.doc().getUltimoMobil().getExMarcaSet().first().getCpMarcador().getIdMarcador() == 14L) {
+				return false;
 				}
-			}
 		}
-			
+		
 		//Verifica se o documento está com pedido de publicação no DJE ou BIE.
 		if(mob.doc().isPublicacaoSolicitada() ||  
 				mob.doc().isPublicacaoAgendada() || 	
