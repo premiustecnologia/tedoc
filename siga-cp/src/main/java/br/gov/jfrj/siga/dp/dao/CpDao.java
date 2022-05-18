@@ -1478,9 +1478,10 @@ public class CpDao extends ModeloDao {
 				predicates.and(qDpPessoa.dataFimPessoa.isNull());
 			}
 
+			// ID passado no filtro é DIFERENTE do que contém no banco (exceção)
 			ofNullable(filtro.getId())
 					.filter(p -> p.longValue() > 0L)
-					.map(qDpPessoa.idPessoa::eq)
+					.map(qDpPessoa.idPessoa::ne)
 					.ifPresent(predicates::and);
 
 			ofNullable(filtro.getSituacaoFuncionalPessoa())

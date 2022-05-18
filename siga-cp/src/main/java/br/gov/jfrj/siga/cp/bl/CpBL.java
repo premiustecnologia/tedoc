@@ -21,7 +21,6 @@ package br.gov.jfrj.siga.cp.bl;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.math.NumberUtils.createLong;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -1168,10 +1167,15 @@ public class CpBL {
 			}
 		}
 
-		final Long cpfDigitos = createLong(CharMatcher.DIGIT.retainFrom(cpf));
 		final Long idInicialPessoa = ofNullable(pessoaAnt)
 				.map(DpPessoa::getIdPessoaIni)
 				.orElse(0L);
+
+		final Long cpfDigitos = ofNullable(cpf)
+				.map(CharMatcher.DIGIT::retainFrom)
+				.map(StringUtils::stripToNull)
+				.map(Long::valueOf)
+				.orElseThrow(() -> new AplicacaoException("CPF é um campo obrigatório para o cadastro de pessoa"));
 
 		int i = CpDao.getInstance()
 				.consultarQtdePorEmailIgualCpfDiferente(
@@ -1241,7 +1245,6 @@ public class CpBL {
 		ou = CpDao.getInstance().consultarPorId(ou);
 		
 		if (!CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(identidadeCadastrante.getCpOrgaoUsuario().getSigla())) {
-			
 			if(!CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadeCadastrante.getCpOrgaoUsuario().getSigla())) {
 				if (!ou.getIdOrgaoUsu().equals(identidadeCadastrante.getCpOrgaoUsuario().getIdOrgaoUsu())) {
 					throw new AplicacaoException("Usuário não pode cadastrar nesse órgão.");
@@ -1291,7 +1294,6 @@ public class CpBL {
 
 		dpPessoa.setBuscarFechadas(Boolean.FALSE);
 		long tamanho = CpDao.getInstance().consultarQuantidade(dpPessoa);
-
 		if (tamanho > 0) {
 			throw new AplicacaoException("Usuário já cadastrado com estes dados: Órgão, Cargo, Função, Unidade e CPF");
 		}
