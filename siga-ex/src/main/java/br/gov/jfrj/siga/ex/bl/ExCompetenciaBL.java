@@ -37,6 +37,7 @@ import br.gov.jfrj.siga.cp.bl.Cp;
 import br.gov.jfrj.siga.cp.bl.CpCompetenciaBL;
 import br.gov.jfrj.siga.cp.model.enm.CpMarcadorEnum;
 import br.gov.jfrj.siga.dp.CpMarca;
+import br.gov.jfrj.siga.dp.CpMarcador;
 import br.gov.jfrj.siga.dp.CpOrgaoUsuario;
 import br.gov.jfrj.siga.dp.DpCargo;
 import br.gov.jfrj.siga.dp.DpFuncaoConfianca;
@@ -48,6 +49,7 @@ import br.gov.jfrj.siga.ex.ExClassificacao;
 import br.gov.jfrj.siga.ex.ExConfiguracao;
 import br.gov.jfrj.siga.ex.ExDocumento;
 import br.gov.jfrj.siga.ex.ExFormaDocumento;
+import br.gov.jfrj.siga.ex.ExMarca;
 import br.gov.jfrj.siga.ex.ExMobil;
 import br.gov.jfrj.siga.ex.ExModelo;
 import br.gov.jfrj.siga.ex.ExMovimentacao;
@@ -894,26 +896,35 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 			} 
 			if (!podeSerTransferido(mob) && mob.doc().isDocFilhoJuntadoAoPai()) {  
 				return false;
-				} 
-			if (mob.doc().getUltimoMobil().getExMarcaSet().first().getCpMarcador().getIdMarcador() == 14L) {
-				return false;
+			}
+			final ExMobil ultimoMobil = mob.doc().getUltimoMobil();
+			if (ultimoMobil != null) {
+				final ExMarca primeiraMarcaUltimoMobil = ultimoMobil.getExMarcaSet().first();
+				if (primeiraMarcaUltimoMobil != null) {
+					final CpMarcador marcadorUltimoMobil = primeiraMarcaUltimoMobil.getCpMarcador();
+					if (marcadorUltimoMobil != null && marcadorUltimoMobil.getIdMarcador().longValue() == CpMarcadorEnum.CAIXA_DE_ENTRADA.getId()) {
+						return false;
+					}
 				}
+			}
 		}
-		
+
 		//Verifica se o documento está com pedido de publicação no DJE ou BIE.
 		if(mob.doc().isPublicacaoSolicitada() ||  
 				mob.doc().isPublicacaoAgendada() || 	
 				mob.doc().isPublicacaoBoletimSolicitada() ||
 				mob.doc().isBoletimPublicado() ||
-				mob.doc().isDJEPublicado()) 
+				mob.doc().isDJEPublicado()) {
 			return false;
-				
-		return  getConf()
-						.podePorConfiguracao(
-								titular,
-								lotaTitular,
-								ExTipoMovimentacao.TIPO_MOVIMENTACAO_TORNAR_SEM_EFEITO,
-								CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR);
+		}
+
+		return getConf()
+				.podePorConfiguracao(
+						titular,
+						lotaTitular,
+						ExTipoMovimentacao.TIPO_MOVIMENTACAO_TORNAR_SEM_EFEITO,
+						CpTipoConfiguracao.TIPO_CONFIG_MOVIMENTAR
+				);
 	}
 	
 	
