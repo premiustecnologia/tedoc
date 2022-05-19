@@ -149,6 +149,7 @@ public class CpDao extends ModeloDao {
 			.append("-")
 			.append(qDpPessoa.matricula.stringValue());
 
+	private static final QCpIdentidade qCpIdentidade = QCpIdentidade.cpIdentidade;
 	private static final QDpSubstituicao qDpSubstituicao = QDpSubstituicao.dpSubstituicao;
 	private static final QCpOrgaoUsuario qCpOrgaoUsuario = QCpOrgaoUsuario.cpOrgaoUsuario;
 	private static final QCpContrato qCpContrato = QCpContrato.cpContrato;
@@ -1409,14 +1410,13 @@ public class CpDao extends ModeloDao {
 	}
 
 	private BooleanBuilder preencherPredicadosQueryConsultaPorFiltro(final DpPessoaDaoFiltro filtro, final BooleanBuilder predicates) {
-		// DpPessoa#nomePessoaAI é gravado UPPERCASE no banco de dados
-		likeUppercaseParam(filtro.getNome())
+		// DpPessoa#nomePessoaAI é gravado UPPERCASE e sem acentuação no banco de dados
+		normalizeUppercaseParam(filtro.getNome())
 				.map(StringUtils::stripAccents)
-				.ifPresent(p -> predicates.and(
-						qDpPessoa.nomePessoaAI.like(p)
-								.or(qDpPessoaSiglaSemHifen.eq(p))
-								.or(qDpPessoaSiglaComHifen.eq(p))
-				));
+				.map(p -> qDpPessoa.nomePessoaAI.like(likeUppercaseParamOrNull(p))
+						.or(qDpPessoaSiglaSemHifen.eq(p))
+						.or(qDpPessoaSiglaComHifen.eq(p)))
+				.ifPresent(predicates::and);
 
 		ofNullable(filtro.getCpf())
 				.filter(p -> p.longValue() > 0L)
@@ -1457,6 +1457,15 @@ public class CpDao extends ModeloDao {
 		return predicates;
 	}
 
+	private BooleanExpression predicadoExisteIdentidadeAtivaParaPessoa(QDpPessoa qDpPessoaRef, QCpIdentidade qCpIdentidadeRef) {
+		return JPAExpressions.selectOne()
+				.from(qCpIdentidadeRef)
+				.where(qCpIdentidadeRef.dpPessoa.idPessoa.eq(qDpPessoaRef.idPessoa)
+						.and(qCpIdentidadeRef.hisAtivo.eq(1))
+						.and(qCpIdentidadeRef.hisDtFim.isNull()))
+				.exists();
+	}
+
 	private JPAQuery<?> queryConsultarPorFiltro(final QDpPessoa root, final DpPessoaDaoFiltro filtro) {
 		final BooleanBuilder predicates = new BooleanBuilder();
 
@@ -1476,6 +1485,7 @@ public class CpDao extends ModeloDao {
 		} else {
 			if (!filtro.isBuscarFechadas()) {
 				predicates.and(qDpPessoa.dataFimPessoa.isNull());
+				predicates.and(predicadoExisteIdentidadeAtivaParaPessoa(qDpPessoa, qCpIdentidade));
 			}
 
 			// ID passado no filtro é DIFERENTE do que contém no banco (exceção)
@@ -1554,6 +1564,8 @@ public class CpDao extends ModeloDao {
 
 	public Selecionavel consultarPorSigla(final DpPessoaDaoFiltro filtro) {
 		final BooleanBuilder predicates = new BooleanBuilder(qDpPessoa.dataFimPessoa.isNull());
+		predicates.and(predicadoExisteIdentidadeAtivaParaPessoa(qDpPessoa, qCpIdentidade));
+
 		if (isNotBlank(filtro.getSigla())) {
 			predicates.and(
 					qDpPessoaSiglaSemHifen.eq(filtro.getSigla())
@@ -2928,8 +2940,6 @@ public class CpDao extends ModeloDao {
 			final long idIdentidadeAtualizadaComHistorico,
 			final String dscSenhaIdentidade) {
 
-		final QDpPessoa qDpPessoa = QDpPessoa.dpPessoa;
-		final QCpIdentidade qCpIdentidade = QCpIdentidade.cpIdentidade;
 		return new JPAUpdateClause(em(), qCpIdentidade)
 				.set(qCpIdentidade.dscSenhaIdentidade, dscSenhaIdentidade)
 				.setNull(qCpIdentidade.dscSenhaIdentidadeCripto)
