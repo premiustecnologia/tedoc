@@ -18,14 +18,10 @@
  ******************************************************************************/
 package br.gov.jfrj.relatorio.dinamico;
 
-import static java.util.Optional.ofNullable;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 
 import ar.com.fdvs.dj.domain.builders.ColumnBuilderException;
 import ar.com.fdvs.dj.domain.builders.DJBuilderException;
@@ -316,21 +312,10 @@ public abstract class RelatorioTemplate extends RelatorioRapido {
 		}
 	}
 
-	protected void configurarParametrosPadraoSistema(Map<String, String> parametros) {
-		final String pathBrasao = ofNullable(Prop.get("/siga.relat.brasao"))
-				.map(StringUtils::stripToNull)
-				.orElse("brasao.png");
-		parametros.put("brasao", pathBrasao);
-
-		final String titulo = ofNullable(Prop.get("/siga.relat.titulo"))
-				.map(StringUtils::stripToNull)
-				.orElse("PBdoc");
-		parametros.put("titulo", titulo);
-
-		final String subtitulo = ofNullable(Prop.get("/siga.relat.subtitulo"))
-				.map(StringUtils::stripToNull)
-				.orElse("Sistema de Gestão Documental");
-		parametros.put("subtitulo", subtitulo);
+	public static void configurarParametrosPadraoSistema(Map<String, String> parametros) {
+		parametros.put("titulo", Prop.get("/siga.relat.titulo"));
+		parametros.put("subtitulo", Prop.get("/siga.relat.subtitulo"));
+		parametros.put("brasao", Prop.get("/siga.relat.brasao"));
 	}
 
 }
