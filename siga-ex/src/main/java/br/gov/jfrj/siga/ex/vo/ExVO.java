@@ -36,6 +36,8 @@
  ******************************************************************************/
 package br.gov.jfrj.siga.ex.vo;
 
+import static java.util.Optional.ofNullable;
+
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,10 +47,13 @@ import org.apache.commons.lang3.StringUtils;
 import br.gov.jfrj.siga.base.AcaoVO;
 import br.gov.jfrj.siga.base.VO;
 import br.gov.jfrj.siga.base.util.Utils;
+import br.gov.jfrj.siga.ex.ExDocumento;
+import br.gov.jfrj.siga.ex.ExMovimentacao;
 
 public class ExVO extends VO {
 
 	private static final String ID = "id";
+	private static final String MOV_ID_DOC = "movDocId";
 	private static final String SIGLA = "sigla";
 
 	public void addAcao(
@@ -80,14 +85,37 @@ public class ExVO extends VO {
 			String classe,
 			String modal) {
 
-		Map<String, Object> params = new LinkedHashMap<>();
-
+		Long movIdDoc = null;
+		final Map<String, Object> params = new LinkedHashMap<>();
 		if (this instanceof ExMovimentacaoVO) {
-			params.put(ID, Long.toString(((ExMovimentacaoVO) this).getIdMov()));
-			params.put(SIGLA, ((ExMovimentacaoVO) this).getMobilVO().getSigla());
-		} else if (this instanceof ExMobilVO) {
-			params.put(SIGLA, ((ExMobilVO) this).getSigla());
-		} else if (this instanceof ExDocumentoVO) {
+			final ExMovimentacaoVO vo = (ExMovimentacaoVO) this;
+			ofNullable(vo)
+					.map(ExMovimentacaoVO::getIdMov)
+					.map(Long::valueOf)
+					.ifPresent(value -> params.put(ID, value));
+			ofNullable(vo)
+					.map(ExMovimentacaoVO::getMobilVO)
+					.map(ExMobilVO::getSigla)
+					.ifPresent(value -> params.put(SIGLA, value));
+			movIdDoc = ofNullable(vo)
+					.map(ExMovimentacaoVO::getMov)
+					.map(ExMovimentacao::getExDocumento)
+					.map(ExDocumento::getId)
+					.orElse(null);
+		}
+
+		if (this instanceof ExMobilVO) {
+			final ExMobilVO vo = (ExMobilVO) this;
+			ofNullable(vo)
+					.map(ExMobilVO::getSigla)
+					.ifPresent(id -> params.put(SIGLA, id));
+		}
+
+		if (this instanceof ExDocumentoVO) {
+			final ExDocumentoVO vo = (ExDocumentoVO) this;
+			ofNullable(vo)
+					.map(ExDocumentoVO::getSigla)
+					.ifPresent(id -> params.put(SIGLA, id));
 			params.put(SIGLA, ((ExDocumentoVO) this).getSigla());
 		}
 
@@ -102,6 +130,10 @@ public class ExVO extends VO {
 		}
 
 		if (pode) {
+			if (movIdDoc != null) {
+				params.put(MOV_ID_DOC, movIdDoc);
+			}
+
 			String hintEscapado = StringUtils.replace(nome, "_", "");
 			AcaoVO acao = new AcaoVO(icone, nome, nameSpace, action, pode, msgConfirmacao, params, pre, pos, classe, modal, hintEscapado);
 			getAcoes().add(acao);
