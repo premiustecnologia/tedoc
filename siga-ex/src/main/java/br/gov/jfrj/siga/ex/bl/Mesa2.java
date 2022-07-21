@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import com.crivano.swaggerservlet.ISwaggerModel;
 
@@ -31,9 +34,12 @@ import br.gov.jfrj.siga.ex.ExTipoMovimentacao;
 import br.gov.jfrj.siga.hibernate.ExDao;
 
 public class Mesa2 {
-	private static List<GrupoItem> gruposBase;
+
 	private static final String EM_TRAMITE = "Em Trâmite";
-	
+	private static final String N_A = "N/A";
+
+	private static List<GrupoItem> gruposBase;
+
 	public static class SelGrupo implements ISwaggerModel {
 		public String grupoOrdem;
 		public Long grupoQtd;
@@ -275,10 +281,13 @@ public class Mesa2 {
 
 				// FIXME Reavaliar esta solução: enviar um DTO com os dados em separado
 				if(EM_TRAMITE.equalsIgnoreCase(t.nome)) {
-					ExMarca parcial = mobil.getExMarcaSet().first();
+					final SortedSet<ExMarca> marcas = mobil.getExMarcaSet();
+					final String parcial = CollectionUtils.isNotEmpty(marcas)
+							? String.valueOf(marcas.first())
+							: N_A;
 					t.nome = t.nome + " - " + parcial;
 				}
-				
+
 				r.list.add(t);
 				if (pessoa != null && tag.marca.getDpPessoaIni() != null) {
 					if (pessoa.getIdInicial().equals(
