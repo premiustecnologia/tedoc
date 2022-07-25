@@ -702,9 +702,9 @@ public class CpDao extends ModeloDao {
 			final StringExpression siglaOrgaoComLotacao = subqCpOrgaoUsuario.acronimoOrgaoUsu.append(subqDpLotacao.siglaLotacao);
 			if (nomeLike != null) {
 				subqPredicates.and(
-						siglaOrgaoComLotacao.startsWithIgnoreCase(nomeLike)
-								.or(qDpLotacao.siglaLotacao.likeIgnoreCase("%" + nomeLike + "%"))
-								.or(subqDpLotacao.nomeLotacaoAI.likeIgnoreCase("%" + nomeLike + "%"))
+						siglaOrgaoComLotacao.likeIgnoreCase(nomeLike)
+								.or(subqDpLotacao.siglaLotacao.likeIgnoreCase(nomeLike))
+								.or(subqDpLotacao.nomeLotacaoAI.likeIgnoreCase(nomeLike))
 				);
 			}
 
