@@ -162,10 +162,7 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 	@Path({ "/public/app/lotacao/selecionar", "app/lotacao/selecionar", "/lotacao/selecionar.action" })
 	public String selecionar(final String propriedade, final String sigla) {
 		if (equalsIgnoreCase("lotacaoDestinatario", propriedade)) {
-			this.semLimiteOrgaoOrigem = getTitular().isTramitarOutrosOrgaos();
-			if (!this.semLimiteOrgaoOrigem) {
-				this.orgaoUsu = getTitular().getOrgaoUsuario().getId();
-			}
+			this.orgaoUsu = getTitular().getOrgaoUsuario().getId();
 		}
 
 		String resultado = super.aSelecionar(sigla);
