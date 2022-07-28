@@ -838,13 +838,11 @@ public class CpDao extends ModeloDao {
 			predicates.and(siglaCompletaIniciaCom.or(siglaIniciaCom));
 		}
 
-		if (!filtro.isBuscarSemLimitarOrgaoOrigem()) {
-			if (filtro.getIdOrgaoUsu() == null) {
-				throw new AplicacaoException("Não foi possível identificar órgão do usuário requisitante.");
-			}
-
-			predicates.and(qDpLotacao.orgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
+		if (filtro.getIdOrgaoUsu() == null) {
+			throw new AplicacaoException("Não foi possível identificar órgão do usuário requisitante.");
 		}
+
+		predicates.and(qDpLotacao.orgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
 
 		return consultarLotacao(predicates);
 	}
