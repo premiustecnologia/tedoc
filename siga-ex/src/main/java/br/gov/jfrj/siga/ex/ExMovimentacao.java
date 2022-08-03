@@ -1212,11 +1212,15 @@ public class ExMovimentacao extends AbstractExMovimentacao implements
 	}
 
 	public String getAssinaturaValida() {
-		if (!isAssinatura())
+		if (!isAssinatura()) {
 			throw new AplicacaoException("Não é Assinatura");
+		}
 
-		if (isAssinaturaComSenha() && getAuditHash() == null) 
+		// FIXME: desfazer commit quando ativar assinatura com certificado digital
+		// if (isAssinaturaComSenha() && getAuditHash() == null) {
+		if (isAssinaturaComSenha()) {
 			return "OK";
+		}
 
 		try {
 			return assertAssinaturaValida();
