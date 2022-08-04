@@ -45,8 +45,9 @@
 
 <c:set var="logo_topo_orgao" scope="request" value="${f:resource('/siga.logo.topo.orgao')}" />
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt-BR" lang="pt-BR" translate="no">
 <head>
+<meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 <c:choose>
 	<c:when test="${siga_cliente == 'GOVSP'}">
