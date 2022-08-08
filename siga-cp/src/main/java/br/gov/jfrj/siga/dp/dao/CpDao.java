@@ -1693,12 +1693,16 @@ public class CpDao extends ModeloDao {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<CpIdentidade> consultaIdentidadesPorCpf(final String nmUsuario) throws AplicacaoException {
+		return this.consultaIdentidadesPorCpf(Long.valueOf(nmUsuario));
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<CpIdentidade> consultaIdentidadesPorCpf(final Long nmUsuario) throws AplicacaoException {
 		try {
 			final Query qry = em().createNamedQuery("consultarIdentidadeCadastranteAtiva");
 
-			qry.setParameter("cpf", Long.valueOf(nmUsuario));
+			qry.setParameter("cpf", nmUsuario);
 			qry.setParameter("nmUsuario", null);
 			qry.setParameter("sesbPessoa", null);
 
@@ -2565,21 +2569,15 @@ public class CpDao extends ModeloDao {
 		return lot;
 	}
 
-	@SuppressWarnings("unchecked")
 	public DpPessoa obterPessoaAtual(final DpPessoa pessoa) {
-		final Query qry = em().createNamedQuery("consultarPessoaAtualPelaInicial");
-		qry.setParameter("idPessoaIni", pessoa.getIdPessoaIni());
-		qry.setHint("org.hibernate.cacheable", true); 
-		qry.setHint("org.hibernate.cacheRegion", CACHE_QUERY_CONFIGURACAO);
-		
-		
-		//final DpPessoa pes = (DpPessoa) qry.getSingleResult();
-		//return pes;
-		
-		List<DpPessoa> result = qry.getResultList();			
-		if (result == null || result.size() == 0)
-			return null;
-		return result.get(0);
+		return new JPAQuery<DpPessoa>(em())
+				.from(qDpPessoa)
+				.where(qDpPessoa.idPessoaIni.eq(pessoa.getIdInicial()))
+				.orderBy(qDpPessoa.dataInicioPessoa.desc())
+				.limit(1)
+				.setHint(QueryHints.CACHEABLE, true)
+				.setHint(QueryHints.CACHE_REGION, CACHE_QUERY_CONFIGURACAO)
+				.fetchOne();
 	}
 
 	public CpIdentidade obterIdentidadeAtual(final CpIdentidade u) {
