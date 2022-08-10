@@ -541,6 +541,56 @@ public class CpBL {
 
 	}
 
+	public CpIdentidade criarIdentidadeAposEditar(String matricula, String cpf, CpIdentidade idCadastrante) throws AplicacaoException {
+
+		Long longCpf = CPFUtils.getLongValueValidaSimples(cpf);
+
+		final long longMatricula = MatriculaUtils.getParteNumericaDaMatricula(matricula);
+
+		final DpPessoa pessoa = dao().consultarPorCpfMatricula(longCpf, longMatricula);
+
+		if (pessoa != null && matricula.equals(pessoa.getSigla())) {
+			CpIdentidade id;
+			try {
+				id = dao().consultaIdentidadeCadastrante(matricula, true);
+			} catch (Exception e1) {
+				id = null;
+			}
+
+			try {
+				CpIdentidade idNova = new CpIdentidade();
+				CpIdentidade idAnterior = id;
+				idNova.setDscSenhaIdentidade(id.getDscSenhaIdentidade()); // TODO AGORA
+				idNova.setNmLoginIdentidade(matricula);
+				idNova.setDpPessoa(pessoa);
+				idNova.setDtCriacaoIdentidade(dao().consultarDataEHoraDoServidor());
+				idNova.setCpOrgaoUsuario(pessoa.getOrgaoUsuario());
+				idNova.setCpTipoIdentidade(dao().consultar(1, CpTipoIdentidade.class, true));
+				idNova.setHisDtIni(idNova.getDtCriacaoIdentidade());
+				
+				idAnterior.setHisDtFim(idNova.getDtCriacaoIdentidade());
+				idAnterior.setHisAtivo(0);
+				
+				dao().iniciarTransacao();
+				dao().gravarComHistorico(idAnterior, idCadastrante);
+				dao().gravarComHistorico(idNova, idCadastrante);
+				dao().commitTransacao();
+				return idNova;
+			} catch (final Exception e) {
+				dao().rollbackTransacao();
+				throw new AplicacaoException(
+						"Ocorreu um erro durante a gravação no banco de dados ou no envio do email", 0, e);
+			}
+		} else {
+			if (pessoa == null) {
+				throw new AplicacaoException(
+						SigaMessages.getMessage("usuario.erro.cpfmatriculanaocadastrado"));
+			} else {
+				throw new AplicacaoException("Dados Incorretos!");
+			}
+		}
+
+	}
 	/**
 	 * Verifica se a {@link DpPessoa Pessoa} é um usuário externo. <br>
 	 * <b>NOTA DE IMPLEMENTAÇÃO:</b> Originalmente dentro de
@@ -1315,6 +1365,12 @@ public class CpBL {
 					pessoa.setDataFimPessoa(pessoaAnt.getDataFimPessoa());
 				}
 				CpDao.getInstance().gravarComHistorico(pessoa, pessoaAnt, data , identidadeCadastrante);
+				
+				// Encerra identidade usuario anterior e cria nova identidade com mesma senha
+				Cp.getInstance().getBL().criarIdentidadeAposEditar(pessoa.getSesbPessoa() + pessoa.getMatricula(), 
+									pessoaAnt.getCpfFormatado(), identidadeCadastrante);
+				
+				
 			} else {
 				pessoa.setHisIdcIni(identidadeCadastrante);
 				CpDao.getInstance().gravar(pessoa);
@@ -1367,6 +1423,11 @@ public class CpBL {
 					pessoa2.setDataNascimento(dpPessoaAnt2.getDataNascimento());
 					pessoa2.setIdPessoaIni(dpPessoaAnt2.getIdPessoaIni());
 					CpDao.getInstance().gravarComHistorico(pessoa2, dpPessoaAnt2, data, identidadeCadastrante);
+					
+					// Encerra identidades multiplos usuarios anteriores e cria novas identidades com mesma senha
+					Cp.getInstance().getBL().criarIdentidadeAposEditar(pessoa2.getSesbPessoa() + pessoa2.getMatricula(), 
+										dpPessoaAnt2.getCpfFormatado(), identidadeCadastrante);
+					
 				}
 			}
 			

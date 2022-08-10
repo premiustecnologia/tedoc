@@ -189,7 +189,6 @@
 					</div>
 				</div>
 			</c:if>
-			<p class="alert alert-warning"><strong>Atenção!</strong> Incluir, Inabilitar e Alterar Usuários está desabilitado temporariamente para Manutenção.</p>
 			<h3 class="gt-table-head">Pessoas cadastradas</h3>
 			<div class="table-responsive">
 				<table border="0" class="table table-sm table-striped">
@@ -204,7 +203,7 @@
 							<th align="left">Email</th>					
 							<th class="text-center">Data de Nascimento</th>
 							<th align="left">Matricula</th>
-							<th colspan="2" class="text-center" hidden="true">Op&ccedil;&otilde;es</th>					
+							<th colspan="2" class="text-center">Op&ccedil;&otilde;es</th>					
 						</tr>
 					</thead>
 					<tbody>
@@ -223,7 +222,7 @@
 								<td align="left">${pessoa.emailPessoa}</td>						
 								<td align="center"><fmt:formatDate pattern = "dd/MM/yyyy" value = "${pessoa.dataNascimento}" /></td>
 								<td align="left">${pessoa.sigla}</td>
-								<td align="center" hidden="true">
+								<td align="center">
 									<c:url var="url" value="/app/pessoa/editar">
 										<c:param name="id" value="${pessoa.id}"></c:param>
 									</c:url>
@@ -269,7 +268,7 @@
 			<div class="gt-table-buttons">
 				<c:url var="url" value="/app/pessoa/editar"></c:url>
 				<c:url var="urlAtivarInativar" value="/app/pessoa/ativarInativar"></c:url>
-				<input type="button" hidden="true" value="Incluir" onclick="javascript:window.location.href='${url}'" class="btn btn-primary">
+				<input type="button" value="Incluir" onclick="javascript:window.location.href='${url}'" class="btn btn-primary">
 			</div>				
 		</form>
 				
