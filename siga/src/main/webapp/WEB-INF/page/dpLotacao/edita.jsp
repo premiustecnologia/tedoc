@@ -143,7 +143,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-2 d-none">
 					  <label>Tipo de <fmt:message key="usuario.lotacao"/></label>
 					  <div class="form-check">
 					    <input type="checkbox" class="form-check-input" id="isExternaLotacao" name="isExternaLotacao" value="1" <c:if test="${isExternaLotacao == 1}">checked</c:if> />
