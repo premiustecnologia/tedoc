@@ -374,9 +374,8 @@
 					</div>
 
 					<c:if test="${empty id}">
-					<p class="alert alert-warning"><strong>Atenção!</strong> Importação por Planilha desativada para Manutenção. Em breve estará disponivel.
 					</p>
-						<div class="card mt-2 mb-2" hidden="true">
+						<div class="card mt-2 mb-2">
 							<div class="card-body">
 								<h5 class="card-title">Importação por Planilha</h5>
 								<div class="row">
