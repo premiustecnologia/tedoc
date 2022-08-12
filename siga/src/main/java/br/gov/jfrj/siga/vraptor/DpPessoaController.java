@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 - 2011 SJRJ.
+* Copyright (c) 2006 - 2011 SJRJ.
  * 
  *     This file is part of SIGA.
  * 
@@ -233,7 +233,8 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 	}
 
 	@Get("app/pessoa/listar")
-	public void lista(Integer paramoffset, Long idOrgaoUsu, String nome, String cpfPesquisa, Long idCargoPesquisa, Long idFuncaoPesquisa, Long idLotacaoPesquisa, String emailPesquisa, String identidadePesquisa) throws Exception {
+	public void lista(Integer paramoffset, Long idOrgaoUsu, String nome, String cpfPesquisa, Long idCargoPesquisa, Long idFuncaoPesquisa, Long idLotacaoPesquisa, String emailPesquisa, String identidadePesquisa,
+			boolean buscarInativos) throws Exception {
 		
 		result.include("request",getRequest());
 		List<CpOrgaoUsuario> list = new ArrayList<CpOrgaoUsuario>();
@@ -260,6 +261,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())
 				|| CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(idOrgaoUsu))) {
 			DpPessoaDaoFiltro dpPessoa = new DpPessoaDaoFiltro();
+			dpPessoa.setBuscarFechadas(buscarInativos);
 			if (paramoffset == null) {
 				paramoffset = 0;
 			}
@@ -373,7 +375,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				pessoa.setEmailPessoa(pessoaAnt.getEmailPessoa());
 				pessoa.setIdInicial(pessoaAnt.getIdInicial());
 				try {
-					dao().gravarComHistorico(pessoa, pessoaAnt,dao().consultarDataEHoraDoServidor(), getIdentidadeCadastrante());
+					dao().gravarComHistorico(pessoa, pessoaAnt,dao().consultarDataEHoraDoServidor(), getIdentidadeCadastrante());				
 				} catch (Exception e) {
 					if(e.getCause() instanceof ConstraintViolationException &&
 	    					("CORPORATIVO.DP_PESSOA_UNIQUE_PESSOA_ATIVA".equalsIgnoreCase(((ConstraintViolationException)e.getCause()).getConstraintName()))) {
@@ -386,7 +388,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			}
 
 			
-			this.result.redirectTo(this).lista(offset, idOrgaoUsu, nome, cpfPesquisa, idCargoPesquisa, idFuncaoPesquisa, idLotacaoPesquisa, emailPesquisa, identidadePesquisa);
+			this.result.redirectTo(this).lista(offset, idOrgaoUsu, nome, cpfPesquisa, idCargoPesquisa, idFuncaoPesquisa, idLotacaoPesquisa, emailPesquisa, identidadePesquisa, false);
 		}
 	}
 
@@ -633,7 +635,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			result.include(SigaModal.ALERTA, e.getMessage());
 		}
 
-		lista(0, null, "", "", null, null, null, "", null);
+		lista(0, null, "", "", null, null, null, "", null, false);
 	}
 
 	
