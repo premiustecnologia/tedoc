@@ -541,56 +541,6 @@ public class CpBL {
 
 	}
 
-	public CpIdentidade criarIdentidadeAposEditar(String matricula, String cpf, CpIdentidade idCadastrante) throws AplicacaoException {
-
-		Long longCpf = CPFUtils.getLongValueValidaSimples(cpf);
-
-		final long longMatricula = MatriculaUtils.getParteNumericaDaMatricula(matricula);
-
-		final DpPessoa pessoa = dao().consultarPorCpfMatricula(longCpf, longMatricula);
-
-		if (pessoa != null && matricula.equals(pessoa.getSigla())) {
-			CpIdentidade id;
-			try {
-				id = dao().consultaIdentidadeCadastrante(matricula, true);
-			} catch (Exception e1) {
-				id = null;
-			}
-
-			try {
-				CpIdentidade idNova = new CpIdentidade();
-				CpIdentidade idAnterior = id;
-				idNova.setDscSenhaIdentidade(id.getDscSenhaIdentidade()); // TODO AGORA
-				idNova.setNmLoginIdentidade(matricula);
-				idNova.setDpPessoa(pessoa);
-				idNova.setDtCriacaoIdentidade(dao().consultarDataEHoraDoServidor());
-				idNova.setCpOrgaoUsuario(pessoa.getOrgaoUsuario());
-				idNova.setCpTipoIdentidade(dao().consultar(1, CpTipoIdentidade.class, true));
-				idNova.setHisDtIni(idNova.getDtCriacaoIdentidade());
-				
-				idAnterior.setHisDtFim(idNova.getDtCriacaoIdentidade());
-				idAnterior.setHisAtivo(0);
-				
-				dao().iniciarTransacao();
-				dao().gravarComHistorico(idAnterior, idCadastrante);
-				dao().gravarComHistorico(idNova, idCadastrante);
-				dao().commitTransacao();
-				return idNova;
-			} catch (final Exception e) {
-				dao().rollbackTransacao();
-				throw new AplicacaoException(
-						"Ocorreu um erro durante a gravação no banco de dados ou no envio do email", 0, e);
-			}
-		} else {
-			if (pessoa == null) {
-				throw new AplicacaoException(
-						SigaMessages.getMessage("usuario.erro.cpfmatriculanaocadastrado"));
-			} else {
-				throw new AplicacaoException("Dados Incorretos!");
-			}
-		}
-
-	}
 	/**
 	 * Verifica se a {@link DpPessoa Pessoa} é um usuário externo. <br>
 	 * <b>NOTA DE IMPLEMENTAÇÃO:</b> Originalmente dentro de
@@ -1365,12 +1315,7 @@ public class CpBL {
 					pessoa.setDataFimPessoa(pessoaAnt.getDataFimPessoa());
 				}
 				CpDao.getInstance().gravarComHistorico(pessoa, pessoaAnt, data , identidadeCadastrante);
-				
-				// Encerra identidade usuario anterior e cria nova identidade com mesma senha
-				Cp.getInstance().getBL().criarIdentidadeAposEditar(pessoa.getSesbPessoa() + pessoa.getMatricula(), 
-									pessoaAnt.getCpfFormatado(), identidadeCadastrante);
-				
-				
+				this.criarIdentidadeComHistorico(data, pessoaAnt, pessoa, identidadeCadastrante);
 			} else {
 				pessoa.setHisIdcIni(identidadeCadastrante);
 				CpDao.getInstance().gravar(pessoa);
@@ -1383,10 +1328,9 @@ public class CpBL {
 
 				lista = CpDao.getInstance()
 						.consultaIdentidadesPorCpf(cpf.replace(".", "").replace("-", ""));
-				CpIdentidade usu = null;
 				if (lista.size() > 0) {
 					CpIdentidade usuarioExiste = lista.get(0);
-					usu = new CpIdentidade();
+					CpIdentidade usu = new CpIdentidade();
 					usu.setCpTipoIdentidade(CpDao.getInstance().consultar(1, CpTipoIdentidade.class, false));
 					usu.setDscSenhaIdentidade(usuarioExiste.getDscSenhaIdentidade());
 					usu.setPinIdentidade(usuarioExiste.getPinIdentidade());
@@ -1394,48 +1338,31 @@ public class CpBL {
 					usu.setCpOrgaoUsuario(ou);
 					usu.setHisDtIni(usu.getDtCriacaoIdentidade());
 					usu.setHisAtivo(1);
-				}
-
-				if (usu != null) {
 					usu.setNmLoginIdentidade(pessoa.getSesbPessoa() + pessoa.getMatricula());
 					usu.setDpPessoa(pessoa);
 					CpDao.getInstance().gravarComHistorico(usu, identidadeCadastrante);
 				}
 			}
-			
+
 			for (DpPessoa dpPessoaAnt2 : listaPessoasMesmoCPF) {
-				if (dpPessoaAnt2.getNomePessoa().equalsIgnoreCase(pessoa.getNomePessoa())) continue;
+				if (dpPessoaAnt2.getNomePessoa().equals(pessoa.getNomePessoa())) {
+					continue;
+				}
 				if(!dpPessoaAnt2.getId().equals(id)) {
-					pessoa2 = new DpPessoa();
+					pessoa2 = DpPessoa.novaInstanciaBaseadaEm(dpPessoaAnt2, data);
 					pessoa2.setNomePessoa(pessoa.getNomePessoa());
-					pessoa2.setOrgaoUsuario(dpPessoaAnt2.getOrgaoUsuario());
-					pessoa2.setLotacao(dpPessoaAnt2.getLotacao());
-					pessoa2.setFuncaoConfianca(dpPessoaAnt2.getFuncaoConfianca());
-					pessoa2.setMatricula(dpPessoaAnt2.getMatricula());
-					pessoa2.setCpfPessoa(dpPessoaAnt2.getCpfPessoa());
-					pessoa2.setCargo(dpPessoaAnt2.getCargo());
-					pessoa2.setIdePessoa(dpPessoaAnt2.getIdePessoa());
-					pessoa2.setEmailPessoa(dpPessoaAnt2.getEmailPessoa());
-					pessoa2.setDataFimPessoa(data);
-					pessoa2.setSituacaoFuncionalPessoa(dpPessoaAnt2.getSituacaoFuncionalPessoa());
-					pessoa2.setSesbPessoa(dpPessoaAnt2.getSesbPessoa());
+					pessoa2.setNomeExibicao(pessoa.getNomeExibicao());
 					pessoa2.setDataFimPessoa(dpPessoaAnt2.getDataFimPessoa());
-					pessoa2.setDataNascimento(dpPessoaAnt2.getDataNascimento());
-					pessoa2.setIdPessoaIni(dpPessoaAnt2.getIdPessoaIni());
 					CpDao.getInstance().gravarComHistorico(pessoa2, dpPessoaAnt2, data, identidadeCadastrante);
-					
-					// Encerra identidades multiplos usuarios anteriores e cria novas identidades com mesma senha
-					Cp.getInstance().getBL().criarIdentidadeAposEditar(pessoa2.getSesbPessoa() + pessoa2.getMatricula(), 
-										dpPessoaAnt2.getCpfFormatado(), identidadeCadastrante);
-					
+					this.criarIdentidadeComHistorico(data, dpPessoaAnt2, pessoa2, identidadeCadastrante);
 				}
 			}
-			
+
 			if(enviarEmail != null && idOrgaoUsu != null && cpf != null && lista != null && lista.size() == 0) {
 				Cp.getInstance().getBL().criarIdentidade(pessoa.getSesbPessoa() + pessoa.getMatricula(),
 						pessoa.getCpfFormatado(), identidadeCadastrante, null, new String[1], Boolean.FALSE);
 			}
-		
+
 			return pessoa;
 		//	dao().em().getTransaction().commit();
 		} catch (final Exception e) {
@@ -1448,8 +1375,16 @@ public class CpBL {
 			}
 		}
 	}
-	
-		
+
+	public CpIdentidade criarIdentidadeComHistorico(Date dataCriacaoIdentidade, DpPessoa pessoaAnterior, DpPessoa pessoaNova, CpIdentidade identidadeCadastrante) {
+		final CpIdentidade identidadeAntiga = CpDao.getInstance().consultaIdentidade(pessoaAnterior);
+		final CpIdentidade identidadeNova = CpIdentidade.novaInstanciaBaseadaEm(identidadeAntiga, pessoaNova, dataCriacaoIdentidade);
+
+		CpDao.getInstance().gravarComHistorico(identidadeNova, identidadeAntiga, dataCriacaoIdentidade, identidadeCadastrante);
+
+		return identidadeNova;
+	}
+
 	public String inativarUsuario(final Long idUsuario) {
 		CpOrgaoUsuario ou = new CpOrgaoUsuario();
 		DpPessoa pessoa = dao().consultar(idUsuario, DpPessoa.class, false);
@@ -1962,7 +1897,7 @@ public class CpBL {
 					
 					DpPessoa pessoaNova = null;
 					for (DpPessoa dpPessoa : listPessoa) {
-						pessoaNova = new DpPessoa();
+						pessoaNova = DpPessoa.novaInstanciaBaseadaEm(dpPessoa, data);
 						if(dpPessoa.getLotacao().getIdInicial().equals(lotacaoNova.getIdLotacaoIni())) {
 							pessoaNova.setLotacao(lotacaoNova);
 						} else {
@@ -1980,20 +1915,8 @@ public class CpBL {
 								pessoaNova.setLotacao(lotacaoFilhoNova);
 							}
 						}				
-						copiarPessoa(dpPessoa, pessoaNova);
 						dao().gravarComHistorico(pessoaNova, dpPessoa, data, identidadeCadastrante);
-						
-						List<CpIdentidade> lista = CpDao.getInstance().consultaIdentidades(dpPessoa);
-						if (lista.size() > 0) {
-							CpIdentidade identidadeAntiga = lista.get(0);
-							
-							CpIdentidade identidadeNova = new CpIdentidade();
-							identidadeNova.setDtCriacaoIdentidade(data);
-							identidadeNova.setDpPessoa(pessoaNova);
-							copiarIdentidade(identidadeAntiga, identidadeNova);
-							
-							dao().gravarComHistorico(identidadeNova, identidadeAntiga, data, identidadeCadastrante);
-						}
+						criarIdentidadeComHistorico(data, dpPessoa, pessoaNova, identidadeCadastrante);
 					}
 				}
 			} catch (final Exception e) {
@@ -2013,7 +1936,14 @@ public class CpBL {
 		lotNova.setOrgaoUsuario(lotAnt.getOrgaoUsuario());
 		lotNova.setIsSuspensa(lotAnt.getIsSuspensa());
 	}
-	
+
+	/**
+	 * @deprecated usar {@link DpPessoa#novaInstanciaBaseadaEm(DpPessoa, Date)} ou {@link DpPessoa#novaInstanciaBaseadaEm(DpPessoa)}
+	 * 
+	 * @param pesAnt
+	 * @param pesNova
+	 */
+	@Deprecated
 	public void copiarPessoa(DpPessoa pesAnt, DpPessoa pesNova) {
 		pesNova.setNomePessoa(pesAnt.getNomePessoa());
 		pesNova.setCpfPessoa(pesAnt.getCpfPessoa());
@@ -2033,16 +1963,6 @@ public class CpBL {
 		pesNova.setIdPessoaIni(pesAnt.getIdPessoaIni());
 		pesNova.setIdePessoa(pesAnt.getIdePessoa());
 		pesNova.setTramitarOutrosOrgaos(pesAnt.isTramitarOutrosOrgaos());
-	}
-	
-	public void copiarIdentidade(CpIdentidade identidadeAntiga, CpIdentidade identidadeNova) {
-		identidadeNova.setCpTipoIdentidade(identidadeAntiga.getCpTipoIdentidade());
-		identidadeNova.setDscSenhaIdentidade(identidadeAntiga.getDscSenhaIdentidade());
-		identidadeNova.setPinIdentidade(identidadeAntiga.getPinIdentidade());
-		identidadeNova.setNmLoginIdentidade(identidadeAntiga.getNmLoginIdentidade());
-		identidadeNova.setCpOrgaoUsuario(identidadeAntiga.getCpOrgaoUsuario());
-		identidadeNova.setHisDtIni(identidadeNova.getDtCriacaoIdentidade());
-		identidadeNova.setHisAtivo(1);
 	}
 	
 }
