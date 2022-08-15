@@ -2055,8 +2055,7 @@ public class CpDao extends ModeloDao {
 		return obj;
 	}
 
-	public HistoricoAuditavel gravarComHistorico(HistoricoAuditavel oNovo, HistoricoAuditavel oAntigo, Date dt,
-			CpIdentidade identidadeCadastrante) throws AplicacaoException {
+	public <T extends HistoricoAuditavel> T gravarComHistorico(T oNovo, T oAntigo, Date dt, CpIdentidade identidadeCadastrante) throws AplicacaoException {
 		if (dt == null)
 			dt = CpDao.getInstance().consultarDataEHoraDoServidor();
 		oNovo.setHisDtIni(dt);
@@ -2073,7 +2072,7 @@ public class CpDao extends ModeloDao {
 		return gravarComHistorico(oNovo, identidadeCadastrante);
 	}
 
-	public HistoricoAuditavel gravarComHistorico(final HistoricoAuditavel entidade, CpIdentidade identidadeCadastrante)
+	public <T extends HistoricoAuditavel> T gravarComHistorico(final T entidade, CpIdentidade identidadeCadastrante)
 			throws AplicacaoException {
 		if (entidade.getHisDtIni() != null && entidade.getHisIdcIni() == null)
 			entidade.setHisIdcIni(identidadeCadastrante);
