@@ -1151,17 +1151,22 @@ public class CpBL {
 			throw new AplicacaoException("Nome com caracteres não permitidos");
 		}
 
+		DpLotacao lotacaoNova = CpDao.getInstance().consultar(idLotacao, DpLotacao.class, false);
 		DpPessoa pessoa = new DpPessoa();
 		DpPessoa pessoaAnt = null;
 		List<CpIdentidade> lista = new ArrayList<CpIdentidade>();
-		
+
 		if(id != null) {
 			pessoaAnt = CpDao.getInstance().consultar(id, DpPessoa.class, false).getPessoaAtual();
 			if(pessoaAnt != null) {
-				Integer qtde = CpDao.getInstance().quantidadeDocumentos(pessoaAnt);
-				if (qtde > 0 && !idLotacao.equals(pessoaAnt.getLotacao().getId())) {
+				final int qtdeDocumentosPendentes = CpDao.getInstance().quantidadeDocumentos(pessoaAnt);
+				final DpLotacao lotacaoAnterior = pessoaAnt.getLotacao();
+				final boolean idInicialLotacaoNovaDiferenteDaAnterior = lotacaoNova.getIdInicial().longValue() != lotacaoAnterior.getIdInicial().longValue();
+
+				if (qtdeDocumentosPendentes > 0 && idInicialLotacaoNovaDiferenteDaAnterior) {
 					throw new AplicacaoException("A unidade da pessoa não pode ser alterada, pois existem documentos pendentes");
 				}
+
 				pessoa.setIdInicial(pessoaAnt.getIdInicial());
 				pessoa.setMatricula(pessoaAnt.getMatricula());
 			}
@@ -1224,12 +1229,10 @@ public class CpBL {
 		} else {
 			pessoa.setDataExpedicaoIdentidade(null);
 		}
-		
-		
+
 		pessoa.setIdentidade(identidade);
 		pessoa.setOrgaoIdentidade(orgaoIdentidade);
 		pessoa.setUfIdentidade(ufIdentidade);		
-		
 
 		pessoa.setNomePessoa(Texto.removerEspacosExtra(nmPessoa).trim());
 		pessoa.setCpfPessoa(Long.valueOf(cpf.replace("-", "").replace(".", "")));
@@ -1239,11 +1242,10 @@ public class CpBL {
 		CpOrgaoUsuario ou = new CpOrgaoUsuario();
 		DpCargo cargo = new DpCargo();
 		DpFuncaoConfianca funcao = new DpFuncaoConfianca();
-		DpLotacao lotacao = new DpLotacao();
 
 		ou.setIdOrgaoUsu(idOrgaoUsu);
 		ou = CpDao.getInstance().consultarPorId(ou);
-		
+
 		if (!CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(identidadeCadastrante.getCpOrgaoUsuario().getSigla())) {
 			if(!CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadeCadastrante.getCpOrgaoUsuario().getSigla())) {
 				if (!ou.getIdOrgaoUsu().equals(identidadeCadastrante.getCpOrgaoUsuario().getIdOrgaoUsu())) {
@@ -1251,17 +1253,14 @@ public class CpBL {
 				}
 			}
 		}
-				
+
 		cargo = CpDao.getInstance().consultar(idCargo, DpCargo.class, false);
 		if (!ou.getIdOrgaoUsu().equals(cargo.getOrgaoUsuario().getIdOrgaoUsu())) {
 			throw new AplicacaoException("Cargo informado não pertence ao órgão informado.");
 		}
-		
-		lotacao = CpDao.getInstance().consultar(idLotacao, DpLotacao.class, false);
-		if (!ou.getIdOrgaoUsu().equals(lotacao.getOrgaoUsuario().getIdOrgaoUsu())) {
+		if (!ou.getIdOrgaoUsu().equals(lotacaoNova.getOrgaoUsuario().getIdOrgaoUsu())) {
 			throw new AplicacaoException("Lotação informada não pertence ao órgão informado.");
 		}
-		
 		if (idFuncao != null && idFuncao != 0) {
 			funcao  = CpDao.getInstance().consultar(idFuncao, DpFuncaoConfianca.class, false);
 			
@@ -1272,15 +1271,13 @@ public class CpBL {
 
 		pessoa.setOrgaoUsuario(ou);
 		pessoa.setCargo(cargo);
-		pessoa.setLotacao(lotacao);
+		pessoa.setLotacao(lotacaoNova);
 		if (idFuncao != null && idFuncao != 0) {
 			pessoa.setFuncaoConfianca(funcao);
 		} else {
 			pessoa.setFuncaoConfianca(null);
 		}
 		pessoa.setSesbPessoa(ou.getSigla());
-		
-
 
 		// ÓRGÃO / CARGO / FUNÇÃO DE CONFIANÇA / LOTAÇÃO e CPF iguais.
 		DpPessoaDaoFiltro dpPessoa = new DpPessoaDaoFiltro();
