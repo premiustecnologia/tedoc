@@ -35,9 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -361,8 +359,22 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 
 				final DpPessoa pessoa = DpPessoa.novaInstanciaBaseadaEm(pessoaAnt);
 				try {
-					dao().gravarComHistorico(pessoa, pessoaAnt,dao().consultarDataEHoraDoServidor(), identidadeCadastrante);
-					Cp.getInstance().getBL().criarIdentidadeComHistorico(new Date(), pessoaAnt, pessoa, identidadeCadastrante);
+					/*
+					 * FIXME
+					 * 
+					 * Correção exclusiva para pessoas inativadas erroneamente durante bugs
+					 * ocorridos durante a migração.
+					 * 
+					 * Após correções, remover o IF abaixo e alterar o chamada subsequente para:
+					 * Cp.getInstance().getBL().criarIdentidadeComHistorico(new Date(), pessoaAnt, pessoa, identidadeCadastrante);
+					 */
+					DpPessoa pessoaSalva = dao().gravarComHistorico(pessoa, pessoaAnt,dao().consultarDataEHoraDoServidor(), identidadeCadastrante);
+					if (pessoaSalva == pessoaAnt) {
+						pessoaSalva.setDataFim(null);
+						pessoaSalva = dao().gravar(pessoaSalva);
+					}
+
+					Cp.getInstance().getBL().criarIdentidadeComHistorico(new Date(), pessoaAnt, pessoaSalva, identidadeCadastrante);
 				} catch (Exception e) {
 					if(e.getCause() instanceof ConstraintViolationException &&
 	    					("CORPORATIVO.DP_PESSOA_UNIQUE_PESSOA_ATIVA".equalsIgnoreCase(((ConstraintViolationException)e.getCause()).getConstraintName()))) {
