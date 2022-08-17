@@ -99,10 +99,8 @@
 						<div class="row">
 							<div class="col-md-2 col-sm-3">
 								<div class="form-group">
-									<label for="dtMovString">Data</label> <input
-										class="form-control" type="text" name="dtMovString"
-										value="${dtMovString}"
-										onblur="javascript:verifica_data(this,0);" />
+									<label for="dtMovString">Data</label>
+									<input class="form-control" type="text" name="dtMovString" readonly="readonly" disabled="disabled" />
 								</div>
 							</div>
 							<div class="col-sm-6">
@@ -386,6 +384,10 @@
 	</div>
 	<script>
 		mostraBotaoAssinatura();
+
+		// Seta campo de data com a data de hoje
+		const agora = new Date();
+		document.querySelector('input[name=dtMovString]').value = agora.toLocaleDateString('pt-BR');
 	</script>
 
 

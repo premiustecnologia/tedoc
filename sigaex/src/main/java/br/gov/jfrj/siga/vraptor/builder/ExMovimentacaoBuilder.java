@@ -191,6 +191,7 @@ public final class ExMovimentacaoBuilder {
 				}
 			} catch (final ParseException e) {
 				log.warn("Não foi possível ler a data de movimentação", e);
+				mov.setDtMov(new Date());
 			}
 		}
 
