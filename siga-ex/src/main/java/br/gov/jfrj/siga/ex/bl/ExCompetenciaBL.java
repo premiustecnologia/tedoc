@@ -18,6 +18,8 @@
  ******************************************************************************/
 package br.gov.jfrj.siga.ex.bl;
 
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
 
 import br.gov.jfrj.siga.base.Prop;
 import br.gov.jfrj.siga.base.SigaMessages;
@@ -899,11 +902,14 @@ public class ExCompetenciaBL extends CpCompetenciaBL {
 			}
 			final ExMobil ultimoMobil = mob.doc().getUltimoMobil();
 			if (ultimoMobil != null) {
-				final ExMarca primeiraMarcaUltimoMobil = ultimoMobil.getExMarcaSet().first();
-				if (primeiraMarcaUltimoMobil != null) {
-					final CpMarcador marcadorUltimoMobil = primeiraMarcaUltimoMobil.getCpMarcador();
-					if (marcadorUltimoMobil != null && marcadorUltimoMobil.getIdMarcador().longValue() == CpMarcadorEnum.CAIXA_DE_ENTRADA.getId()) {
-						return false;
+				final SortedSet<ExMarca> marcasUltimoMobil = ultimoMobil.getExMarcaSet();
+				if (isNotEmpty(marcasUltimoMobil)) {
+					final ExMarca primeiraMarcaUltimoMobil = marcasUltimoMobil.first();
+					if (primeiraMarcaUltimoMobil != null) {
+						final CpMarcador marcadorUltimoMobil = primeiraMarcaUltimoMobil.getCpMarcador();
+						if (marcadorUltimoMobil != null && marcadorUltimoMobil.getIdMarcador().longValue() == CpMarcadorEnum.CAIXA_DE_ENTRADA.getId()) {
+							return false;
+						}
 					}
 				}
 			}
