@@ -2,6 +2,8 @@ package br.gov.jfrj.siga.base;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -9,9 +11,9 @@ import java.util.List;
 public class Prop {
 
 	public static final String DEFAULT_URL = "http://localhost:8080";
-	
-	private static final long DEFAULT_TTL_TOKEN = 15 * 60; // 15 minutos em segundos
-	
+
+	private static final long DEFAULT_TTL_TOKEN = Duration.of(1, ChronoUnit.HOURS).getSeconds();
+
 	public interface IPropertyProvider {
 		String getProp(String nome);
 
