@@ -22,6 +22,8 @@
 
 package br.gov.jfrj.siga.vraptor;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,8 @@ import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jboss.logging.Logger;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,6 +60,8 @@ import br.gov.jfrj.siga.hibernate.ExDao;
 
 @Controller
 public class ExMesa2Controller extends ExController {
+
+	private static final Logger log = Logger.getLogger(ExMesa2Controller.class);
 
 	/**
 	 * @deprecated CDI eyes only
@@ -109,7 +115,9 @@ public class ExMesa2Controller extends ExController {
 	public void json(Long idVisualizacao, boolean exibeLotacao, boolean trazerAnotacoes, boolean trazerArquivados, 
 			boolean trazerComposto, boolean trazerCancelados, boolean ordemCrescenteData, 
 			boolean usuarioPosse, String parms) throws Exception {
-		
+
+		final Instant start = Instant.now();
+
 		List<br.gov.jfrj.siga.ex.bl.Mesa2.GrupoItem> g = new ArrayList<br.gov.jfrj.siga.ex.bl.Mesa2.GrupoItem>();
 		Map<String, Mesa2.SelGrupo> selGrupos = null;
 		List<Mesa2.GrupoItem> gruposMesa = new ArrayList<Mesa2.GrupoItem>();
@@ -139,7 +147,10 @@ public class ExMesa2Controller extends ExController {
 				result.use(Results.http()).addHeader("Content-Type", "text/plain")
 					.body("Não é permitido exibir dados da sua " 
 							+ SigaMessages.getMessage("usuario.lotacao"))
-					.setStatusCode(200);				
+					.setStatusCode(200);
+
+				final Duration tempo = Duration.between(start, Instant.now());
+				log.debugv("Carregamento de mesa: {0}ms", tempo.toMillis());
 				return;
 			}
 			DpLotacao lotaTitular = null;
@@ -163,8 +174,11 @@ public class ExMesa2Controller extends ExController {
 			}
 	
 			String s = ExAssinadorExternoController.gson.toJson(g);
-			
+
 			result.use(Results.http()).addHeader("Content-Type", "application/json").body(s).setStatusCode(200);
+
+			final Duration tempo = Duration.between(start, Instant.now());
+			log.debugv("Carregamento de mesa: {0}ms", tempo.toMillis());
 		} catch (Exception e) {
 			throw e;
 		} 

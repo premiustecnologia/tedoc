@@ -3,6 +3,9 @@
  */
 "use strict";
 
+// Desabilita cache do session storage
+const REQUESTS_TIMEOUT_MS = 0;
+
 setTimeout(function() {
 	$('#bem-vindo').fadeTo(1000, 0, function() {
 		$('#row-bem-vindo').slideUp(1000);
@@ -145,14 +148,14 @@ var appMesa = new Vue({
 
 			var timeout = Math.abs(new Date() -
 				new Date(sessionStorage.getItem('timeout' + getUser())));
-			if (timeout < 120000 && grpNome == null) {
+			if (timeout < REQUESTS_TIMEOUT_MS && grpNome == null) {
 				if (sessionStorage.getItem('mesa' + getUser()) != undefined) {
 					carregaFromJson(sessionStorage.getItem('mesa' + getUser()), self);
 					resetCacheLotacaoPessoaAtual();
 					return;
 				}
 			}
-			if (this.carregando || timeout < 120000)
+			if (this.carregando || timeout < REQUESTS_TIMEOUT_MS)
 				return;
 			this.carregando = true;
 			var erros = {};
@@ -184,7 +187,7 @@ var appMesa = new Vue({
 			$.ajax({
 				type: 'POST',
 				url: 'mesa2.json',
-				timeout: 120000,
+				timeout: REQUESTS_TIMEOUT_MS,
 				data: {
 					parms: JSON.stringify(parms),
 					exibeLotacao: this.exibeLota,
