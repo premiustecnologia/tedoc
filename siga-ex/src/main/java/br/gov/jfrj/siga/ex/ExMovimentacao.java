@@ -77,7 +77,7 @@ import br.gov.jfrj.siga.ex.util.PublicacaoDJEBL;
 
 @Entity
 @BatchSize(size = 500)
-@Table(name = "siga.ex_movimentacao")
+@Table(name = ExArquivoFilesystem.TABELA_EX_MOVIMENTACAO)
 public class ExMovimentacao extends AbstractExMovimentacao implements
 		Serializable, Comparable<ExMovimentacao> {
 
@@ -1304,4 +1304,10 @@ public class ExMovimentacao extends AbstractExMovimentacao implements
 
 		return "OK (" + validateresp.getPolicy() + " v" + validateresp.getPolicyversion() + ")";
 	}
+
+	@Override
+	public String getNomeTabela() {
+		return ExArquivoFilesystem.TABELA_EX_MOVIMENTACAO;
+	}
+
 }

@@ -18,10 +18,14 @@ import br.gov.jfrj.siga.dp.DpLotacao;
 
 public interface ExArquivoFilesystem {
 
+	public static final String ZIP_MIME_TYPE = "application/zip";
+	public static final String TABELA_EX_DOCUMENTO = "siga.ex_documento";
+	public static final String TABELA_EX_MOVIMENTACAO = "siga.ex_movimentacao";
+
 	static final String YEAR_PATTERN = "yyyy";
 	static final String EXTENSAO_ZIP = ".zip";
-	public static final String ZIP_MIME_TYPE = "application/zip";
-	static final String ERRO_CAMINHO_ARQUIVO = "Erro ao montar caminho para o arquivo \"%s\" de ID=%d: campo \"%s\" não pôde ser convertido em caminho";
+
+	static final String ERRO_CAMINHO_ARQUIVO = "Erro ao montar caminho para o arquivo referenciado no registro da tabela \"%s\" no ID=%d: campo \"%s\" não pôde ser convertido em caminho";
 
 	Long getId();
 
@@ -31,27 +35,28 @@ public interface ExArquivoFilesystem {
 
 	Path getPathConteudo(Path base);
 
-	default Path getPathConteudo(AbstractExDocumento documento, String tipoNome, Path base) {
+	default Path getPathConteudo(AbstractExDocumento documento, Path base) {
 
 		final String acronimoOrgao = ofNullable(this.getLotaTitular())
 				.map(DpLotacao::getOrgaoUsuario)
 				.map(CpOrgaoUsuario::getAcronimoOrgaoUsu)
 				.map(StringUtils::stripToNull)
-				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, tipoNome, this.getId(), "ÓRGAO")));
+				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, this.getNomeTabela(), this.getId(), "getLotaTitular() -> getOrgaoUsuario() -> getAcronimoOrgaoUsu()")));
 
 		final String siglaForma = ofNullable(documento)
 				.map(AbstractExDocumento::getExFormaDocumento)
 				.map(ExFormaDocumento::getSiglaFormaDoc)
-				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, tipoNome, this.getId(), "FORMA DOCUMENTO")));
+				.map(StringUtils::stripToNull)
+				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, this.getNomeTabela(), this.getId(), "getExFormaDocumento() -> getSiglaFormaDoc()")));
 
 		final String ano = ofNullable(this.getData())
 				.map(dataHora -> DateFormatUtils.format(dataHora, YEAR_PATTERN))
-				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, tipoNome, this.getId(), "DATA/HORA")));
+				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, this.getNomeTabela(), this.getId(), "getData()")));
 
 		final Long id = ofNullable(this.getId())
-				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, tipoNome, this.getId(), "ID")));
+				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, this.getNomeTabela(), this.getId(), "getId()")));
 
-		return base.resolve(tipoNome)
+		return base.resolve(this.getNomeDiretorio())
 				.resolve(acronimoOrgao)
 				.resolve(siglaForma)
 				.resolve(ano)
@@ -126,5 +131,9 @@ public interface ExArquivoFilesystem {
 	Map<ZipItem, byte[]> getCacheConteudo();
 
 	void setCacheConteudo(Map<ZipItem, byte[]> cacheConteudo);
+
+	String getNomeTabela();
+
+	String getNomeDiretorio();
 
 }

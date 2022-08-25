@@ -21,10 +21,11 @@
  */
 package br.gov.jfrj.siga.ex;
 
+import static java.util.Optional.ofNullable;
+
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Date;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -865,11 +866,16 @@ public abstract class AbstractExMovimentacao extends ExArquivo implements Serial
 
 	@Override
 	public Path getPathConteudo(Path base) {
-		final ExDocumento documento = Optional.ofNullable(this.getExMobil())
+		final ExDocumento documento = ofNullable(this.getExMobil())
 				.map(ExMobil::getDoc)
-				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, NOME_TIPO_DIRETORIO, this.getId(), "MOVIMENTAÇÃO DOCUMENTO")));
+				.orElseThrow(() -> new IllegalArgumentException(String.format(ERRO_CAMINHO_ARQUIVO, this.getNomeTabela(), this.getId(), "getExMobil() -> getDoc()")));
 
-		return this.getPathConteudo(documento, NOME_TIPO_DIRETORIO, base);
+		return this.getPathConteudo(documento, base);
+	}
+
+	@Override
+	public String getNomeDiretorio() {
+		return NOME_TIPO_DIRETORIO;
 	}
 
 }

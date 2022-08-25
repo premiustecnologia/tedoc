@@ -1111,7 +1111,12 @@ public abstract class AbstractExDocumento extends ExArquivo implements Serializa
 
 	@Override
 	public Path getPathConteudo(Path base) {
-		return this.getPathConteudo(this, NOME_TIPO_DIRETORIO, base);
+		return this.getPathConteudo(this, base);
+	}
+
+	@Override
+	public String getNomeDiretorio() {
+		return NOME_TIPO_DIRETORIO;
 	}
 
 }

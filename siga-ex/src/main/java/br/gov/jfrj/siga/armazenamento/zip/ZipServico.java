@@ -31,6 +31,7 @@ import br.gov.jfrj.siga.ex.ExArquivoFilesystem;
 public abstract class ZipServico {
 
 	private static final Logger log = Logger.getLogger(ZipServico.class);
+
 	private static final int CODIGO_ERRO_ZIP_SERVICO = 1050;
 
 	private ZipServico() {}
@@ -40,10 +41,14 @@ public abstract class ZipServico {
 			Path caminhoBase = ZipPropriedades.getInstance().obterCaminhoBase();
 			File zipFile = exArquivo.getPathConteudo(caminhoBase).toFile();
 			FileUtils.forceMkdir(zipFile.getParentFile());
-			log.debugf("Capturando referência para arquivo #%d %s", exArquivo.getId(), zipFile.getAbsolutePath());
+			log.debugf("Capturando referência para arquivo da tabela de \"%s\" ID=%d %s", exArquivo.getNomeTabela(), exArquivo.getId(), zipFile.getAbsolutePath());
 			return zipFile;
 		} catch (Exception e) {
-			throw new AplicacaoException("Não foi possível fazer referência ao arquivo do documento " + exArquivo.getId() + " no sistema de arquivos", CODIGO_ERRO_ZIP_SERVICO, e);
+			final String mensagem = "[ZIP FILE] [I/O READ] "
+					+ "Não foi possível fazer referencia ao arquivo registrado na tabela \""
+					+ exArquivo.getNomeTabela()
+					+ "\" no ID=" + exArquivo.getId();
+			throw new AplicacaoException(mensagem, CODIGO_ERRO_ZIP_SERVICO, e);
 		}
 	}
 
@@ -98,7 +103,11 @@ public abstract class ZipServico {
 			}
 			return zipByteArray;
 		} catch (Exception e) {
-			throw new AplicacaoException("Não foi possível ler os dados do documento " + exArquivo.getId() + " no sistema de arquivos", CODIGO_ERRO_ZIP_SERVICO, e);
+			final String mensagem = "[ZIP FILE] [I/O READ] "
+					+ "Não foi possível ler os dados do arquivo referenciado a partir do registro na tabela \""
+					+ exArquivo.getNomeTabela()
+					+ "\" no ID=" + exArquivo.getId();
+			throw new AplicacaoException(mensagem, CODIGO_ERRO_ZIP_SERVICO, e);
 		}
 	}
 
