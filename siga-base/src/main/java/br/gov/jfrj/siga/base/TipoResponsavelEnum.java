@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import br.gov.jfrj.siga.base.SigaMessages;
-
 public enum TipoResponsavelEnum {
 	
 	MATRICULA(1, SigaMessages.getMessage("usuario.usuario")),
