@@ -190,7 +190,11 @@
 			<div class="row mt-2" style="min-height: 50vh;">
 				<div class="col-sm-12">
 					<template v-for="g in filtrados">
-						<div v-if="!g.hide && (g.grupoCounterUser > 0 || g.grupoCounterLota > 0)" :key="g.grupoOrdem">	
+						<!--
+						DESABILITADA REGRA QUE CONSIDERA O COUNT PARA EXIBIR TAB UMA VEZ QUE ESTÁ QUEBRADA: REABILITAR QUANDO CORRIGIR
+						<div v-if="!g.hide && (g.grupoCounterUser > 0 || g.grupoCounterLota > 0)" :key="g.grupoOrdem">
+						-->
+						<div v-if="!g.hide && g.grupoDocs" :key="g.grupoOrdem">	
 							<div class="collapse-header d-inline">
 								<h5 :id="['collapse-header-' + g.grupoOrdem]" data-toggle="collapse" :data-target="['#collapsetab-' + g.grupoOrdem]" 
 										class="collapse-toggle p-1 table-group table-group-title"
@@ -198,7 +202,9 @@
 										@click="collapseGrupo(g.grupoOrdem, g.grupoNome)">
 									<i class="h5 mb-0" :class="g.grupoIcone"></i>
 									<span class="mr-3">{{g.grupoNome}}</span>
-									<small> 
+									<!--
+									DESABILITADA REGRA QUE CONSIDERA O COUNT UMA VEZ QUE ESTÁ QUEBRADA: REABILITAR QUANDO CORRIGIR O COUNT
+									<small>
 										<span class="badge badge-light btn-sm align-middle" :class="{disabled: exibeLota}">
 											<small class="fas fa-user"></small>
 											<span class="badge badge-light">{{g.grupoCounterUser}}</span>
@@ -210,6 +216,7 @@
 											</span>
 										</c:if>
 									</small>
+									-->
 								</h5>
 							</div>
 							<div :id="['collapsetab-' + g.grupoOrdem]" class="collapse" :key="g.grupoOrdem" v-bind:class="{show: !g.grupoCollapsed }">

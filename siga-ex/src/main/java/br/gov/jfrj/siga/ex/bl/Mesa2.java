@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
@@ -37,6 +38,9 @@ public class Mesa2 {
 
 	private static final String EM_TRAMITE = "Em Trâmite";
 	private static final String N_A = "N/A";
+
+	private static final Comparator<MesaItem> MESA_ITEM_COMPARATOR_CRESCENTE = Comparator.comparing(MesaItem::getDatahora, Comparator.nullsLast(Comparator.naturalOrder()));
+	private static final Comparator<MesaItem> MESA_ITEM_COMPARATOR_DECRESCENTE = Comparator.comparing(MesaItem::getDatahora, Comparator.nullsLast(Comparator.reverseOrder()));
 
 	private static List<GrupoItem> gruposBase;
 
@@ -81,6 +85,10 @@ public class Mesa2 {
 		public String lotaPosse;
 		public String nomePessoaPosse;
 		public List<Marca> list;
+
+		public Date getDatahora() {
+			return datahora;
+		}
 	}
 
 	public static class Marca implements ISwaggerModel {
@@ -122,16 +130,20 @@ public class Mesa2 {
 			DpLotacao unidade, Date currentDate, String grupoOrdem, boolean trazerAnotacoes, 
 			boolean ordemCrescenteData, boolean usuarioPosse,
 			List<Long> marcasAIgnorar) {
-		List<MesaItem> l = new ArrayList<>();
+
+		final List<MesaItem> grupoItens = new ArrayList<Mesa2.MesaItem>();
 		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-		for (ExMobil mobil : references.keySet()) {
+		for (Entry<ExMobil, DocDados> item : references.entrySet()) {
+			final ExMobil mobil = item.getKey();
+			final DocDados docDados = item.getValue();
+
 			MesaItem r = new MesaItem();
 			r.tipo = "Documento";
 
 			Date datahora = null;
-			if (references.get(mobil).movUltimaDtIniMov != null)
-				datahora = references.get(mobil).movUltimaDtIniMov;
+			if (docDados.movUltimaDtIniMov != null)
+				datahora = docDados.movUltimaDtIniMov;
 			else
 				datahora = mobil.getDoc().getDtAltDoc();
 			r.datahora = datahora;
@@ -141,7 +153,7 @@ public class Mesa2 {
 			r.codigo = mobil.getCodigoCompacto();
 			r.sigla = mobil.getSigla();
 			r.descr = mobil.doc().getDescrCurta(255).replace("\r", " ").replace("\f", " ").replace("\n", " ");
-			if (references.get(mobil).isComposto) {
+			if (docDados.isComposto) {
 				r.tipoDoc = "Composto";
 			} else {
 				r.tipoDoc = "Avulso";
@@ -151,9 +163,9 @@ public class Mesa2 {
 					&& mobil.doc().getSubscritor().getLotacao() != null)
 
 				if (SigaMessages.isSigaSP()) {
-					if (references.get(mobil).movTramiteSiglaLotacao != null) {
-						r.origem = references.get(mobil).movTramiteSiglaOrgao + " / "
-								+ references.get(mobil).movTramiteSiglaLotacao;
+					if (docDados.movTramiteSiglaLotacao != null) {
+						r.origem = docDados.movTramiteSiglaOrgao + " / "
+								+ docDados.movTramiteSiglaLotacao;
 					} else {
 						r.origem = mobil.doc().getSubscritor().getLotacao()
 								.getOrgaoUsuario() + " / "
@@ -172,10 +184,10 @@ public class Mesa2 {
 
 			r.dataDevolucao = "ocultar";
 
-			if (references.get(mobil).movUltimaDtFimMov != null
-					&& references.get(mobil).movUltimaDtFimMov != null) {
+			if (docDados.movUltimaDtFimMov != null
+					&& docDados.movUltimaDtFimMov != null) {
 				Date dataMovimentacao;
-				dataMovimentacao = references.get(mobil).movUltimaDtFimMov;
+				dataMovimentacao = docDados.movUltimaDtFimMov;
 
 				Date dataHoje = new Timestamp(System.currentTimeMillis());
 
@@ -230,7 +242,7 @@ public class Mesa2 {
 			
 			r.list = new ArrayList<Marca>();
 
-			for (MeM tag : references.get(mobil).listMeM) {
+			for (MeM tag : docDados.listMeM) {
 				if (tag.marca.getDtIniMarca() != null
 						&& tag.marca.getDtIniMarca().getTime() > currentDate
 								.getTime())
@@ -302,24 +314,10 @@ public class Mesa2 {
 								tag.marca.getDpLotacaoIni().getId()))
 					t.daLotacao = true;
 			}
-			l.add(r);
+			grupoItens.add(r);
 		}
-
-		Collections.sort(l, new Comparator<MesaItem>() {
-			@Override
-			public int compare(MesaItem o1, MesaItem o2) {
-				int i;
-				if (ordemCrescenteData) {
-					i = o1.datahora.compareTo(o2.datahora);
-				} else {
-					i = o2.datahora.compareTo(o1.datahora);
-				}
-				if (i != 0)
-					return i;
-				return 0;
-			}
-		});
-		return l;
+		Collections.sort(grupoItens, ordemCrescenteData ? MESA_ITEM_COMPARATOR_CRESCENTE : MESA_ITEM_COMPARATOR_DECRESCENTE);
+		return grupoItens;
 	}
 
 	public static List<GrupoItem> getContadores(ExDao dao, DpPessoa titular, DpLotacao lotaTitular, 
@@ -448,9 +446,8 @@ public class Mesa2 {
 						iMobs = iMobsFim;
 					}
 					// Adiciona documentos ao grupo
-					gItem.grupoDocs = Mesa2.listarReferencias(TipoDePainelEnum.UNIDADE, map, titular,
-							titular.getLotacao(), dtNow, gItem.grupoOrdem, trazerAnotacoes, ordemCrescenteData, 
-							usuarioPosse, marcasAIgnorar);
+					gItem.grupoDocs = Mesa2.listarReferencias(TipoDePainelEnum.UNIDADE, map, titular, titular.getLotacao(),
+							dtNow, gItem.grupoOrdem, trazerAnotacoes, ordemCrescenteData, usuarioPosse, marcasAIgnorar);
 					map = new HashMap<>();
 					listIdMobil = new ArrayList<Long>();
 				}
