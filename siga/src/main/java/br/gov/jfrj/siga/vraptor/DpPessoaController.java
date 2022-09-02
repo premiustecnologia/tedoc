@@ -31,19 +31,21 @@ import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
@@ -62,6 +64,7 @@ import br.com.caelum.vraptor.view.Results;
 import br.gov.jfrj.siga.base.AplicacaoException;
 import br.gov.jfrj.siga.base.GeraMessageDigest;
 import br.gov.jfrj.siga.base.RegraNegocioException;
+import br.gov.jfrj.siga.base.SigaMessages;
 import br.gov.jfrj.siga.base.SigaModal;
 import br.gov.jfrj.siga.base.util.Texto;
 import br.gov.jfrj.siga.cp.CpIdentidade;
@@ -629,7 +632,9 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			DpPessoa pes = new CpBL().criarUsuario(id, getIdentidadeCadastrante(), idOrgaoUsu, idCargo, idFuncao,
 					idLotacao, nmPessoa, dtNascimento, cpf, email, identidade, orgaoIdentidade, ufIdentidade,
 					dataExpedicaoIdentidade, nomeExibicao, enviarEmail, toBooleanDefaultIfNull(tramitarOutrosOrgaos, false));
-			this.result.include("mensagem", "Operação realizada com sucesso!");
+			
+			String mensagem = String.format("%s\n%s", SigaMessages.getMessage("usuario.cadastro.sucesso"), SigaMessages.getMessage("usuario.cadastro.envioemail"));
+			result.include(SigaModal.ALERTA, SigaModal.mensagem(mensagem).titulo("Sucesso"));
 		} catch (RegraNegocioException e) {
 			result.include(SigaModal.ALERTA, e.getMessage());
 		}
@@ -683,25 +688,24 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			String nomeArquivo = arquivo.getFileName();
 			String extensao = nomeArquivo.substring(nomeArquivo.lastIndexOf("."), nomeArquivo.length());
 
-			File file = new File("arq" + extensao);
-
-			file.createNewFile();
-			FileUtils.copyInputStreamToFile(arquivo.getFile(), file);
+			java.nio.file.Path tempFilePath = Files.createTempFile(UUID.randomUUID().toString(), extensao);
+			Files.copy(arquivo.getFile(), tempFilePath, StandardCopyOption.REPLACE_EXISTING);
 
 			CpOrgaoUsuario orgaoUsuario = new CpOrgaoUsuario();
-			if (idOrgaoUsu != null && !"".equals(idOrgaoUsu)) {
+			if (idOrgaoUsu != null) {
 				orgaoUsuario.setIdOrgaoUsu(idOrgaoUsu);
 			} else {
 				orgaoUsuario = getTitular().getOrgaoUsuario();
 			}
 
 			CpBL cpbl = new CpBL();
-			inputStream = cpbl.uploadPessoa(file, orgaoUsuario, extensao, getIdentidadeCadastrante());
+			inputStream = cpbl.uploadPessoa(tempFilePath.toFile(), orgaoUsuario, extensao, getIdentidadeCadastrante());
 		} catch (Exception e) {
 			throw new AplicacaoException("Problemas ao salvar pessoa(s)", 0, e);	
 		}
 		if (inputStream == null) {
-			result.include(SigaModal.ALERTA, SigaModal.mensagem("Arquivo processado com sucesso!").titulo("Sucesso"));
+			String mensagem = String.format("%s\n%s", SigaMessages.getMessage("usuario.cadastro.sucesso"), SigaMessages.getMessage("usuario.cadastro.envioemail"));
+			result.include(SigaModal.ALERTA, SigaModal.mensagem(mensagem).titulo("Sucesso"));
 			carregarExcel();
 		} else {			
 			return new InputStreamDownload(inputStream, "application/text", "inconsistencias.txt");
