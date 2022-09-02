@@ -2139,7 +2139,7 @@ public class ExDao extends CpDao {
 	}
 
 	public List consultarTotaisPorMarcador(DpPessoa pes, DpLotacao lot, List<GrupoItem> grupos, 
-			boolean exibeLotacao, List<Integer> marcasAIgnorar) {
+			boolean exibeLotacao, List<Long> marcasAIgnorar) {
 		try {
 //			long tempoIni = System.nanoTime();
 			String query = "";
@@ -2217,7 +2217,7 @@ public class ExDao extends CpDao {
 	}
 
 	public List listarMobilsPorMarcas(DpPessoa titular,	DpLotacao lotaTitular, boolean exibeLotacao, 
-			boolean ordemCrescenteData, List<Integer> marcasAIgnorar) {
+			boolean ordemCrescenteData, List<Long> marcasAIgnorar) {
 		String queryString;
 		String queryMarcasAIgnorar = "";
 		String queryMarcasAIgnorarWhere = "";
@@ -2228,7 +2228,7 @@ public class ExDao extends CpDao {
 		if (marcasAIgnorar != null && marcasAIgnorar.size() > 0) {
 			queryMarcasAIgnorar += " left join ExMarca marca2 on "
 					+ " marca2.exMobil = marca.exMobil AND (";
-			for (Integer marcaAIgnorar : marcasAIgnorar) {
+			for (Long marcaAIgnorar : marcasAIgnorar) {
 				queryMarcasAIgnorar += " marca2.cpMarcador.idMarcador = " + marcaAIgnorar.toString() + " OR"; 
 			}
 			queryMarcasAIgnorar = queryMarcasAIgnorar.substring(0, queryMarcasAIgnorar.length() - 2) + ") ";

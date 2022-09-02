@@ -22,9 +22,16 @@
 
 package br.gov.jfrj.siga.vraptor;
 
+import static java.util.Collections.singletonList;
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,17 +58,30 @@ import br.gov.jfrj.siga.cp.CpAcesso;
 import br.gov.jfrj.siga.cp.CpTipoConfiguracao;
 import br.gov.jfrj.siga.cp.bl.Cp;
 import br.gov.jfrj.siga.cp.model.enm.CpMarcadorEnum;
-import br.gov.jfrj.siga.dp.DpLotacao;
+import br.gov.jfrj.siga.dp.DpPessoa;
 import br.gov.jfrj.siga.dp.DpVisualizacao;
 import br.gov.jfrj.siga.ex.bl.AcessoConsulta;
-import br.gov.jfrj.siga.ex.bl.Ex;
 import br.gov.jfrj.siga.ex.bl.Mesa2;
+import br.gov.jfrj.siga.ex.bl.Mesa2.SelGrupo;
 import br.gov.jfrj.siga.hibernate.ExDao;
 
 @Controller
 public class ExMesa2Controller extends ExController {
 
 	private static final Logger log = Logger.getLogger(ExMesa2Controller.class);
+
+	private static final TypeReference<Map<String, SelGrupo>> RESPONSE_SERIALIZATION_VALUE_TYPE_REF = new TypeReference<Map<String, Mesa2.SelGrupo>>() {};
+
+	private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+	private static final List<Long> MARCAS_IGNORAR_PADRAO = singletonList(
+			CpMarcadorEnum.CANCELADO.getId()
+	);
+	private static final List<Long> MARCAS_IGNORAR_SIGA_SP = Arrays.asList(
+			CpMarcadorEnum.CANCELADO.getId(),
+			CpMarcadorEnum.ARQUIVADO_CORRENTE.getId(),
+			CpMarcadorEnum.ARQUIVADO_INTERMEDIARIO.getId(),
+			CpMarcadorEnum.ARQUIVADO_PERMANENTE.getId()
+	);
 
 	/**
 	 * @deprecated CDI eyes only
@@ -116,71 +136,72 @@ public class ExMesa2Controller extends ExController {
 			boolean trazerComposto, boolean trazerCancelados, boolean ordemCrescenteData, 
 			boolean usuarioPosse, String parms) throws Exception {
 
-		final Instant start = Instant.now();
+		final Instant inicio = Instant.now();
 
-		List<br.gov.jfrj.siga.ex.bl.Mesa2.GrupoItem> g = new ArrayList<br.gov.jfrj.siga.ex.bl.Mesa2.GrupoItem>();
-		Map<String, Mesa2.SelGrupo> selGrupos = null;
-		List<Mesa2.GrupoItem> gruposMesa = new ArrayList<Mesa2.GrupoItem>();
-		result.include("ehPublicoExterno", AcessoConsulta.ehPublicoExterno(getTitular()));
-		List<Integer> marcasAIgnorar = new ArrayList<Integer>();
-		
-		if (!trazerCancelados) {
-			marcasAIgnorar.add((int) CpMarcadorEnum.CANCELADO.getId());
-		}
-
-		if (SigaMessages.isSigaSP()) { 
-			if (!trazerArquivados) {
-				marcasAIgnorar.add((int) CpMarcadorEnum.ARQUIVADO_CORRENTE.getId()); 
-				marcasAIgnorar.add((int) CpMarcadorEnum.ARQUIVADO_INTERMEDIARIO.getId()); 
-				marcasAIgnorar.add((int) CpMarcadorEnum.ARQUIVADO_PERMANENTE.getId()); 
-			}
-		}
 		try {
-			if (parms != null) {
-				ObjectMapper mapper = new ObjectMapper();
-				selGrupos = mapper.readValue(parms, new TypeReference<Map<String, Mesa2.SelGrupo>>() {});
-			}
-			if (exibeLotacao 
-					&& (Ex.getInstance().getComp().ehPublicoExterno(
-							getTitular()) 
-					|| !Prop.getBool("/siga.mesa.carrega.lotacao"))) {
-				result.use(Results.http()).addHeader("Content-Type", "text/plain")
-					.body("Não é permitido exibir dados da sua " 
-							+ SigaMessages.getMessage("usuario.lotacao"))
-					.setStatusCode(200);
+			final boolean publicoExterno = AcessoConsulta.ehPublicoExterno(getTitular()); 
+			result.include("ehPublicoExterno", publicoExterno);
+			final boolean deveCarregarLotacao = Prop.getBool("/siga.mesa.carrega.lotacao");
 
-				final Duration tempo = Duration.between(start, Instant.now());
+			if (exibeLotacao && (publicoExterno || !deveCarregarLotacao)) {
+				result.use(Results.http())
+						.addHeader(CONTENT_TYPE, TEXT_PLAIN)
+						.body("Não é permitido exibir dados da sua " + SigaMessages.getMessage("usuario.lotacao"))
+						.setStatusCode(HttpServletResponse.SC_OK);
+
+				final Duration tempo = Duration.between(inicio, Instant.now());
 				log.debugv("Carregamento de mesa: {0}ms", tempo.toMillis());
 				return;
 			}
-			DpLotacao lotaTitular = null;
-			if(idVisualizacao != null && !idVisualizacao.equals(Long.valueOf(0)) 
-					&& Cp.getInstance().getConf().podePorConfiguracao
-						(getCadastrante(), 
-						 getCadastrante().getLotacao(), 
-						 CpTipoConfiguracao.TIPO_CONFIG_DELEGAR_VISUALIZACAO)) {
-				DpVisualizacao vis = dao().consultar(idVisualizacao, DpVisualizacao.class, false);
-				lotaTitular = vis.getTitular().getLotacao();
-				gruposMesa = Mesa2.getContadores(dao(), vis.getTitular(), lotaTitular, selGrupos, 
-						exibeLotacao, marcasAIgnorar);
-				g = Mesa2.getMesa(dao(), vis.getTitular(), lotaTitular, selGrupos, 
-						gruposMesa, exibeLotacao, trazerAnotacoes, trazerComposto, ordemCrescenteData, usuarioPosse, marcasAIgnorar);
-			} else {
-				lotaTitular = getTitular().getLotacao();
-				gruposMesa = Mesa2.getContadores(dao(), getTitular(), lotaTitular, selGrupos, 
-						exibeLotacao, marcasAIgnorar);
-				g = Mesa2.getMesa(dao(), getTitular(), lotaTitular, selGrupos, 
-						gruposMesa, exibeLotacao, trazerAnotacoes, trazerComposto, ordemCrescenteData, usuarioPosse, marcasAIgnorar);
-			}
-	
-			String s = ExAssinadorExternoController.gson.toJson(g);
 
-			result.use(Results.http()).addHeader("Content-Type", "application/json").body(s).setStatusCode(200);
+			final Map<String, Mesa2.SelGrupo> selGrupos = isNotBlank(parms)
+					? JSON_MAPPER.readValue(parms, RESPONSE_SERIALIZATION_VALUE_TYPE_REF)
+					: null;
 
-			final Duration tempo = Duration.between(start, Instant.now());
+			final List<Long> marcasIgnorar = getMarcasIgnorar(trazerCancelados);
+			final DpPessoa titular = getTitular(idVisualizacao);
+
+			final List<Mesa2.GrupoItem> mesa = Mesa2.getContadores(dao(), titular, titular.getLotacao(), selGrupos, exibeLotacao, marcasIgnorar);
+			Mesa2.popularDocumentos(dao(), titular, titular.getLotacao(), selGrupos, mesa, exibeLotacao, trazerAnotacoes, trazerComposto, ordemCrescenteData, usuarioPosse, marcasIgnorar);
+
+			result.use(Results.http())
+					.addHeader(CONTENT_TYPE, APPLICATION_JSON)
+					.body(ExAssinadorExternoController.gson.toJson(mesa))
+					.setStatusCode(HttpServletResponse.SC_OK);
+
+			final Duration tempo = Duration.between(inicio, Instant.now());
 			log.debugv("Carregamento de mesa: {0}ms", tempo.toMillis());
 		} catch (Exception e) {
 			throw e;
 		} 
 	}
+
+	private List<Long> getMarcasIgnorar(final boolean trazerCancelados) {
+		if (trazerCancelados) {
+			return Collections.emptyList();
+		}
+
+		return SigaMessages.isSigaSP() ? MARCAS_IGNORAR_SIGA_SP : MARCAS_IGNORAR_PADRAO;
+	}
+
+	private DpPessoa getTitular(final Long idVisualizacao) throws Exception {
+		if (idVisualizacao == null || idVisualizacao.longValue() <= 0L) {
+			return this.getTitular();
+		}
+
+		final DpPessoa cadastrante = this.getCadastrante();
+		boolean cadastrantePodeDelegarVisualizacao = Cp.getInstance().getConf().podePorConfiguracao(
+				cadastrante,
+				cadastrante.getLotacao(),
+				CpTipoConfiguracao.TIPO_CONFIG_DELEGAR_VISUALIZACAO
+		);
+
+		if (!cadastrantePodeDelegarVisualizacao) {
+			return this.getTitular();
+		}
+
+		final DpVisualizacao vis = dao().consultar(idVisualizacao, DpVisualizacao.class, false);
+		return vis.getTitular();
+	}
+
 }

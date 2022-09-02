@@ -121,7 +121,7 @@ public class Mesa2 {
 			Map<ExMobil, DocDados> references, DpPessoa pessoa,
 			DpLotacao unidade, Date currentDate, String grupoOrdem, boolean trazerAnotacoes, 
 			boolean ordemCrescenteData, boolean usuarioPosse,
-			List<Integer> marcasAIgnorar) {
+			List<Long> marcasAIgnorar) {
 		List<MesaItem> l = new ArrayList<>();
 		final SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
@@ -324,9 +324,8 @@ public class Mesa2 {
 
 	public static List<GrupoItem> getContadores(ExDao dao, DpPessoa titular, DpLotacao lotaTitular, 
 			Map<String, SelGrupo> selGrupos, boolean exibeLotacao, 
-			List<Integer> marcasAIgnorar) throws Exception {
-		List<GrupoItem> gruposMesa = new ArrayList<GrupoItem>();
-		gruposMesa = montaGruposUsuario(selGrupos);
+			List<Long> marcasAIgnorar) throws Exception {
+		List<GrupoItem> gruposMesa = montaGruposUsuario(selGrupos);
 		List<Object[]> l = dao.consultarTotaisPorMarcador(titular, lotaTitular, gruposMesa, 
 				exibeLotacao, marcasAIgnorar);
 		if (l == null)
@@ -352,10 +351,10 @@ public class Mesa2 {
 		return gruposMesa;
 	}
 
-	public static List<GrupoItem> getMesa(ExDao dao, DpPessoa titular,
+	public static void popularDocumentos(ExDao dao, DpPessoa titular,
 			DpLotacao lotaTitular, Map<String, SelGrupo> selGrupos, List<Mesa2.GrupoItem> gruposMesa, 
 			boolean exibeLotacao, boolean trazerAnotacoes, boolean trazerComposto, boolean ordemCrescenteData,
-			boolean usuarioPosse, List<Integer> marcasAIgnorar) throws Exception {
+			boolean usuarioPosse, List<Long> marcasAIgnorar) throws Exception {
 //		long tempoIni = System.nanoTime();
 		Date dtNow = dao.consultarDataEHoraDoServidor();
 
@@ -448,6 +447,7 @@ public class Mesa2 {
 						}
 						iMobs = iMobsFim;
 					}
+					// Adiciona documentos ao grupo
 					gItem.grupoDocs = Mesa2.listarReferencias(TipoDePainelEnum.UNIDADE, map, titular,
 							titular.getLotacao(), dtNow, gItem.grupoOrdem, trazerAnotacoes, ordemCrescenteData, 
 							usuarioPosse, marcasAIgnorar);
@@ -456,11 +456,6 @@ public class Mesa2 {
 				}
 			}
 		}
-//		long tempoTotal = System.nanoTime() - tempoIni;
-//		System.out.println("getMesa: " + tempoTotal
-//		/ 1000000 + " ms ==> ");
-
-		return gruposMesa;
 	}
 
 	private static void incluiMovimentacoesMesa(Map<ExMobil, DocDados> map, Object[] ref) {
