@@ -44,13 +44,11 @@ import br.gov.jfrj.siga.dp.dao.DpPessoaDaoFiltro;
 public class Excel {
 	
 	public InputStream uploadLotacao(File file, CpOrgaoUsuario orgaoUsuario, String extensao, CpIdentidade cadastrante) {
-		InputStream retorno = null;
-		if(".txt".equalsIgnoreCase(extensao) || ".csv".equalsIgnoreCase(extensao)) {
-			retorno = uploadCVS(file, orgaoUsuario);
-		} else if(".xlsx".equalsIgnoreCase(extensao)){
-			retorno = uploadExcelLotacao(file, orgaoUsuario, cadastrante);
-		}
-		return retorno;
+		 if(!".xlsx".equalsIgnoreCase(extensao)){
+			 throw new AplicacaoException("Arquivo diferente do formato Excel: \"XLSX\"");
+		 }
+		
+		return uploadExcelLotacao(file, orgaoUsuario, cadastrante);
 	}
 	
 	public InputStream uploadCVS(File file, CpOrgaoUsuario orgaoUsuario) {
@@ -275,6 +273,10 @@ public class Excel {
 				DpLotacao lotacao = new DpLotacao();
 				DpLotacao lot = new DpLotacao();
 				Row row = rowIterator.next(); //linha
+				
+				if (isEmpty(row)) {
+					continue;
+				}
 				
 				Iterator<Cell> cellIterator = row.cellIterator();
 				Cell cell;
