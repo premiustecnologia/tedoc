@@ -191,7 +191,7 @@ public class Documento {
 				s = s.split(":")[0];
 				s = s.intern();
 				if(Prop.isGovSP()
-						|| (dataDeInicioDeObrigacaoExibirRodapeDeAssinatura != null && !dataDeInicioDeObrigacaoExibirRodapeDeAssinatura.after(dtDoc)
+						|| (dataDeInicioDeObrigacaoExibirRodapeDeAssinatura != null && dtDoc != null && !dataDeInicioDeObrigacaoExibirRodapeDeAssinatura.after(dtDoc)
 								)	) {
 						s +=" - " + Data.formatDDMMYYYY_AS_HHMMSS(movAssinatura.getData());
 					}				 
