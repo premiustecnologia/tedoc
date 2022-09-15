@@ -29,11 +29,18 @@
 			<c:if test="${not empty voltar and voltar}">
 				<input type="button" value="Voltar" onclick="${(empty linkVoltar) ? 'javascript:history.back();' : 'javascript:window.location.href=\''.concat(linkVoltar).concat('\';')}" class="btn btn-secondary mr-2" />
 			</c:if>
-			
+
 			<c:if test="${not empty assinar and assinar}">
-				<a id="bot-assinar" accesskey="s" href="#"
-					onclick="javascript: AssinarDocumentos(false, ${f:podeUtilizarServicoPorConfiguracao(titular,lotaTitular,'SIGA:Sistema Integrado de Gestão Administrativa;DOC:Módulo de Documentos;ASS:Assinatura digital;POL:Política ICP-Brasil')});"
-					class="btn btn-primary mr-2" role="button"> Assinar <i class="fa fa-signature"></i> </a> 
+				<button
+					id="bot-assinar"
+					accesskey="s"
+					type="button"
+					class="btn btn-primary mr-2"
+					role="button"
+					disabled
+				>
+					Assinar <i class="fa fa-signature"></i>
+				</button>
 			</c:if>
 			<!--
 			<c:if test="${not empty autenticar and autenticar}">
@@ -126,9 +133,18 @@
 				</script>
 			</c:if>
 		</div>
-	
-	
 	</div>
-	
+	<script type="text/javascript">
+		function ativarBotaoAssinatura() {
+			const botaoAssinatura = document.getElementById('bot-assinar');
+			botaoAssinatura.disabled = false;
+			botaoAssinatura.addEventListener("click", function(event) {
+				AssinarDocumentos(false, ${f:podeUtilizarServicoPorConfiguracao(titular,lotaTitular,'SIGA:Sistema Integrado de Gestão Administrativa;DOC:Módulo de Documentos;ASS:Assinatura digital;POL:Política ICP-Brasil')});
+			})
+		}
+		$(document).ready(function() {
+			ativarBotaoAssinatura();
+		});
+	</script>
 
 </div>

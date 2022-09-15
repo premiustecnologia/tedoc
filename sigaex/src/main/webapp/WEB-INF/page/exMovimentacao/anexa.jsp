@@ -9,6 +9,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <siga:pagina titulo="Movimentação" compatibilidade="IE=EmulateIE9">
+	<tags:assinatura_scripts />
+
 	<div class="col">
 		<button type="button" name="voltar" onclick="javascript:window.location.href='/sigaex/app/expediente/doc/exibir?sigla=${mobilVO.sigla}'"class="btn btn-secondary float-right" accesskey="r">Volta<u>r</u></button>
 	</div>
@@ -384,14 +386,18 @@
 		<c:set var="botao" value="ambos" />
 		<c:set var="lote" value="true" />
 	</div>
-	<script>
-		mostraBotaoAssinatura();
+	<script type="text/javascript">
+		$(document).ready(function() {
+			mostraBotaoAssinatura();
 
-		// Seta campo de data com a data de hoje
-		const agora = new Date();
-		document.querySelector('input[name=dtMovString]').value = agora.toLocaleDateString('pt-BR');
+			// Seta campo de data com a data de hoje
+			const agora = new Date();
+			const dtMovInput = document.querySelector('input[name=dtMovString]');
+			if (dtMovInput) {
+				dtMovInput.value = agora.toLocaleDateString('pt-BR');
+			}
+		});
 	</script>
-
 
 	</div>
 	<tags:assinatura_rodape />

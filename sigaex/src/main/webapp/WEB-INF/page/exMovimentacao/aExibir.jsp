@@ -9,6 +9,8 @@
 
 <siga:pagina titulo="Documento" popup="${popup}"
 	compatibilidade="IE=EmulateIE9">
+
+	<tags:assinatura_scripts />
 	<script type="text/javascript" language="Javascript1.1">
 		/*  converte para maiúscula a sigla do estado  */
 		function converteUsuario(nomeusuario) {

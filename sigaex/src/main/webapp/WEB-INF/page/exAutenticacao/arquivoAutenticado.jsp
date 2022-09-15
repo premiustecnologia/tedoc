@@ -11,6 +11,7 @@
 <siga:pagina titulo="Movimentação" desabilitarmenu="sim"
 	onLoad="try{var num = document.getElementById('id_number');if (num.value == ''){num.focus();num.select();}else{var cap = document.getElementById('id_captcha');cap.focus();cap.select();}}catch(e){};">
 
+	<tags:assinatura_scripts />
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col col-12 col-sm-8">
