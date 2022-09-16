@@ -49,8 +49,7 @@ import br.gov.jfrj.siga.model.Selecionavel;
 public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLotacao, DpLotacaoDaoFiltro> {
 
 	private Long orgaoUsu;
-	private boolean semLimiteOrgaoOrigem = true;
-
+	
 	/**
 	 * @deprecated CDI eyes only
 	 */
@@ -105,7 +104,6 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 	public void busca(String propriedade, String sigla, Long idOrgaoUsu, Integer paramoffset, String postback) throws Exception {
 		this.orgaoUsu = idOrgaoUsu;
 		if (equalsIgnoreCase("lotacaoDestinatario", propriedade) && idOrgaoUsu == null) {
-			this.semLimiteOrgaoOrigem = getTitular().isTramitarOutrosOrgaos();
 			this.orgaoUsu = getTitular().getOrgaoUsuario().getId();
 		} else if (postback == null) {
 			orgaoUsu = getLotaTitular().getOrgaoUsuario().getIdOrgaoUsu();
@@ -133,8 +131,6 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 	public DpLotacaoDaoFiltro createDaoFiltro() {
 		final DpLotacaoDaoFiltro flt = new DpLotacaoDaoFiltro();
 		flt.setNome(Texto.removeAcentoMaiusculas(getNome()));
-
-		flt.setBuscarSemLimitarOrgaoOrigem(this.semLimiteOrgaoOrigem);
 		flt.setIdOrgaoUsu(orgaoUsu);
 
 		String buscarFechadas = param("buscarFechadas");
