@@ -104,7 +104,7 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 	public void busca(String propriedade, String sigla, Long idOrgaoUsu, Integer paramoffset, String postback, final String primeiraVez) throws Exception {
 		this.orgaoUsu = idOrgaoUsu;
 		if (equalsIgnoreCase("lotacaoDestinatario", propriedade)) {
-			if (primeiraVez != null) {
+			if (primeiraVez != null || !getTitular().isTramitarOutrosOrgaos()) {
 				this.orgaoUsu = getTitular().getOrgaoUsuario().getId();	
 			}
 		} else if (postback == null) {
