@@ -101,10 +101,12 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 	@Get
 	@Post
 	@Path({ "/app/lotacao/buscar", "/lotacao/buscar.action" })
-	public void busca(String propriedade, String sigla, Long idOrgaoUsu, Integer paramoffset, String postback) throws Exception {
+	public void busca(String propriedade, String sigla, Long idOrgaoUsu, Integer paramoffset, String postback, final String primeiraVez) throws Exception {
 		this.orgaoUsu = idOrgaoUsu;
-		if (equalsIgnoreCase("lotacaoDestinatario", propriedade) && idOrgaoUsu == null) {
-			this.orgaoUsu = getTitular().getOrgaoUsuario().getId();
+		if (equalsIgnoreCase("lotacaoDestinatario", propriedade)) {
+			if (primeiraVez != null) {
+				this.orgaoUsu = getTitular().getOrgaoUsuario().getId();	
+			}
 		} else if (postback == null) {
 			orgaoUsu = getLotaTitular().getOrgaoUsuario().getIdOrgaoUsu();
 		}
