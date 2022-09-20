@@ -135,6 +135,8 @@ import br.gov.jfrj.siga.model.dao.SigaDialect;
 
 public class CpDao extends ModeloDao {
 
+	private static final String DASH = "-";
+
 	public static final String CACHE_QUERY_SUBSTITUICAO = "querySubstituicao";
 	public static final String CACHE_QUERY_CONFIGURACAO = "queryConfiguracao";
 	public static final String CACHE_QUERY_SECONDS = "querySeconds";
@@ -147,7 +149,7 @@ public class CpDao extends ModeloDao {
 	private static final StringExpression qDpPessoaSiglaSemHifen = qDpPessoa.sesbPessoa
 			.append(qDpPessoa.matricula.stringValue());
 	private static final StringExpression qDpPessoaSiglaComHifen = qDpPessoa.sesbPessoa
-			.append("-")
+			.append(DASH)
 			.append(qDpPessoa.matricula.stringValue());
 
 	private static final QCpIdentidade qCpIdentidade = QCpIdentidade.cpIdentidade;
@@ -690,8 +692,8 @@ public class CpDao extends ModeloDao {
 
 	private JPAQuery<?> queryConsultarPorFiltro(final DpLotacaoDaoFiltro filtro) {
 		final BooleanBuilder predicates = new BooleanBuilder();
-		final String nomeLike = likeUppercaseParam(filtro.getNome())
-				.map(p -> replace(p, "-", EMPTY))
+		final String nomeParam = normalizeUppercaseParam(filtro.getNome())
+				.map(p -> replace(p, DASH, EMPTY))
 				.filter(StringUtils::isNotBlank)
 				.orElse(null);
 
@@ -701,11 +703,12 @@ public class CpDao extends ModeloDao {
 			final QCpOrgaoUsuario subqCpOrgaoUsuario = new QCpOrgaoUsuario("subqCpOrgaoUsuario");
 			final BooleanBuilder subqPredicates = new BooleanBuilder();
 			final StringExpression siglaOrgaoComLotacao = subqCpOrgaoUsuario.acronimoOrgaoUsu.append(subqDpLotacao.siglaLotacao);
-			if (nomeLike != null) {
+			if (nomeParam != null) {
+				final String nomeLikeParam = "%" + nomeParam + "%";
 				subqPredicates.and(
-						siglaOrgaoComLotacao.likeIgnoreCase(nomeLike)
-								.or(subqDpLotacao.siglaLotacao.likeIgnoreCase(nomeLike))
-								.or(subqDpLotacao.nomeLotacaoAI.likeIgnoreCase(nomeLike))
+						siglaOrgaoComLotacao.likeIgnoreCase(nomeLikeParam)
+								.or(subqDpLotacao.siglaLotacao.likeIgnoreCase(nomeLikeParam))
+								.or(subqDpLotacao.nomeLotacaoAI.likeIgnoreCase(nomeLikeParam))
 				);
 			}
 
@@ -725,12 +728,13 @@ public class CpDao extends ModeloDao {
 			joinOrgao = true;
 			predicates.and(qDpLotacao.dataFimLotacao.isNull());
 
-			if (nomeLike != null) {
+			if (nomeParam != null) {
 				final StringExpression siglaOrgaoComLotacao = qCpOrgaoUsuario.acronimoOrgaoUsu.append(qDpLotacao.siglaLotacao);
+				final String nomeLikeParam = "%" + nomeParam + "%";
 				predicates.and(
-						siglaOrgaoComLotacao.startsWithIgnoreCase(nomeLike)
-								.or(qDpLotacao.siglaLotacao.likeIgnoreCase("%" + nomeLike + "%"))
-								.or(qDpLotacao.nomeLotacaoAI.likeIgnoreCase("%" + nomeLike + "%"))
+						siglaOrgaoComLotacao.startsWithIgnoreCase(nomeParam)
+								.or(qDpLotacao.siglaLotacao.likeIgnoreCase(nomeLikeParam))
+								.or(qDpLotacao.nomeLotacaoAI.likeIgnoreCase(nomeLikeParam))
 				);
 			}
 
@@ -830,7 +834,7 @@ public class CpDao extends ModeloDao {
 		final BooleanBuilder predicates = new BooleanBuilder(qDpLotacao.dataFimLotacao.isNull());
 		if (isNotBlank(filtro.getSigla())) {
 			final BooleanExpression siglaCompletaIniciaCom = qDpLotacao.orgaoUsuario.siglaOrgaoUsu
-					.concat("-")
+					.concat(DASH)
 					.concat(qDpLotacao.siglaLotacao)
 					.startsWithIgnoreCase(filtro.getSigla());
 
