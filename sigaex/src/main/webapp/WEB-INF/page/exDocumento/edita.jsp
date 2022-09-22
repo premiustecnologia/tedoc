@@ -357,7 +357,7 @@
 								<c:when test='${exDocumentoDTO.tipoDestinatario == 2}'>
 									<input type="hidden" name="campos" value="lotacaoDestinatarioSel.id" />
 									<label>&nbsp;&nbsp;&nbsp;</label>
-									<siga:selecao propriedade="lotacaoDestinatario" inputName="exDocumentoDTO.lotacaoDestinatario" tema="simple" idAjax="destinatario2" reler="ajax" modulo="siga" onchangeid="updateURL()" />
+									<siga:selecao primeiraVez="sim" propriedade="lotacaoDestinatario" inputName="exDocumentoDTO.lotacaoDestinatario" tema="simple" idAjax="destinatario2" reler="ajax" modulo="siga" onchangeid="updateURL()" />
 									<!--  idAjax="destinatario" -->
 								</c:when>
 								<c:when test='${exDocumentoDTO.tipoDestinatario == 3}'>

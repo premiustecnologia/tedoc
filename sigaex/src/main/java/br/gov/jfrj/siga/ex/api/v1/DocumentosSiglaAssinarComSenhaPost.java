@@ -1,5 +1,8 @@
 package br.gov.jfrj.siga.ex.api.v1;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import com.crivano.swaggerservlet.PresentableUnloggedException;
 import com.crivano.swaggerservlet.SwaggerException;
 
@@ -33,7 +36,8 @@ public class DocumentosSiglaAssinarComSenhaPost extends DocumentosSiglaAssinarAu
 	@Override
 	public void run(DocumentosSiglaAssinarComSenhaPostRequest req, DocumentosSiglaAssinarComSenhaPostResponse resp) throws Exception {
 		try {
-			super.executar(req.sigla, (sigla, status) -> {
+			final String siglaMobil = URLDecoder.decode(req.sigla, StandardCharsets.UTF_8.displayName());
+			super.executar(siglaMobil, (sigla, status) -> {
 				resp.sigla = sigla;
 				resp.status = status;
 			});

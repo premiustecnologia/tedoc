@@ -1824,8 +1824,6 @@ public class ExMovimentacaoController extends ExController {
 				.getExDocumento().getSigla());
 	}
 
-	// FIXME [MICHEL RISUCCI] PAREI AQUI O REFACTORING
-
 	@Post("/app/expediente/mov/transferir")
 	@Get("/app/expediente/mov/transferir")
 	public void aTransferir(final String sigla, final Long idTpDespacho,

@@ -49,8 +49,7 @@ import br.gov.jfrj.siga.model.Selecionavel;
 public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLotacao, DpLotacaoDaoFiltro> {
 
 	private Long orgaoUsu;
-	private boolean semLimiteOrgaoOrigem = true;
-
+	
 	/**
 	 * @deprecated CDI eyes only
 	 */
@@ -102,12 +101,11 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 	@Get
 	@Post
 	@Path({ "/app/lotacao/buscar", "/lotacao/buscar.action" })
-	public void busca(String propriedade, String sigla, Long idOrgaoUsu, Integer paramoffset, String postback) throws Exception {
+	public void busca(String propriedade, String sigla, Long idOrgaoUsu, Integer paramoffset, String postback, final String primeiraVez) throws Exception {
 		this.orgaoUsu = idOrgaoUsu;
 		if (equalsIgnoreCase("lotacaoDestinatario", propriedade)) {
-			this.semLimiteOrgaoOrigem = getTitular().isTramitarOutrosOrgaos();
-			if (!this.semLimiteOrgaoOrigem) {
-				this.orgaoUsu = getTitular().getOrgaoUsuario().getId();
+			if (primeiraVez != null || !getTitular().isTramitarOutrosOrgaos()) {
+				this.orgaoUsu = getTitular().getOrgaoUsuario().getId();	
 			}
 		} else if (postback == null) {
 			orgaoUsu = getLotaTitular().getOrgaoUsuario().getIdOrgaoUsu();
@@ -135,8 +133,6 @@ public class DpLotacaoController extends SigaSelecionavelControllerSupport<DpLot
 	public DpLotacaoDaoFiltro createDaoFiltro() {
 		final DpLotacaoDaoFiltro flt = new DpLotacaoDaoFiltro();
 		flt.setNome(Texto.removeAcentoMaiusculas(getNome()));
-
-		flt.setBuscarSemLimitarOrgaoOrigem(this.semLimiteOrgaoOrigem);
 		flt.setIdOrgaoUsu(orgaoUsu);
 
 		String buscarFechadas = param("buscarFechadas");

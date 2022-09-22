@@ -2,10 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://localhost/libstag" prefix="f"%>
 <%@ attribute name="podeAssinarPorComSenha" required="false"%>
-<script>
-	var uriLogoSiga = '${uri_logo_siga_pequeno}';
-</script>
-<script src="/sigaex/public/javascript/assinatura-digital.js?v=1614289085"></script>
+
 <input type="hidden" id="siglaUsuarioCadastrante" value="${cadastrante.sigla}"/>
 <input type="hidden" id="siglaUsuSubscritor" value="${doc.subscritor.sigla}"/>
 <input type="hidden" id="siglaUsuTitular" value="${titular.sigla}"/>
@@ -18,9 +15,3 @@
 </c:forEach>
 
 <input type="hidden" id="siglaUsuCossignatarios" value="${cossignatarios}"/>
-
-<c:if
-	test="${not empty f:resource('assinador.externo.popup.url')}">
-	<script
-		src="${f:resource('assinador.externo.popup.url')}/popup-api.js"></script>
-</c:if>

@@ -9,6 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <siga:pagina titulo="Documento" compatibilidade="IE=EmulateIE9">
+	<tags:assinatura_scripts />
 	<script type="text/javascript" language="Javascript1.1">
 		/*  converte para maiúscula a sigla do estado  */
 		function converteUsuario(nomeusuario) {
@@ -162,9 +163,9 @@
 		</div>
 	</div>
 
-	<script>
-		window.onload = function () { 
-			document.getElementById('painel').src = montarUrlDocPDF('${url }',document.getElementById('visualizador').value);
-		} 
+	<script type="text/javascript">
+		$(document).ready(function() {
+			document.getElementById('painel').src = montarUrlDocPDF('${url }', document.getElementById('visualizador').value);
+		});
 	</script>
 </siga:pagina>

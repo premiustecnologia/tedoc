@@ -13,6 +13,7 @@
 	titulo="Assinatura em Lote de Documentos, Despachos e Anexos"
 	compatibilidade="IE=EmulateIE9">
 
+	<tags:assinatura_scripts />
 	<script type="text/javascript" language="Javascript1.1">
 		$(document).ready(
 				function() {
@@ -88,7 +89,8 @@
 										<c:set var="botao" value="autenticando" />
 									</c:if>
 									<c:set var="lote" value="false" />
-								</div> <tags:assinatura_botoes assinar="true" />
+								</div>
+								<tags:assinatura_botoes assinar="true" />
 							</div>
 						</div>
 					</div>

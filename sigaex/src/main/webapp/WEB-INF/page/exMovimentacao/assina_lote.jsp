@@ -9,8 +9,9 @@
 <%@ taglib uri="http://localhost/functiontag" prefix="f"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<siga:pagina titulo="Assinatura em Lote"
-	compatibilidade="IE=EmulateIE9">
+<siga:pagina titulo="Assinatura em Lote" compatibilidade="IE=EmulateIE9">
+
+	<tags:assinatura_scripts />
 	<script type="text/javascript" language="Javascript1.1">
 		/*  converte para maiúscula a sigla do estado  */
 		function converteUsuario(nomeusuario) {
