@@ -19,6 +19,7 @@
 package br.gov.jfrj.siga.cp.bl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,6 +70,12 @@ public class CpConfiguracaoBL {
 	public static final long ID_ORGAO_ROOT = 999999999L;
 	public static final String SIGLA_ORGAO_ROOT = "ZZZ";
 	public static final String SIGLA_ORGAO_CODATA_ROOT = "COD";
+
+	public static final SortedSet<String> SIGLAS_ORGAOS_ADMINISTRADORES = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+	static {
+		SIGLAS_ORGAOS_ADMINISTRADORES.add(SIGLA_ORGAO_ROOT);
+		SIGLAS_ORGAOS_ADMINISTRADORES.add(SIGLA_ORGAO_CODATA_ROOT);
+	}
 
 	private final static org.jboss.logging.Logger log = org.jboss.logging.Logger.getLogger(CpConfiguracaoBL.class);
 

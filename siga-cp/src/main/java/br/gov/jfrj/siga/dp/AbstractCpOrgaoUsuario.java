@@ -53,7 +53,7 @@ public abstract class AbstractCpOrgaoUsuario extends Objeto implements
 	private Integer codOrgaoUsu;
 
 	@Id
-	@Column(name = "ID_ORGAO_USU", unique = true, nullable = false)
+	@Column(name = "ID_ORGAO_USU", nullable = false)
 	private Long idOrgaoUsu;
 
 	@Column(name = "BAIRRO_ORGAO_USU", length = 50)

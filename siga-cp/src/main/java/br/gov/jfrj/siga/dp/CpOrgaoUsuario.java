@@ -40,7 +40,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.Immutable;
 
 import br.gov.jfrj.siga.cp.CpConvertableEntity;
 import br.gov.jfrj.siga.cp.CpIdentidade;
@@ -53,7 +52,6 @@ import br.gov.jfrj.siga.sinc.lib.SincronizavelSuporte;
 
 @Entity
 @Table(name = "corporativo.cp_orgao_usuario")
-@Immutable
 @Cacheable
 @Cache(region = CpDao.CACHE_CORPORATIVO, usage = CacheConcurrencyStrategy.READ_ONLY)
 public class CpOrgaoUsuario extends AbstractCpOrgaoUsuario implements
@@ -142,10 +140,6 @@ public class CpOrgaoUsuario extends AbstractCpOrgaoUsuario implements
 
 	public String getNmOrgaoAI() {
 		return nmOrgaoAI;
-	}
-
-	public void setNmOrgaoAI(String nmOrgaoAI) {
-		this.nmOrgaoAI = nmOrgaoAI;
 	}
 
 	public Date getHisDtIni() {

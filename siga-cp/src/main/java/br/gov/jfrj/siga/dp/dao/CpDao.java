@@ -2105,9 +2105,19 @@ public class CpDao extends ModeloDao {
 	}
 
 	public <T> T gravar(final T entidade) {
-		if (entidade instanceof CarimboDeTempo)
+		if (entidade instanceof CarimboDeTempo) {
 			((CarimboDeTempo) entidade).setHisDtAlt(this.dt());
+		}
 		super.gravar(entidade);
+		invalidarCache(entidade);
+		return entidade;
+	}
+
+	public <T> T atualizar(final T entidade) {
+		if (entidade instanceof CarimboDeTempo) {
+			((CarimboDeTempo) entidade).setHisDtAlt(this.dt());
+		}
+		super.atualizar(entidade);
 		invalidarCache(entidade);
 		return entidade;
 	}

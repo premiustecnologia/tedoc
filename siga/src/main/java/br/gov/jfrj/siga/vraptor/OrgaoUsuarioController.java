@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
+import org.jboss.logging.Logger;
+
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -26,6 +28,7 @@ import br.gov.jfrj.siga.model.dao.DaoFiltroSelecionavel;
 @Controller
 public class OrgaoUsuarioController extends SigaSelecionavelControllerSupport<CpOrgaoUsuario, DaoFiltroSelecionavel>{
 
+	private static Logger log = Logger.getLogger(OrgaoUsuarioController.class);
 
 	/**
 	 * @deprecated CDI eyes only
@@ -58,9 +61,9 @@ public class OrgaoUsuarioController extends SigaSelecionavelControllerSupport<Cp
 		result.include("itens", getItens());
 		result.include("tamanho", dao().consultarQuantidade(orgaoUsuario));
 		result.include("nome", nome);
-		if(!CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equalsIgnoreCase(getTitular().getOrgaoUsuario().getSigla()) || !CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equalsIgnoreCase(getTitular().getOrgaoUsuario().getSigla())) {
-			result.include("orgaoUsuarioSiglaLogado", getTitular().getOrgaoUsuario().getSigla());
-		}
+		result.include("orgaoUsuarioSiglaLogado", getTitular().getOrgaoUsuario().getSigla());
+		result.include("usuarioPodeAlterar", CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla()));
+
 		setItemPagina(15);
 		result.include("currentPageNumber", calculaPaginaAtual(paramoffset));
 	}
@@ -152,14 +155,15 @@ public class OrgaoUsuarioController extends SigaSelecionavelControllerSupport<Cp
 		}
 		
 		CpOrgaoUsuario orgaoUsuario = new CpOrgaoUsuario();
-		
-//		CpContrato contrato = new CpContrato();
-		
-		orgaoUsuario.setSiglaOrgaoUsu(Texto.removerEspacosExtra(siglaOrgaoUsuario.toUpperCase().trim()));
+
+		final String sigla = Texto.removerEspacosExtra(siglaOrgaoUsuario.toUpperCase().trim());
+		orgaoUsuario.setSiglaOrgaoUsu(sigla);
 		try {
 			orgaoUsuario = dao().consultarPorSigla(orgaoUsuario);
-		} catch (final Exception e) {}
-		
+		} catch (final Exception e) {
+			log.debugv(e, "Não foi possível encontrar o órgão pela sigla \"{0}\"", sigla);
+		}
+
 		if((orgaoUsuario != null &&
 				!orgaoUsuario.getIdOrgaoUsu().equals(id)) || (orgaoUsuario != null &&
 				orgaoUsuario.getIdOrgaoUsu().equals(id) && acao.equalsIgnoreCase("i"))) {
@@ -206,14 +210,10 @@ public class OrgaoUsuarioController extends SigaSelecionavelControllerSupport<Cp
 		} else {
 			orgaoUsuario.setIsExternoOrgaoUsu(0);	
 		}
-		
-		
-//		contrato.setIdOrgaoUsu(id);
-//		contrato.setDtContrato(dataContrato);
 
 		try {
 			dao().iniciarTransacao();
-			dao().gravar(orgaoUsuario);
+			orgaoUsuario = dao().atualizar(orgaoUsuario);
 			atualizarContrato(id, dataContrato);
 			dao().commitTransacao();
 			this.result.include("mensagem", "Operação realizada com sucesso!");
