@@ -33,7 +33,7 @@ public interface ZipItem {
 	public enum Tipo implements ZipItem {
 
 		/*
-		 * Tipos de ZipItem suportados pelo PBdoc
+		 * Tipos de ZipItem suportados pelo TEdoc
 		 */
 
 		RTF("application/rtf"),

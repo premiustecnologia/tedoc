@@ -112,7 +112,7 @@
 									<div class="text-center">
 										<button type="submit" class="btn btn-lg btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Entrar</button>								
 										<div class="mt-3">
-											<c:if test="${siga_cliente != 'GOVSP'}">
+											<c:if test="${siga_cliente == 'GOVSP'}">
 												<a href="/siga/public/app/usuario/incluir_usuario"
 													class="btn btn-secondary btn-block mb-2"><fmt:message key = "usuario.sounovo"/></a> 
 											</c:if>

@@ -316,6 +316,7 @@ public abstract class RelatorioTemplate extends RelatorioRapido {
 		parametros.put("titulo", Prop.get("/siga.relat.titulo"));
 		parametros.put("subtitulo", Prop.get("/siga.relat.subtitulo"));
 		parametros.put("brasao", Prop.get("/siga.relat.brasao"));
+		parametros.put("secaoUsuario", Prop.get("/siga.relat.subtitulo"));
 	}
 
 }
