@@ -129,21 +129,20 @@ ${meta}
 		<c:set var="uri_logo_siga_pequeno" value="${f:resource('/siga.base.url')}/siga/imagens/logo-sem-papel-150x70.png" scope="request" />
 	</c:when>
 	<c:otherwise>
-		<meta name="theme-color" content="bg-primary">
-		<c:set var="thead_color" value="thead-light" scope="request" />
-
+		<meta name="theme-color" content="#176B8F">
+		<link rel="stylesheet" href="/siga/css/style_siga_gov.css" type="text/css" media="screen, projection">
+		<c:set var="thead_color" value="thead-dark" scope="request" />
 		<c:set var="ico_siga" value="${f:resourceOrDefault('/siga.favicon', '/siga/imagens/siga.ico')}" />
-		<c:set var="menu_class" value="bg-danger" /> 
-		<c:set var="sub_menu_class" value="bg-dark text-white" />
-		
-		<c:set var="navbar_class" value="navbar-dark bg-danger" />
+		<c:set var="menu_class" value="menu" /> 
+		<c:set var="sub_menu_class" value="submenu" />
+		<c:set var="navbar_class" value="navbar-light" />
 		<c:if test="${f:resource('/siga.ambiente') != 'prod'}">
 			<c:set var="navbar_class" value="navbar-dark bg-secondary" />
 		</c:if>
-		
+		<c:set var="ambiente_class" value="ambiente_class" />
 		<c:set var="navbar_logo" value="${f:resource('/siga.cabecalho.logo')}" />
 		<c:set var="navbar_logo2" value="${f:resource('/siga.cabecalho.logo2')}" />
-		<c:set var="navbar_logo_size" value="32" />
+		<c:set var="navbar_logo_size" value="50" />
 		<c:set var="button_class_busca" value="btn-outline-light" />
 		<c:set var="collapse_Tramitacao" scope="request" value="collapsible expanded" />
 		<c:set var="collapse_NivelAcesso" scope="request" value="collapsible expanded" />
@@ -368,7 +367,7 @@ ${meta}
 							<strong>${f:resource('/siga.cabecalho.titulo')} ${siga_version}</strong>
 						</span>
 						<c:if test="${f:resource('/siga.ambiente') ne 'prod'}">
-							<span class="badge bg-danger">
+							<span class="badge badge-danger">
 								<c:choose>
 									<c:when test="${f:resource('/siga.ambiente') eq 'desenv'}">
 										DESENVOLVIMENTO

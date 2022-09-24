@@ -136,13 +136,13 @@
 				<c:if test="${siga_mesaCarregaLotacao && !ehPublicoExterno}">
 					<c:set var="varLotacaoUnidade"><fmt:message key='usuario.lotacao'/></c:set>
 					<div id="radioBtn" class="btn-group mr-2 mb-1">
-						<a class="btn btn-primary btn-sm" v-bind:class="exibeLota ? 'notActive' : 'active'" id="btnUser"  
+						<a class="btn btn-info btn-sm" v-bind:class="exibeLota ? 'notActive' : 'active'" id="btnUser"    
 							accesskey="u" @click="carregarMesaUser('#btnUser');" 
 							title="Visualiza somente os documentos do Usuário">
 							<i class="fas fa-user my-1"></i>
 							<span class="d-none d-sm-inline">Usuário</span>
 						</a>
-						<a class="btn btn-primary btn-sm" v-bind:class="exibeLota ? 'active' : 'notActive'" id="btnLota"  
+						<a class="btn btn-info btn-sm" v-bind:class="exibeLota ? 'active' : 'notActive'" id="btnLota"    
 							accesskey="l" @click="carregarMesaLota('#btnLota');"
 							title="Visualiza somente os documentos da ${varLotacaoUnidade}">
 							<i class="fas fa-users my-1"></i>

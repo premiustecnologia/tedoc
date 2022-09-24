@@ -81,7 +81,8 @@
 }
 
 html body, .table-group-separator {
-	background-color: #ffffff;
+	border: 1px solid #104D69 !important;
+	background-color: #104D69 !important;
 }
 
 

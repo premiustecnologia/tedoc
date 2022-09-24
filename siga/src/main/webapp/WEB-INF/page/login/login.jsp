@@ -37,7 +37,7 @@
 		</c:otherwise>
 	</c:choose>
 
-	<div class="container content pt-5">
+	<div class="container content pt-4">
 		<div class="row justify-content-center">
 			<div class="col col-sm-12 col-md-5">
 				<div class="card bg-light ${not empty loginMensagem ? 'border-danger' : ''} mb-3 ${login_box_class}" style="max-width: 48rem;">
@@ -118,7 +118,7 @@
 											</c:if>
 											<div class="d-flex justify-content-between">
 												<a href="/siga/public/app/usuario/esqueci_senha" class="btn btn-sm btn-link"><strong>Esqueci Minha Senha</strong></a>
-												<a href="//portal.pbdoc.pb.gov.br" target="_blank" class="btn btn-sm btn-link">Sobre o PBdoc</a>
+												<a href="//tedoc.com.br" target="_blank" class="btn btn-sm btn-link">Sobre o TEdoc</a>
 												
 											</div>
 											<div style="float: right">
