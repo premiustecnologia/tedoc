@@ -118,8 +118,16 @@ public abstract class ModeloDao {
 	}
 
 	public <T> T gravar(final T entidade) {
-		if (em() != null)
+		if (em() != null) {
 			em().persist(entidade);
+		}
+		return entidade;
+	}
+
+	public <T> T atualizar(final T entidade) {
+		if (em() != null) {
+			return em().merge(entidade);
+		}
 		return entidade;
 	}
 
