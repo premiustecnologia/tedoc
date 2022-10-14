@@ -36,7 +36,7 @@ public abstract class ZipServico {
 
 	private ZipServico() {}
 
-	private static File referenciaArquivo(ExArquivoFilesystem exArquivo) {
+	public static File referenciaArquivo(ExArquivoFilesystem exArquivo) {
 		try {
 			Path caminhoBase = ZipPropriedades.getInstance().obterCaminhoBase();
 			File zipFile = exArquivo.getPathConteudo(caminhoBase).toFile();
@@ -118,7 +118,7 @@ public abstract class ZipServico {
 		gravar(exArquivo, novoZipBytes);
 	}
 
-	public static void gravar(@NotNull ExArquivoFilesystem exArquivo, @NotNull byte[] zipBytes) {
+	public static void gravar(@NotNull ExArquivoFilesystem exArquivo, byte[] zipBytes) {
 		File zipFile = referenciaArquivo(exArquivo);
 		try {
 			if (zipBytes == null) {
