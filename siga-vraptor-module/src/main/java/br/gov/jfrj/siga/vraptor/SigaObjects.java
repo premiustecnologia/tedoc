@@ -35,8 +35,14 @@ public class SigaObjects implements ConheceUsuario {
 
 	private HttpServletRequest request;
 
+	/**
+	 * Usuário logado (principal) {@link UsuarioAutenticado#carregarUsuario}
+	 */
 	private DpPessoa cadastrante;
 
+	/**
+	 * Pode ser o cadastrante ou um substituto
+	 */
 	private DpPessoa titular;
 
 	private DpLotacao lotaTitular;
