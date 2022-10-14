@@ -1,19 +1,18 @@
 package br.gov.jfrj.siga.vraptor;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.google.common.net.HttpHeaders;
-
 import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Result;
 import br.gov.jfrj.siga.dp.dao.CpDao;
 import br.gov.jfrj.siga.ex.ExDocumento;
 import br.gov.jfrj.siga.ex.ExMovimentacao;
+import com.google.common.net.HttpHeaders;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class ExPermaLinkController extends ExController {
@@ -34,20 +33,19 @@ public class ExPermaLinkController extends ExController {
 	}
 
 	@Get({ "/app/documento/{id}" })
-	public void exibeDocumentoPorId(final Long id) throws Exception {
+	public void exibeDocumentoPorId(final Long id) {
 		final ExDocumento documento = dao().consultar(id, ExDocumento.class, false);
-		result.redirectTo(ExDocumentoController.class)
-				.exibe(false, documento.getSigla(), null, null, null, false);
+		result.redirectTo("/app/expediente/doc/exibir?sigla=" + documento.getSigla());
 	}
 
 	@Get({ "/app/anexo/{id}" })
-	public void exibeMovimentacaoPorId(final Long id) throws Exception {
+	public void exibeMovimentacaoPorId(final Long id) {
 		final ExMovimentacao movimentacao = dao().consultar(id, ExMovimentacao.class, false);
 
 		// Previne controle de etag causando HTTP 304
 		request.removeAttribute(HttpHeaders.IF_NONE_MATCH);
-		result.redirectTo(ExArquivoController.class)
-				.aExibir(null, false, movimentacao.getReferenciaPDF(), null, null, null, null, false, false, false, null, false);
+
+		result.redirectTo("/app/arquivo/exibir?arquivo=" + movimentacao.getReferenciaPDF());
 	}
 
 }
