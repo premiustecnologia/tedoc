@@ -9,9 +9,16 @@
 
 <link rel="stylesheet" href="/siga/bootstrap/4.6.0/css/bootstrap.min.css" type="text/css" media="screen, projection" />
 <siga:pagina titulo="Mesa Virtual" incluirBS="false">
-	
-	<script type="text/javascript" src="../javascript/vue.min.js"></script>
-	
+
+	<c:choose>
+		<c:when test="${f:resource('/siga.ambiente') eq 'prod'}">
+			<script type="text/javascript" src="../javascript/vue.min.js?v=17102022"></script>
+		</c:when>
+		<c:otherwise>
+			<script type="text/javascript" src="../javascript/vue.js?v=17102022"></script>
+		</c:otherwise>
+	</c:choose>
+
 	<style>
 		.toast {
 			background-color: rgba(255,255,255,.95) !important;
@@ -354,12 +361,13 @@
 		</div>
 		<div id="toastContainer" style="position: fixed; top: 135px; right: 0;z-index: 999999;"></div>
 	</div>
+
 	<script type="text/javascript">
 		const ID_VISUALIZACAO = ${idVisualizacao};
 		$( document ).ready(function() {
 			initPopovers();
 		});
 	</script>
-	<script type="text/javascript" src="/siga/javascript/mesa2.js?v=1661439643779"></script>
+	<script type="text/javascript" src="/siga/javascript/mesa2.js?v=17102022"></script>
 </siga:pagina>
 <script src="/siga/bootstrap/4.6.0/js/bootstrap.bundle.min.js" type="text/javascript"></script>
