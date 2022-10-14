@@ -466,5 +466,10 @@
   <name>defaultUtilizarSegundoFatorPin</name>
   <function-class>br.gov.jfrj.siga.ex.util.FuncoesEL</function-class>
   <function-signature>java.lang.Boolean defaultUtilizarSegundoFatorPin(br.gov.jfrj.siga.dp.DpPessoa, br.gov.jfrj.siga.dp.DpLotacao)</function-signature>
- </function>  
+ </function>
+ <function>
+  <name>referenciaArquivo</name>
+  <function-class>br.gov.jfrj.siga.armazenamento.zip.ZipServico</function-class>
+  <function-signature>java.io.File referenciaArquivo(br.gov.jfrj.siga.ex.ExArquivoFilesystem)</function-signature>
+ </function>
 </taglib>

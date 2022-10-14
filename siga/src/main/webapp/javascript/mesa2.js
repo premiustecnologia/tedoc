@@ -170,7 +170,8 @@ var appMesa = new Vue({
 				parms[grpNome] = {
 					'grupoOrdem': parmGrupos[grpNome].ordem,
 					'grupoQtd': parseInt(parmGrupos[grpNome].qtd) + qtdPagina,
-					'grupoQtdPag': parmGrupos[grpNome].qtdPag, 'grupoCollapsed': parmGrupos[grpNome].collapsed,
+					'grupoQtdPag': parmGrupos[grpNome].qtdPag,
+					'grupoCollapsed': parmGrupos[grpNome].collapsed,
 					'grupoHide': parmGrupos[grpNome].hide
 				};
 				setValueGrupo(grpNome, 'qtd', parseInt(parmGrupos[grpNome].qtd) + qtdPagina);
@@ -178,8 +179,10 @@ var appMesa = new Vue({
 				var i = 0;
 				for (let p in parmGrupos) {
 					parms[p] = {
-						'grupoOrdem': parmGrupos[p].ordem, 'grupoQtd': parseInt(parmGrupos[p].qtd),
-						'grupoQtdPag': parmGrupos[p].qtdPag, 'grupoCollapsed': parmGrupos[p].collapsed,
+						'grupoOrdem': parmGrupos[p].ordem,
+						'grupoQtd': parseInt(parmGrupos[p].qtd),
+						'grupoQtdPag': parmGrupos[p].qtdPag,
+						'grupoCollapsed': parmGrupos[p].collapsed,
 						'grupoHide': parmGrupos[p].hide
 					};
 				}
@@ -224,7 +227,7 @@ var appMesa = new Vue({
 					self.carregando = false;
 					self.showError(response.responseText, self);
 				},
-				success: function(){		
+				success: function() {	
 					$.ajax({
 				        url: "/siga/api/v1/notificacoes",
 				        contentType: "application/json",
@@ -243,16 +246,16 @@ var appMesa = new Vue({
 		},
 		resetaStorage: function() {
 			sessionStorage.removeItem('mesa' + getUser());
-			localStorage.removeItem('gruposMesa' + getUser());
+			sessionStorage.removeItem('gruposMesa' + getUser());
 			this.trazerAnotacoes = false;
 			this.trazerComposto = false;
 			this.trazerArquivados = false;
-			localStorage.removeItem('trazerAnotacoes' + getUser());
-			localStorage.removeItem('trazerComposto' + getUser());
-			localStorage.removeItem('trazerArquivados' + getUser());
-			localStorage.removeItem('trazerCancelados' + getUser());
-			localStorage.removeItem('ordemCrescenteData' + getUser());
-			localStorage.removeItem('usuarioPosse' + getUser());
+			sessionStorage.removeItem('trazerAnotacoes' + getUser());
+			sessionStorage.removeItem('trazerComposto' + getUser());
+			sessionStorage.removeItem('trazerArquivados' + getUser());
+			sessionStorage.removeItem('trazerCancelados' + getUser());
+			sessionStorage.removeItem('ordemCrescenteData' + getUser());
+			sessionStorage.removeItem('usuarioPosse' + getUser());
 			this.recarregarMesa();
 			this.selQtdPag = 15;
 			
@@ -288,7 +291,7 @@ var appMesa = new Vue({
 			this.carregarMesa(grupoNome, parseInt(parmGrupos[grupoNome].qtdPag));
 		},
 		collapseGrupo: function(grupoOrdem, grupoNome) {
-			// Abre ou fecha o grupo, salvando info no local/session storage e refletindo no vue
+			// Abre ou fecha o grupo, salvando info no session storage e refletindo no vue
 			var parmGrupos = JSON.parse(getParmUser('gruposMesa'));
 			var collapsibleElemHeader = document.getElementById('collapse-header-' + grupoOrdem);
 			if (collapsibleElemHeader.classList.contains('collapsed')) {
@@ -424,6 +427,25 @@ var appMesa = new Vue({
 			r = r.replace('&nbsp;', ' às ')
 			return r
 		},
+		/**
+		 * Substitui as ocorrencias de &quot; na descrição por aspas duplas (") e ainda 
+		 * corta a string se for necessário. Na base de dados as aspas duplas são 
+		 * armazenadas como <code>&quot;</code> e é isso que o Vue vai exibir. Por isso se faz 
+		 * necessário esse tratamento. 
+		 *
+		 * @param {string} descr A String original
+		 * @param {number} [limit=null] O tamanho da string a ser retornada. Se não for passado valor, 
+		 * será usado Number.MAX_SAFE_INTEGER
+		 * @return A String original com as aspas duplas no lugar de &quot; e com o 
+		 * tamanho máximo solicitado. Se a string original for maior que o limite 
+		 * solicitado, serão adicionadas '...''
+		 */
+		processDescription: function(descr, limit = null) {
+			let _limit = limit ? (limit + 1) : Number.MAX_SAFE_INTEGER;
+			let result = descr.replace(/&quot;/g, '"');
+
+			return (result.length > _limit) ? result.substring(0, _limit).concat('...') : result;
+		}
 	}
 });
 
@@ -501,11 +523,11 @@ function setValueGrupoSessionStorage(grupoNome, key, value) {
 }
 
 function setParmUser(nomeParm, value) {
-	window.localStorage.setItem(nomeParm + getUser(), value)
+	window.sessionStorage.setItem(nomeParm + getUser(), value)
 }
 
 function getParmUser(nomeParm) {
-	let val = window.localStorage.getItem(nomeParm + getUser())
+	let val = window.sessionStorage.getItem(nomeParm + getUser())
 	if (val === 'true')
 		val = true;
 	if (val === 'false')
@@ -547,26 +569,6 @@ function getUser() {
 	return document.getElementById('cadastrante').title + (ID_VISUALIZACAO === 0 ? "" : ID_VISUALIZACAO); // ${ idVisualizacao == 0 ? '""' : idVisualizacao };
 }
 
-/**
- * Substitui as ocorrencias de &quot; na descrição por aspas duplas (") e ainda 
- * corta a string se for necessário. Na base de dados as aspas duplas são 
- * armazenadas como <code>&quot;</code> e é isso que o Vue vai exibir. Por isso se faz 
- * necessário esse tratamento. 
- *
- * @param {string} descr A String original
- * @param {number} [limit=null] O tamanho da string a ser retornada. Se não for passado valor, 
- * será usado Number.MAX_SAFE_INTEGER
- * @return A String original com as aspas duplas no lugar de &quot; e com o 
- * tamanho máximo solicitado. Se a string original for maior que o limite 
- * solicitado, serão adicionadas '...''
- */
-function processDescription(descr, limit = null) {
-	let _limit = limit ? (limit + 1) : Number.MAX_SAFE_INTEGER;
-	let result = descr.replace(/&quot;/g, '"');
-
-	return (result.length > _limit) ? result.substring(0, _limit).concat('...') : result;
-}
-
 function initPopovers() {
 	var timeOut;
 	if (!$('.popover-dismiss').popover) { 
@@ -606,12 +608,8 @@ function initPopovers() {
 			}
 		}, 100);
 		clearTimeout(timeOut);
-	})
-	
-	
+	})	
 }
-
-
 
 function mountPopoverMarcaPessoa(_this) {
 	

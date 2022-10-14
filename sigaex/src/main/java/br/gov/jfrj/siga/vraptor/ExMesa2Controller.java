@@ -167,9 +167,10 @@ public class ExMesa2Controller extends ExController {
 			final List<Mesa2.GrupoItem> mesa = Mesa2.getContadores(dao(), titular, titular.getLotacao(), selGrupos, exibeLotacao, marcasIgnorar);
 			Mesa2.popularDocumentos(dao(), titular, titular.getLotacao(), selGrupos, mesa, exibeLotacao, trazerAnotacoes, trazerComposto, ordemCrescenteData, usuarioPosse, marcasIgnorar);
 
+			final String jsonMesa = ExAssinadorExternoController.gson.toJson(mesa);
 			result.use(Results.http())
 					.addHeader(CONTENT_TYPE, APPLICATION_JSON)
-					.body(ExAssinadorExternoController.gson.toJson(mesa))
+					.body(jsonMesa)
 					.setStatusCode(HttpServletResponse.SC_OK);
 
 			final Duration tempo = Duration.between(inicio, Instant.now());

@@ -42,7 +42,26 @@ public class Mesa2 {
 	private static final Comparator<MesaItem> MESA_ITEM_COMPARATOR_CRESCENTE = Comparator.comparing(MesaItem::getDatahora, Comparator.nullsLast(Comparator.naturalOrder()));
 	private static final Comparator<MesaItem> MESA_ITEM_COMPARATOR_DECRESCENTE = Comparator.comparing(MesaItem::getDatahora, Comparator.nullsLast(Comparator.reverseOrder()));
 
-	private static List<GrupoItem> gruposBase;
+	private static final List<GrupoItem> GRUPOS_ITEM_BASE;
+	static {
+        final List<GrupoItem> gruposBase = new ArrayList<>();
+        for (CpMarcadorGrupoEnum gEnum : CpMarcadorGrupoEnum.values()) {
+            if (gEnum.isVisible()) {
+                GrupoItem grpItem = new GrupoItem();
+                grpItem.grupo = gEnum.name();
+                grpItem.grupoOrdem = Integer.toString(gEnum.getId());
+                grpItem.grupoNome = gEnum.getNome();
+                grpItem.grupoIcone = gEnum.getIcone();
+                grpItem.grupoCollapsed = gEnum.isCollapsed();
+                grpItem.grupoQtd = 15L;
+                grpItem.grupoQtdPag = 15L;
+                grpItem.grupoHide = gEnum.isHide();
+                grpItem.grupoMarcadores = CpMarcadorEnum.getListIdByGrupo(gEnum.getNome());
+                gruposBase.add(grpItem);
+            }
+        }
+        GRUPOS_ITEM_BASE = Collections.unmodifiableList(gruposBase);
+    }
 
 	public static class SelGrupo implements ISwaggerModel {
 		public String grupoOrdem;
@@ -486,42 +505,17 @@ public class Mesa2 {
 				.get(idMobil))
 				.contains(grupoId.longValue());
 	}
-	public static void carregaGruposBase() {
-		if (gruposBase == null) {
-			gruposBase = new ArrayList<GrupoItem>();
-			for (CpMarcadorGrupoEnum gEnum : CpMarcadorGrupoEnum.values()) {
-				if (gEnum.isVisible()) {
-					GrupoItem grpItem = new GrupoItem();
-					grpItem.grupo = gEnum.name();
-					grpItem.grupoOrdem = Integer.toString(gEnum.getId());
-					grpItem.grupoNome = gEnum.getNome();
-					grpItem.grupoIcone = gEnum.getIcone();
-					grpItem.grupoCollapsed = gEnum.isCollapsed();
-					if (gEnum.isCollapsed()) {
-						grpItem.grupoQtd = 0L;
-					} else {
-						grpItem.grupoQtd = 15L;
-					}
-					grpItem.grupoQtdPag = 15L;
-					grpItem.grupoHide = gEnum.isHide();
-					grpItem.grupoMarcadores = CpMarcadorEnum.getListIdByGrupo(gEnum.getNome());
-					gruposBase.add(grpItem);
-				}
-			}
-		}
-	}
-	
+
 	public static List<GrupoItem> montaGruposUsuario(Map<String, SelGrupo> selGrupos) {
-		carregaGruposBase();
-		List<String> ordemGrupos = new ArrayList<String>(); 
-		List<GrupoItem> lGrupo = new ArrayList<GrupoItem>();
+		List<String> ordemGrupos = new ArrayList<>();
+		List<GrupoItem> lGrupo = new ArrayList<>();
 		if (selGrupos != null && selGrupos.size() > 0) {
 			for (Map.Entry<String, SelGrupo> selGrupo : selGrupos.entrySet())
 				ordemGrupos.add(CpMarcadorGrupoEnum.getByNome(selGrupo.getKey()).getId().toString());
 		} else {
 			ordemGrupos = CpMarcadorGrupoEnum.getIdList();
 		}
-		for (GrupoItem grp : gruposBase) {
+		for (GrupoItem grp : GRUPOS_ITEM_BASE) {
 			for (String ordemGrupo : ordemGrupos) {
 				if (grp.grupoOrdem.equals(ordemGrupo)) {
 					GrupoItem grpItem = new GrupoItem();
