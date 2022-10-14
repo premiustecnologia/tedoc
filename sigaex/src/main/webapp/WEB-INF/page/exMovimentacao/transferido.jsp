@@ -4,8 +4,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 	<script language="javascript">
-		debugger;
-		
 		function fechaJanela(){
 			var sURL = unescape(window.opener.location.pathname);
 			window.opener.location.href = window.opener.location.href;
