@@ -58,10 +58,14 @@ public abstract class AbstractCpOrgaoUsuario extends Objeto implements Serializa
 	private Long idOrgaoUsu;
 
 	@Column(name = "CGC_ORGAO_USU")
-	private Integer cgcOrgaoUsu;
+	private Long cgcOrgaoUsu;
 
 	@Column(name = "COD_ORGAO_USU")
 	private Long codOrgaoUsu;
+
+	@Id
+	@Column(name = "ID_ORGAO_USU", nullable = false)
+	private Long idOrgaoUsu;
 
 	@Column(name = "BAIRRO_ORGAO_USU", length = 50)
 	private String bairroOrgaoUsu;
@@ -138,7 +142,7 @@ public abstract class AbstractCpOrgaoUsuario extends Objeto implements Serializa
 		return cepOrgaoUsu;
 	}
 
-	public Integer getCgcOrgaoUsu() {
+	public Long getCgcOrgaoUsu() {
 		return cgcOrgaoUsu;
 	}
 
@@ -208,7 +212,7 @@ public abstract class AbstractCpOrgaoUsuario extends Objeto implements Serializa
 		this.cepOrgaoUsu = cepOrgaoUsu;
 	}
 
-	public void setCgcOrgaoUsu(Integer cgcOrgaoUsu) {
+	public void setCgcOrgaoUsu(Long cgcOrgaoUsu) {
 		this.cgcOrgaoUsu = cgcOrgaoUsu;
 	}
 
