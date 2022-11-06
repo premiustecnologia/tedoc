@@ -63,10 +63,6 @@ public abstract class AbstractCpOrgaoUsuario extends Objeto implements Serializa
 	@Column(name = "COD_ORGAO_USU")
 	private Long codOrgaoUsu;
 
-	@Id
-	@Column(name = "ID_ORGAO_USU", nullable = false)
-	private Long idOrgaoUsu;
-
 	@Column(name = "BAIRRO_ORGAO_USU", length = 50)
 	private String bairroOrgaoUsu;
 
