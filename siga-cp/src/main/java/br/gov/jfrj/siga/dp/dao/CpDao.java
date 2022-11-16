@@ -742,16 +742,20 @@ public class CpDao extends ModeloDao {
 
 			final String principal = ContextoPersistencia.getUserPrincipal();
 			final CpIdentidade identidadePrincipal = consultaIdentidadeCadastrante(principal, true);
-
-			if (filtro.getIdOrgaoUsu() != null && filtro.getIdOrgaoUsu().longValue() > 0) {
+			
+			if((CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()) || 
+					CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla())) && filtro.isBuscarParaCadastroDePessoa()) {
 				predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
-
-				if (!identidadePrincipal.getCpOrgaoUsuario().getId().equals(filtro.getIdOrgaoUsu())) {
-					predicates.and(qDpLotacao.unidadeReceptora.isTrue());
-				}
 			} else {
-				predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(identidadePrincipal.getCpOrgaoUsuario().getId()));
-				predicates.or(qDpLotacao.unidadeReceptora.isTrue());
+				if (filtro.getIdOrgaoUsu() != null && filtro.getIdOrgaoUsu().longValue() > 0) {
+					predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
+					if (!identidadePrincipal.getCpOrgaoUsuario().getId().equals(filtro.getIdOrgaoUsu())) {
+						predicates.and(qDpLotacao.unidadeReceptora.isTrue());
+					}
+				} else {
+					predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(identidadePrincipal.getCpOrgaoUsuario().getId()));
+					predicates.or(qDpLotacao.unidadeReceptora.isTrue());
+				}
 			}
 		}
 
