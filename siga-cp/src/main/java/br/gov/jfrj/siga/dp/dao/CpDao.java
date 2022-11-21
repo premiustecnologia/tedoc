@@ -1488,6 +1488,9 @@ public class CpDao extends ModeloDao {
 	private JPAQuery<?> queryConsultarPorFiltro(final QDpPessoa root, final DpPessoaDaoFiltro filtro) {
 		final BooleanBuilder predicates = new BooleanBuilder();
 
+		final String principal = ContextoPersistencia.getUserPrincipal();
+		final CpIdentidade identidadePrincipal = consultaIdentidadeCadastrante(principal, true);
+		
 		if (filtro.isBuscarSubstitutos()) {
 			ofNullable(filtro.getId())
 					.filter(p -> p.longValue() > 0L)
@@ -1505,6 +1508,14 @@ public class CpDao extends ModeloDao {
 			if (!filtro.isBuscarFechadas()) {
 				predicates.and(qDpPessoa.dataFimPessoa.isNull());
 				predicates.and(predicadoExisteIdentidadeAtivaParaPessoa(qDpPessoa, qCpIdentidade));
+				
+				if(!(CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()) || 
+					CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()))) {
+					if (!identidadePrincipal.getCpOrgaoUsuario().getId().equals(filtro.getIdOrgaoUsu())) {
+						predicates.and(qDpPessoa.lotacao.unidadeReceptora.isTrue());
+					} 
+				}
+				
 			}
 
 			// ID passado no filtro é DIFERENTE do que contém no banco (exceção)
