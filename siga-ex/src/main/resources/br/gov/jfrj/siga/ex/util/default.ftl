@@ -2373,7 +2373,7 @@ Pede deferimento.</span><br/><br/><br/>
 
 [#macro rodapeClassificacaoDocumental align="left" somenteTR=false texto=""]
 [#if !somenteTR]
-<table align="left" width="100%" bgcolor="#FFFFFF">
+<table border="0" align="left" width="100%" bgcolor="#FFFFFF">
 [/#if]
 [#if texto?? && texto!=""]
 	<tr>
