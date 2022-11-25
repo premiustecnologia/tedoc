@@ -140,6 +140,9 @@ public class ProcessadorHtml {
 			add(myTags, "strong", null, null, true);
 			add(myTags, "i", null, null, true);
 			add(myTags, "em", null, null, true);
+			add(myTags, "u", null, null, true);			
+			add(myTags, "s", null, null, true);
+
 
 			add(myTags, "blockquote", null, null, true);
 			add(myTags, "br", null, null, false);
