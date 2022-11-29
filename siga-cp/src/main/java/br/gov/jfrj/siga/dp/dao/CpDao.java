@@ -1504,6 +1504,10 @@ public class CpDao extends ModeloDao {
 					.map(qDpPessoa.situacaoFuncionalPessoa::eq)
 					.ifPresent(predicates::and);
 		}
+		
+		if (filtro.isBuscarApenasUsuariosVisiveisParaTramitacao()) {
+			predicates.and(qDpPessoa.visivelTramitacao.isTrue());
+		}
 
 		this.preencherPredicadosQueryConsultaPorFiltro(filtro, predicates);
 
@@ -1583,6 +1587,11 @@ public class CpDao extends ModeloDao {
 			}
 			predicates.and(qDpPessoa.orgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
 		}
+		
+		if (filtro.isBuscarApenasUsuariosVisiveisParaTramitacao()) {
+			predicates.and(qDpPessoa.visivelTramitacao.isTrue());
+		}
+		
 		return consultarPessoa(predicates);
 	}
 
