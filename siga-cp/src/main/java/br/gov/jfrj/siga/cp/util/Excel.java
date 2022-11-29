@@ -1010,7 +1010,7 @@ public class Excel {
 					new CpBL().criarUsuario(null, identidade, orgaoUsuario.getId(), pessoa.getIdCargo(), pessoa.getIdFuncaoConfianca(), pessoa.getIdLotacao(), 
 							pessoa.getNomePessoa(), dataNascimento, pessoa.getCpfFormatado(), pessoa.getEmailPessoa(), 
 							pessoa.getIdentidade(), pessoa.getOrgaoIdentidade(), pessoa.getUfIdentidade(), dataExpedicaoIdentidade,
-							nomeExibicao, "", false);
+							nomeExibicao, "", false, true);
     			}
 			}
 		} catch (Exception e) {														
