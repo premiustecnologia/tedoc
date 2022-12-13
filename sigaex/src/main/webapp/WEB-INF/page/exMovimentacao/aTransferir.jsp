@@ -139,7 +139,7 @@ $(function(){
 									<siga:selecao propriedade="lotaResponsavel" tema="simple" modulo="siga"/>
 								</c:when>
 								<c:when test="${tipoResponsavel == 2}">
-									<siga:selecao propriedade="responsavel" tema="simple" modulo="siga"/>
+									<siga:selecao propriedade="responsavel" paramList="buscarApenasUsuariosVisiveisParaTramitacao=true" tema="simple" modulo="siga"/>
 								</c:when>
 								<c:when test="${tipoResponsavel == 3}">
 									<siga:selecao propriedade="cpOrgao" tema="simple" modulo="siga"/>
@@ -154,7 +154,7 @@ $(function(){
 							<label>Data da devolução</label>
 							<c:choose>
 								<c:when test="${empty dtDevolucaoMovString}">
-									<input type="text" name="dtDevolucaoMovString" onblur="javascript:verifica_data(this,0);" value="${dtDevolucaoMovString}" class="form-control campoData" autocomplete="off"/>
+									<input type="text" onkeydown="event.preventDefault()" name="dtDevolucaoMovString" onblur="javascript:verifica_data(this,0);" value="${dtDevolucaoMovString}" class="form-control campoData" autocomplete="off"/>
 								</c:when>
 								<c:when test="${not empty dtDevolucaoMovString}">
 									<input type="text" name="dtDevolucaoMovString" onblur="javascript:verifica_data(this,0);" value="${dtDevolucaoMovString}" class="form-control" readonly="true" autocomplete="off"/>

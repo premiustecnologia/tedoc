@@ -140,6 +140,9 @@ public class ProcessadorHtml {
 			add(myTags, "strong", null, null, true);
 			add(myTags, "i", null, null, true);
 			add(myTags, "em", null, null, true);
+			add(myTags, "u", null, null, true);			
+			add(myTags, "s", null, null, true);
+
 
 			add(myTags, "blockquote", null, null, true);
 			add(myTags, "br", null, null, false);
@@ -628,8 +631,15 @@ public class ProcessadorHtml {
 						serializer.attribute(parser.getAttributeNamespace(i),
 								"style", sb.toString());
 					}
+
 				}
 			}
+			
+			//table tag is a special case: by default every table must have a border
+			if (sName.equals("table")) {
+				serializer.attribute("", "border", "1");
+			}
+			
 			break;
 
 		case XmlPullParser.END_TAG:

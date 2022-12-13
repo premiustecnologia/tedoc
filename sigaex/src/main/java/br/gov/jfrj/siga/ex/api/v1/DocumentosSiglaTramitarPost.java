@@ -1,24 +1,26 @@
 package br.gov.jfrj.siga.ex.api.v1;
 
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.crivano.swaggerservlet.PresentableUnloggedException;
 import com.crivano.swaggerservlet.SwaggerException;
-import com.crivano.swaggerservlet.SwaggerServlet;
 
 import br.gov.jfrj.siga.base.AplicacaoException;
-import br.gov.jfrj.siga.base.CurrentRequest;
 import br.gov.jfrj.siga.base.RegraNegocioException;
-import br.gov.jfrj.siga.base.RequestInfo;
 import br.gov.jfrj.siga.dp.CpOrgao;
 import br.gov.jfrj.siga.dp.DpLotacao;
 import br.gov.jfrj.siga.dp.DpPessoa;
+import br.gov.jfrj.siga.dp.dao.DpLotacaoDaoFiltro;
 import br.gov.jfrj.siga.ex.ExMobil;
 import br.gov.jfrj.siga.ex.api.v1.IExApiV1.DocumentosSiglaTramitarPostRequest;
 import br.gov.jfrj.siga.ex.api.v1.IExApiV1.DocumentosSiglaTramitarPostResponse;
@@ -78,13 +80,20 @@ public class DocumentosSiglaTramitarPost implements IDocumentosSiglaTramitarPost
 	}
 
 	private DpLotacao getLotacao(DocumentosSiglaTramitarPostRequest req, CpOrgao orgaoExterno) {
-		DpLotacao lot = null;
-		if (Objects.isNull(orgaoExterno) && StringUtils.isNotEmpty(req.lotacao)) {
-			lot = new DpLotacao();
-			lot.setSigla(req.lotacao);
-			lot = ExDao.getInstance().consultarPorSigla(lot);
+		if (isBlank(req.lotacao)) {
+			return null;
 		}
-		return lot;
+
+		final String lotacao = StringUtils.stripToNull(req.lotacao);
+		final DpLotacaoDaoFiltro filtro = new DpLotacaoDaoFiltro();
+		filtro.setNome(lotacao);
+		filtro.setBuscarFechadas(false);
+
+		final List<DpLotacao> lotacoes = ExDao.getInstance().consultarPorFiltro(filtro, 0, 1);
+		if (isEmpty(lotacoes)) {
+			return null;
+		}
+		return lotacoes.iterator().next();
 	}
 
 	private Date getDataDevolucao(DocumentosSiglaTramitarPostRequest req, DocumentosSiglaTramitarPostResponse resp)

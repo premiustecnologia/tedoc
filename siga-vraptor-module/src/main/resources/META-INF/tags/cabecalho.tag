@@ -363,7 +363,7 @@ ${meta}
 						<c:catch>
 							<c:if test="${not empty titular.orgaoUsuario.descricao}"><span style="white-space: nowrap;"> <i class="fa fa-angle-double-right"></i> ${titular.orgaoUsuario.descricao} |</span></h6></c:if>
 						</c:catch>
-						<span>
+						<span class="titulo-versao">
 							<strong>${f:resource('/siga.cabecalho.titulo')} ${siga_version}</strong>
 						</span>
 						<c:if test="${f:resource('/siga.ambiente') ne 'prod'}">
@@ -372,13 +372,13 @@ ${meta}
 									<c:when test="${f:resource('/siga.ambiente') eq 'desenv'}">
 										DESENVOLVIMENTO
 									</c:when>
-									<c:when test="${f:resource('/siga.ambiente') eq 'treinamento'}">
+									<c:when test="${f:resource('/siga.ambiente') eq 'treina'}">
 										TREINAMENTO
 									</c:when>
 									<c:when test="${f:resource('/siga.ambiente') eq 'configuracao'}">
 										CONFIGURACAÇÃO
 									</c:when>
-									<c:when test="${f:resource('/siga.ambiente') eq 'homolog'}">
+									<c:when test="${f:resource('/siga.ambiente') eq 'homolo'}">
 										HOMOLOGAÇÃO
 									</c:when>
 									<c:when test="${f:resource('/siga.ambiente') eq 'suporte'}">
@@ -398,10 +398,12 @@ ${meta}
 				<c:if test="${not empty cadastrante}">
 					<div class="col col-12 col-md-6 text-right">
 						<div class="dropdown d-inline">
-							<span class="align-middle"><i class="fa fa-user"></i> 
+							<span class="align-middle">
+								<span class="text-muted">[${cadastrante.sigla}]</span>
+								<i class="fa fa-user"></i>
 								<c:catch>
-									<strong id="cadastrante" data-toggle="tooltip" data-placement="top" title="${cadastrante.sigla}">																		
-											<c:out default="Convidado" value="${f:maiusculasEMinusculas(cadastrante.nomePessoa)}" />
+									<strong id="cadastrante" data-toggle="tooltip" data-placement="top" title="${cadastrante.nomePessoa}">
+										<c:out default="Convidado" value="${f:maiusculasEMinusculas(cadastrante.nomeCurto)}" />
 									</strong>
 									<c:if test="${not empty cadastrante.lotacao}">
 										<c:if test="${cadastrante.lotacoes[1] != null}">

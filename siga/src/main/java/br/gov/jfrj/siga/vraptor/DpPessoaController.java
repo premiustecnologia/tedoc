@@ -183,6 +183,9 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		}
 		
 		flt.setSituacaoFuncionalPessoa("");
+		
+		boolean buscarApenasUsuariosVisiveisParaTramitacao = toBoolean(param("buscarApenasUsuariosVisiveisParaTramitacao"));
+		flt.setBuscarApenasUsuariosVisiveisParaTramitacao(toBooleanDefaultIfNull(buscarApenasUsuariosVisiveisParaTramitacao, false));
 
 		return flt;
 	}
@@ -262,37 +265,37 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		}
 		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())
 				|| CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(idOrgaoUsu))) {
-			DpPessoaDaoFiltro dpPessoa = new DpPessoaDaoFiltro();
-			dpPessoa.setBuscarFechadas(buscarInativos);
+			DpPessoaDaoFiltro dpPessoaFiltro = new DpPessoaDaoFiltro();
+			dpPessoaFiltro.setBuscarFechadas(buscarInativos);
 			if (paramoffset == null) {
 				paramoffset = 0;
 			}
-			dpPessoa.setIdOrgaoUsu(idOrgaoUsu);
-			dpPessoa.setNome(isNotBlank(nome) ? Texto.removeAcento(nome) : EMPTY);
-			dpPessoa.setEmail(isNotBlank(emailPesquisa) ? Texto.removeAcento(emailPesquisa) : EMPTY);
-			dpPessoa.setIdentidade(identidadePesquisa);
+			dpPessoaFiltro.setIdOrgaoUsu(idOrgaoUsu);
+			dpPessoaFiltro.setNome(isNotBlank(nome) ? Texto.removeAcento(nome) : EMPTY);
+			dpPessoaFiltro.setEmail(isNotBlank(emailPesquisa) ? Texto.removeAcento(emailPesquisa) : EMPTY);
+			dpPessoaFiltro.setIdentidade(identidadePesquisa);
 			if(idCargoPesquisa != null) {
 				DpCargo cargo = new DpCargo();
 				cargo.setId(idCargoPesquisa);
-				dpPessoa.setCargo(cargo);
+				dpPessoaFiltro.setCargo(cargo);
 			}
 			if (idLotacaoPesquisa != null) {
 				DpLotacao lotacao = new DpLotacao();
 				lotacao.setId(idLotacaoPesquisa);
-				dpPessoa.setLotacao(lotacao);
+				dpPessoaFiltro.setLotacao(lotacao);
 			}
 			if (idFuncaoPesquisa != null) {
 				DpFuncaoConfianca funcao = new DpFuncaoConfianca();
 				funcao.setIdFuncao(idFuncaoPesquisa);
-				dpPessoa.setFuncaoConfianca(funcao);
+				dpPessoaFiltro.setFuncaoConfianca(funcao);
 			}
 			if (isNotBlank(cpfPesquisa)) {
-				dpPessoa.setCpf(Long.valueOf(cpfPesquisa.replace(".", EMPTY).replace("-", EMPTY)));
+				dpPessoaFiltro.setCpf(Long.valueOf(cpfPesquisa.replace(".", EMPTY).replace("-", EMPTY)));
 			}
-			dpPessoa.setId(Long.valueOf(0));
-			setItens(CpDao.getInstance().consultarPorFiltro(dpPessoa, paramoffset, 15));
+			dpPessoaFiltro.setId(Long.valueOf(0));
+			setItens(CpDao.getInstance().consultarPorFiltro(dpPessoaFiltro, paramoffset, 15));
 			result.include("itens", getItens());
-			long tamanho = dao().consultarQuantidade(dpPessoa);
+			long tamanho = dao().consultarQuantidade(dpPessoaFiltro);
 			result.include("tamanho", tamanho);
 
 			result.include("idOrgaoUsu", idOrgaoUsu);
@@ -420,6 +423,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				result.include("idOrgaoUsu", pessoa.getOrgaoUsuario().getId());
 				result.include("nmOrgaousu", pessoa.getOrgaoUsuario().getNmOrgaoUsu());
 				result.include("tramitarOutrosOrgaos", pessoa.isTramitarOutrosOrgaos());
+				result.include("isUsuarioVisivelTramitacao", pessoa.isVisivelTramitacao());
 				
 				/*
 				 * Adicao de campos RG
@@ -575,6 +579,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		DpLotacaoDaoFiltro lotacao = new DpLotacaoDaoFiltro();
 		lotacao.setNome("");
 		lotacao.setIdOrgaoUsu(idOrgaoUsu);
+		lotacao.setBuscarParaCadastroDePessoa(true);
 		List<DpLotacao> listaLotacao = new ArrayList<DpLotacao>();
 		DpLotacao l = new DpLotacao();
 		l.setNomeLotacao("Selecione");
@@ -624,14 +629,14 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			final Long idLotacao, final String nmPessoa, final String dtNascimento, final String cpf,
 			final String email, final String identidade, final String orgaoIdentidade, final String ufIdentidade,
 			final String dataExpedicaoIdentidade, final String nomeExibicao, final String enviarEmail,
-			final Boolean tramitarOutrosOrgaos) throws Exception {
+			final Boolean tramitarOutrosOrgaos, final Boolean isUsuarioVisivelTramitacao) throws Exception {
 
 		assertAcesso("GI:Módulo de Gestão de Identidade;CAD_PESSOA:Cadastrar Pessoa");
 
 		try {
 			DpPessoa pes = new CpBL().criarUsuario(id, getIdentidadeCadastrante(), idOrgaoUsu, idCargo, idFuncao,
 					idLotacao, nmPessoa, dtNascimento, cpf, email, identidade, orgaoIdentidade, ufIdentidade,
-					dataExpedicaoIdentidade, nomeExibicao, enviarEmail, toBooleanDefaultIfNull(tramitarOutrosOrgaos, false));
+					dataExpedicaoIdentidade, nomeExibicao, enviarEmail, toBooleanDefaultIfNull(tramitarOutrosOrgaos, false), toBooleanDefaultIfNull(isUsuarioVisivelTramitacao, true));
 			
 			String mensagem = String.format("%s\n%s", SigaMessages.getMessage("usuario.cadastro.sucesso"), SigaMessages.getMessage("usuario.cadastro.envioemail"));
 			result.include(SigaModal.ALERTA, SigaModal.mensagem(mensagem).titulo("Sucesso"));

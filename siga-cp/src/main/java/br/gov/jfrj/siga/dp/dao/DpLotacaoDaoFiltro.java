@@ -31,6 +31,8 @@ public class DpLotacaoDaoFiltro extends DaoFiltroSelecionavel {
 
 	private boolean buscarSemLimitarOrgaoOrigem;
 	
+	private boolean buscarParaCadastroDePessoa;
+	
 	public DpLotacaoDaoFiltro() {}
 	
 	public DpLotacaoDaoFiltro(String nome, Long idOrgaoUsu) {
@@ -54,6 +56,13 @@ public class DpLotacaoDaoFiltro extends DaoFiltroSelecionavel {
 		this.buscarSemLimitarOrgaoOrigem = buscarSemLimitarOrgaoOrigem;
 	}
 
+	public boolean isBuscarParaCadastroDePessoa() {
+		return buscarParaCadastroDePessoa;
+	}
+
+	public void setBuscarParaCadastroDePessoa(boolean buscarParaCadastroDePessoa) {
+		this.buscarParaCadastroDePessoa = buscarParaCadastroDePessoa;
+	}
 	public String getNome() {
 		return nome;
 	}
@@ -85,4 +94,5 @@ public class DpLotacaoDaoFiltro extends DaoFiltroSelecionavel {
 
 		setSigla(MatriculaUtils.getSiglaDaLotacao(siglaCompleta));
 	}
+
 }

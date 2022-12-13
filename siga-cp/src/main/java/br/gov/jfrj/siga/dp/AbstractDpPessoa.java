@@ -22,29 +22,19 @@
  */
 package br.gov.jfrj.siga.dp;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import br.gov.jfrj.siga.base.util.Texto;
 import br.gov.jfrj.siga.cp.CpIdentidade;
 import br.gov.jfrj.siga.cp.model.HistoricoAuditavel;
 import br.gov.jfrj.siga.sinc.lib.Desconsiderar;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.SPACE;
 
 @MappedSuperclass
 @NamedQueries({
@@ -354,6 +344,9 @@ public abstract class AbstractDpPessoa extends DpResponsavel implements
 
 	@Column(name = "TRAMITAR_OUTROS_ORGAOS")
 	private boolean tramitarOutrosOrgaos;
+	
+	@Column(name = "VISIVEL_TRAMITACAO")
+	private boolean visivelTramitacao;
 
 	@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="HIS_IDC_INI")
@@ -560,6 +553,21 @@ public abstract class AbstractDpPessoa extends DpResponsavel implements
 	 */
 	public String getNomePessoa() {
 		return nomePessoa;
+	}
+
+	public String getNomeCurto() {
+		final String nomeCompleto = StringUtils.trimToNull(this.getNomePessoa());
+		if (nomeCompleto == null) {
+			return EMPTY;
+		}
+		return primeiroUltimoNome(nomeCompleto.split(SPACE));
+	}
+
+	private static String primeiroUltimoNome(final String... partesDosNomes) {
+		if (partesDosNomes.length > 1) {
+			return String.join(SPACE, partesDosNomes[0], partesDosNomes[partesDosNomes.length - 1]);
+		}
+		return partesDosNomes[0];
 	}
 
 	public CpOrgaoUsuario getOrgaoUsuario() {
@@ -855,6 +863,14 @@ public abstract class AbstractDpPessoa extends DpResponsavel implements
 	
 	public void setTramitarOutrosOrgaos(boolean tramitarOutrosOrgaos) {
 		this.tramitarOutrosOrgaos = tramitarOutrosOrgaos;
+	}
+	
+	public boolean isVisivelTramitacao() {
+		return visivelTramitacao;
+	}
+	
+	public void setVisivelTramitacao(boolean visivelTramitacao) {
+		this.visivelTramitacao = visivelTramitacao;
 	}
 	
 	/*

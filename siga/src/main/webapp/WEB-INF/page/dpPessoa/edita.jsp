@@ -290,7 +290,7 @@
 						<div class="col-md-2">
 							<div class="form-group">
 								<label for="nmPessoa">Data de Nascimento</label>
-								<input type="text" id="dtNascimento" name="dtNascimento" value="${dtNascimento}" maxlength="10" onkeyup="this.value = mascaraData( this.value )" class="form-control" />
+								<input type="text" id="dtNascimento" name="dtNascimento" value="${dtNascimento}" maxlength="10" onkeyup="this.value = mascaraData( this.value )" onkeydown="event.preventDefault()" class="form-control campoDataNascimento" />
 							</div>
 						</div>
 						<div class="col-md-4">
@@ -300,8 +300,7 @@
 							</div>
 						</div>
 					</div>
-					<hr>
-					<!-- Alteracao cartao 1057 -->
+					
 					<fieldset class="form-group">					
 						<div class="row bg-light">
 							<div class="col-md-4">
@@ -334,10 +333,13 @@
 							<div class="col-md-2">
 								<div class="form-group">
 									<label for="nmPessoa">Data de Expedição</label>
-									<input type="text" id="dataExpedicaoIdentidade" name="dataExpedicaoIdentidade" value="${dataExpedicaoIdentidade}" maxlength="10" onkeyup="this.value = mascaraData( this.value )" class="form-control" />
+									<input type="text" id="dataExpedicaoIdentidade" name="dataExpedicaoIdentidade" value="${dataExpedicaoIdentidade}" maxlength="10" onkeyup="this.value = mascaraData( this.value )" onkeydown="event.preventDefault()" class="form-control campoDataNascimento" />
 								</div>
 							</div>
 						</div>
+						
+						<hr>
+						
 						<div class="row bg-light">
 							<div class="col-sm-3">
 								<div class="form-group">
@@ -353,10 +355,23 @@
 										</label>
 									</div>							
 								</div>
+								<div class="form-group">
+									<label for="siglaPermissao">Usuário visível para tramitação</label><br/>
+									<div class="form-check-inline">
+										<h:
+										<label class="form-check-label">
+											<input type="radio" name="isUsuarioVisivelTramitacao" value="false" ${isUsuarioVisivelTramitacao == false  ? 'checked' : ''} /> Não
+										</label>
+									</div>							
+									<div class="form-check-inline">
+										<label class="form-check-label">
+											<input type="radio" name="isUsuarioVisivelTramitacao" value="true" ${isUsuarioVisivelTramitacao == true or isUsuarioVisivelTramitacao == null ? 'checked' : ''} /> Sim
+										</label>
+									</div>							
+								</div>
 							</div>
 						</div>
 					</fieldset>
-					<!-- Fim da alteracao cartao 1057 -->
 					
 					<div class="row">
 						<div class="col-sm-2">

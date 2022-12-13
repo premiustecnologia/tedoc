@@ -214,11 +214,27 @@
 				<input type="hidden" id="id" name="id"/> <input type="hidden" id="sigla" name="sigla"/>	
 				<input type="hidden" id="visualizador" value="${f:resource('/sigaex.pdf.visualizador') }"/>
 			</form>
-			<h2>
+			<h2 class="sigla-documento">
 				<c:if test="${empty ocultarCodigo}">
 					${docVO.sigla}
 					<c:if test="${docVO.doc ne null}">
-						<small class="text-muted" title="Identificador Incremental Interno Único (ID)">#${docVO.doc.id}</small>
+						<small class="iiiu text-muted" title="Link Permanente: Identificador Incremental Interno Único (ID)">
+							<a href="${pageContext.request.contextPath}/app/documento/${docVO.doc.id}">#${docVO.doc.id}</a>
+							<c:if test="${(f:resource('/siga.ambiente') eq 'desenv') or (cadastrante.sesbPessoa eq 'ZZZ')}">
+								<script>
+									function copiar(targetComponentName) {
+										const component = document.getElementById(targetComponentName);
+										component.select();
+										navigator.clipboard.writeText(component.value);
+										alert('Localização do arquivo copiada para a área de transferência.')
+									}
+								</script>
+								<input type="hidden" id="docPathInput" name="doc-path-input" value="${f:referenciaArquivo(docVO.doc).getAbsolutePath()}" />
+								<button class="btn btn-sm btn-link" title="Localização do documento: ${f:referenciaArquivo(docVO.doc).getAbsolutePath()} (clique para copiar)" onclick="copiar('docPathInput')">
+									<i class="fa fa-folder"></i>
+								</button>
+							</c:if>
+						</small>
 					</c:if>
 				</c:if>
 				<button type="button" name="voltar" onclick="${(empty param.linkVolta) ? 'javascript:window.location.href=\'/siga\';' : 'javascript:'.concat(param.linkVolta) }" class="btn btn-secondary float-right" accesskey="r">Volta<u>r</u></button>				
@@ -353,12 +369,19 @@
 																idAjax="${mov.idMov}"
 																classe="${acao.classe}"
 																post="${acao.post}"
-																sufixoItemDesbotado="${
-																	not empty acao.params['movDocId']
-																		? '#'.concat(acao.params['movDocId'])
+																sufixoItemDesbotado="${(
+																				not empty acao.params['movDocId'] and
+																				not empty mov.idMov and
+																				not empty acao.nome and
+																				not empty mov.mov.nmArqMov and
+																				not empty mov.mov.conteudoTpMov and
+																				acao.nome.equals(mov.mov.nmArqMov)
+																		)
+																		? '#'.concat(mov.idMov)
 																		: null
 																}"
-																sufixoItemDesbotadoHint="Identificador Incremental Interno Único (ID)"
+																sufixoItemDesbotadoLink="${pageContext.request.contextPath}/app/anexo/${mov.idMov}"
+																sufixoItemDesbotadoHint="Link Permanente: Identificador Incremental Interno Único (ID)"
 															/>
 														</c:forEach>
 														<c:if test="${mov.idTpMov == 2}">

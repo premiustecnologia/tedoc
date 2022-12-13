@@ -9,9 +9,16 @@
 
 <link rel="stylesheet" href="/siga/bootstrap/4.6.0/css/bootstrap.min.css" type="text/css" media="screen, projection" />
 <siga:pagina titulo="Mesa Virtual" incluirBS="false">
-	
-	<script type="text/javascript" src="../javascript/vue.min.js"></script>
-	
+
+	<c:choose>
+		<c:when test="${f:resource('/siga.ambiente') eq 'prod'}">
+			<script type="text/javascript" src="../javascript/vue.min.js?v=17102022"></script>
+		</c:when>
+		<c:otherwise>
+			<script type="text/javascript" src="../javascript/vue.js?v=17102022"></script>
+		</c:otherwise>
+	</c:choose>
+
 	<style>
 		.toast {
 			background-color: rgba(255,255,255,.95) !important;
@@ -202,8 +209,6 @@
 										@click="collapseGrupo(g.grupoOrdem, g.grupoNome)">
 									<i class="h5 mb-0" :class="g.grupoIcone"></i>
 									<span class="mr-3">{{g.grupoNome}}</span>
-									<!--
-									DESABILITADA REGRA QUE CONSIDERA O COUNT UMA VEZ QUE ESTÁ QUEBRADA: REABILITAR QUANDO CORRIGIR O COUNT
 									<small>
 										<span class="badge badge-light btn-sm align-middle" :class="{disabled: exibeLota}">
 											<small class="fas fa-user"></small>
@@ -216,7 +221,6 @@
 											</span>
 										</c:if>
 									</small>
-									-->
 								</h5>
 							</div>
 							<div :id="['collapsetab-' + g.grupoOrdem]" class="collapse" :key="g.grupoOrdem" v-bind:class="{show: !g.grupoCollapsed }">
@@ -354,12 +358,13 @@
 		</div>
 		<div id="toastContainer" style="position: fixed; top: 135px; right: 0;z-index: 999999;"></div>
 	</div>
+
 	<script type="text/javascript">
 		const ID_VISUALIZACAO = ${idVisualizacao};
 		$( document ).ready(function() {
 			initPopovers();
 		});
 	</script>
-	<script type="text/javascript" src="/siga/javascript/mesa2.js?v=1661439643779"></script>
+	<script type="text/javascript" src="/siga/javascript/mesa2.js?v=17102022"></script>
 </siga:pagina>
 <script src="/siga/bootstrap/4.6.0/js/bootstrap.bundle.min.js" type="text/javascript"></script>
