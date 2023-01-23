@@ -1383,15 +1383,19 @@ public class ExMovimentacaoController extends ExController {
 			final DpPessoaSelecao cosignatarioSel,
 			final String funcaoCosignatario, final String  unidadeCosignatario, final Integer postback) {
 		this.setPostback(postback);
-
+		
+		if (cosignatarioSel.empty()) {
+			result.include(SigaModal.ALERTA, SigaModal.mensagem("É necessário informar um cossignatário.").titulo("Atenção"));
+			result.forwardTo(this).incluirCosignatario(sigla);
+			return;
+		}
+		
 		final BuscaDocumentoBuilder documentoBuilder = BuscaDocumentoBuilder
 				.novaInstancia()
 				.setSigla(sigla);
-
 		final ExDocumento doc = buscarDocumento(documentoBuilder);
 
 		String funcaoUnidadeCosignatario = funcaoCosignatario;
-		// Efetuar validação e concatenar o conteudo se for implantação GOVSP
 		if(SigaMessages.isSigaSP() && (funcaoCosignatario != null && !funcaoCosignatario.isEmpty()) && (unidadeCosignatario != null && !unidadeCosignatario.isEmpty())) {
 			funcaoUnidadeCosignatario = funcaoUnidadeCosignatario + ";" + unidadeCosignatario; 
 		}
@@ -1417,6 +1421,7 @@ public class ExMovimentacaoController extends ExController {
 				mov.getDescrMov()
 		);
 		ExDocumentoController.redirecionarParaExibir(result, mov.getExDocumento().getSigla());
+		
 	}
 
 	// Nato: Temos que substituir por uma tela que mostre os itens marcados como
