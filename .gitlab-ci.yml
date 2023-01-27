@@ -1,0 +1,3 @@
+include:
+  project: cicd/pipelines
+  file: pipeline.yml
