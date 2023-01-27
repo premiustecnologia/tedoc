@@ -95,8 +95,8 @@
                 <tr>
                     <th align="left">Nome</th>
                     <th align="left">Sigla</th>
-                    <th align="left">Externa</th>
-                    <th align="left">Suspensa</th>
+                    <th hidden="true" align="left">Externa</th>
+                    <th align="left">Unidade Receptora</th>
                     <th colspan="2" align="center">Op&ccedil;&otilde;es</th>
                 </tr>
                 </thead>
@@ -107,8 +107,8 @@
                     <tr>
                         <td align="left">${lotacao.descricao}</td>
                         <td align="left">${lotacao.sigla}</td>
-                        <td align="left">${lotacao.isExternaLotacao == 1 ? 'SIM' : 'NÃO'}</td>
-                        <td align="left">${lotacao.isSuspensa == 1 ? 'SIM' : 'NÃO'}</td>
+                        <td align="left" style="${lotacao.unidadeReceptora == true ? 'color : red' : ''}">${lotacao.unidadeReceptora == true ? 'SIM' : 'NÃO'}</td>
+                        <td hidden="true" align="left">${lotacao.isExternaLotacao == 1 ? 'SIM' : 'NÃO'}</td>
                         <td align="left">
                             <c:url var="url" value="/app/lotacao/editar">
                                 <c:param name="id" value="${lotacao.id}"></c:param>
@@ -151,6 +151,14 @@
                         </td>
                     </tr>
                 </siga:paginador>
+                <siga:siga-modal id="confirmacaoModal" exibirRodape="false" tituloADireita="Confirma&ccedil;&atilde;o">
+                    <div id="msg" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                        <a href="#" class="btn btn-success btn-confirmacao" role="button" aria-pressed="true">Sim</a>
+                    </div>
+                </siga:siga-modal>
                 </tbody>
             </table>
             <div class="gt-table-buttons">

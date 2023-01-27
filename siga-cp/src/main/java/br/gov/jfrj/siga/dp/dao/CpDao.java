@@ -740,8 +740,22 @@ public class CpDao extends ModeloDao {
 				);
 			}
 
-			if (filtro.getIdOrgaoUsu() != null) {
+			final String principal = ContextoPersistencia.getUserPrincipal();
+			final CpIdentidade identidadePrincipal = consultaIdentidadeCadastrante(principal, true);
+			
+			if((CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()) || 
+					CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla())) && filtro.isBuscarParaCadastroDePessoa()) {
 				predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
+			} else {
+				if (filtro.getIdOrgaoUsu() != null && filtro.getIdOrgaoUsu().longValue() > 0) {
+					predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
+					if (!identidadePrincipal.getCpOrgaoUsuario().getId().equals(filtro.getIdOrgaoUsu())) {
+						predicates.and(qDpLotacao.unidadeReceptora.isTrue());
+					}
+				} else {
+					predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(identidadePrincipal.getCpOrgaoUsuario().getId()));
+					predicates.or(qDpLotacao.unidadeReceptora.isTrue());
+				}
 			}
 		}
 
@@ -1474,6 +1488,9 @@ public class CpDao extends ModeloDao {
 	private JPAQuery<?> queryConsultarPorFiltro(final QDpPessoa root, final DpPessoaDaoFiltro filtro) {
 		final BooleanBuilder predicates = new BooleanBuilder();
 
+		final String principal = ContextoPersistencia.getUserPrincipal();
+		final CpIdentidade identidadePrincipal = consultaIdentidadeCadastrante(principal, true);
+		
 		if (filtro.isBuscarSubstitutos()) {
 			ofNullable(filtro.getId())
 					.filter(p -> p.longValue() > 0L)
@@ -1491,6 +1508,15 @@ public class CpDao extends ModeloDao {
 			if (!filtro.isBuscarFechadas()) {
 				predicates.and(qDpPessoa.dataFimPessoa.isNull());
 				predicates.and(predicadoExisteIdentidadeAtivaParaPessoa(qDpPessoa, qCpIdentidade));
+				
+				if((CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()))) {
+					predicates.and(qDpPessoa.lotacao.unidadeReceptora.isFalse());
+				} else {
+					if (!identidadePrincipal.getCpOrgaoUsuario().getId().equals(filtro.getIdOrgaoUsu())) {
+						predicates.and(qDpPessoa.lotacao.unidadeReceptora.isTrue());
+					}
+				}
+				
 			}
 
 			// ID passado no filtro é DIFERENTE do que contém no banco (exceção)
