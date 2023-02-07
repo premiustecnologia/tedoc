@@ -45,13 +45,7 @@ public class LotacoesPost implements ILotacoesPost {
 				
 				if (req.isAcessoExterno == null )
 					throw new AplicacaoException("Parãmetro isAcessoExterno deve ser true ou false");
-	
-	//			if (req.ativar != null && !"true".equals(req.ativar) && !"false".equals(req.ativar))
-	//				throw new SwaggerException(
-	//						"Parãmetro ativar deve ser true ou false", 400, null, req, resp, null);
-	//			String situacao = ("true".equals(req.ativar) ? "false" : "true");
-				String situacao = "true";
-	
+
 				CpOrgaoUsuario orgaoFiltro = new CpOrgaoUsuario();
 				orgaoFiltro.setSigla(req.siglaOrgao);
 				CpOrgaoUsuario orgaoUsu = CpDao.getInstance().consultarPorSigla(orgaoFiltro);
@@ -89,11 +83,21 @@ public class LotacoesPost implements ILotacoesPost {
 						throw new AplicacaoException("Lotação pai não existente.");
 					idLotaPai = lotaPai.getIdInicial();
 				}
-					
-				DpLotacao lota = Cp.getInstance().getBL().criarLotacao(so.getIdentidadeCadastrante(), so.getTitular(), so.getTitular().getLotacao(), 
-						null, req.nome, idOrgaoUsu, req.sigla, situacao, (req.isAcessoExterno ? true : null), 
-						idLotaPai, idLocalidade, false);
-	
+
+				DpLotacao lota = Cp.getInstance().getBL().criarLotacao(
+						so.getIdentidadeCadastrante(),
+						so.getTitular(),
+						so.getTitular().getLotacao(),
+						null,
+						req.nome,
+						idOrgaoUsu,
+						req.sigla,
+						req.isAcessoExterno,
+						idLotaPai,
+						idLocalidade,
+						false
+				);
+
 				resp.idLotacao = lota.getId().toString();
 				resp.siglaLotacao = lota.getSigla();
 			} catch (RegraNegocioException | AplicacaoException e) {
