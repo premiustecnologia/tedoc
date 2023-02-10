@@ -1098,14 +1098,8 @@ public class CpBL {
 	}
 
 	public InputStream uploadCargo(File file, CpOrgaoUsuario orgaoUsuario, String extensao) {
-		InputStream inputStream = null;
-		try {
-			Excel excel = new Excel();
-			inputStream = excel.uploadCargo(file, orgaoUsuario, extensao);
-		} catch (Exception e) {
-
-		}
-		return inputStream;
+		Excel excel = new Excel();
+		return excel.uploadCargo(file, orgaoUsuario, extensao);
 	}
 
 	public InputStream uploadPessoa(File file, CpOrgaoUsuario orgaoUsuario, String extensao, CpIdentidade i) {

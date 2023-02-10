@@ -570,29 +570,33 @@ public class Excel {
 				}
 			}
 			if(problemas == null || "".equals(problemas.toString())) {
-				try {
-	            	for (DpCargo dpCargo : lista) {
-		            	CpDao.getInstance().iniciarTransacao();
-		    			CpDao.getInstance().gravar(dpCargo);
-		    			
-	    				if(dpCargo.getIdCargoIni() == null && dpCargo.getId() != null) {
-	    					dpCargo.setIdCargoIni(dpCargo.getId());
-	    					dpCargo.setIdeCargo(dpCargo.getId().toString());
-	        				CpDao.getInstance().gravar(dpCargo);
-	        			}
-					}
-	    			CpDao.getInstance().commitTransacao();			
-	    		} catch (final Exception e) {
-	    			CpDao.getInstance().rollbackTransacao();
-	    			throw new AplicacaoException("Erro na gravação", 0, e);
-	    		}
+            	for (DpCargo dpCargo : lista) {
+	            	CpDao.getInstance().iniciarTransacao();
+	    			CpDao.getInstance().gravar(dpCargo);
+	    			
+    				if(dpCargo.getIdCargoIni() == null && dpCargo.getId() != null) {
+    					dpCargo.setIdCargoIni(dpCargo.getId());
+    					dpCargo.setIdeCargo(dpCargo.getId().toString());
+        				CpDao.getInstance().gravar(dpCargo);
+        			}
+				}
+            	CpDao.getInstance().em().getTransaction().commit();
 			}
 			if(problemas == null || "".equals(problemas.toString())) {
 	    		return null;
 	    	}
 	    	inputStream = new ByteArrayInputStream(problemas.toString().getBytes("ISO-8859-1"));
-		} catch (Exception ioe) {
-            ioe.printStackTrace();
+		} catch (Exception e) {								
+			if (CpDao.getInstance().em().getTransaction().isActive()) {
+				CpDao.getInstance().em().getTransaction().rollback();
+			}			
+			if (e.getCause() != null && e.getCause().toString().contains("ConstraintViolationException")) {
+				throw new SigaConstraintViolationException("Identificado uma violação de integridade no banco de dados." 
+						+ " Isso pode ocorrer ao gravar um registro que já exista.<br/>" 
+						+ " Por segurança, todo o processo foi cancelado e nenhum registro foi gravado.<br/>"							
+						+ " Favor revisar a planilha.");
+			}			
+			throw new AplicacaoException("Erro na gravação", 0, e);					
         }
     	
     	return inputStream;
