@@ -745,7 +745,7 @@ public class CpDao extends ModeloDao {
 			
 			if((CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()) || 
 					CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla())) && filtro.isBuscarParaCadastroDePessoa()) {
-				predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
+					predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
 			} else {
 				if (filtro.getIdOrgaoUsu() != null && filtro.getIdOrgaoUsu().longValue() > 0) {
 					predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(filtro.getIdOrgaoUsu()));
@@ -753,8 +753,10 @@ public class CpDao extends ModeloDao {
 						predicates.and(qDpLotacao.unidadeReceptora.isTrue());
 					}
 				} else {
-					predicates.and(qCpOrgaoUsuario.idOrgaoUsu.eq(identidadePrincipal.getCpOrgaoUsuario().getId()));
-					predicates.or(qDpLotacao.unidadeReceptora.isTrue());
+					predicates.and(
+							qCpOrgaoUsuario.idOrgaoUsu.eq(identidadePrincipal.getCpOrgaoUsuario().getId())
+							.or(qDpLotacao.unidadeReceptora.isTrue())
+					);
 				}
 			}
 		}
@@ -1509,13 +1511,17 @@ public class CpDao extends ModeloDao {
 				predicates.and(qDpPessoa.dataFimPessoa.isNull());
 				predicates.and(predicadoExisteIdentidadeAtivaParaPessoa(qDpPessoa, qCpIdentidade));
 				
-				if(!(CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()) || 
-					CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla()))) {
+				if(CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(identidadePrincipal.getCpOrgaoUsuario().getSigla())) {
+					predicates.and(qDpPessoa.lotacao.unidadeReceptora.isFalse());
+				} else {
 					if (!identidadePrincipal.getCpOrgaoUsuario().getId().equals(filtro.getIdOrgaoUsu())) {
-						predicates.and(qDpPessoa.lotacao.unidadeReceptora.isTrue());
+						predicates.and(
+								qDpPessoa.orgaoUsuario.codOrgaoUsu.eq(identidadePrincipal.getCpOrgaoUsuario().getId())
+									.or(qDpPessoa.lotacao.unidadeReceptora.isTrue())
+						);						
 					} 
 				}
-				
+			
 			}
 
 			// ID passado no filtro é DIFERENTE do que contém no banco (exceção)
@@ -1559,7 +1565,7 @@ public class CpDao extends ModeloDao {
 			query.limit(tamanhoPagina);
 		}
 
-		return query.orderBy(qDpPessoaWrapper.nomePessoaAI.asc())
+		return query.orderBy(qDpPessoaWrapper.sesbPessoa.asc(), qDpPessoaWrapper.nomePessoaAI.asc())
 				.fetch();
 	}
 
@@ -1821,6 +1827,27 @@ public class CpDao extends ModeloDao {
 		return query.fetch();
 	}
 
+	
+	public List<DpPessoa> consultaPessoasPorLotacao(final DpLotacao lotacao, boolean selecionarApenasAtivos) {
+		final JPAQuery<DpPessoa> query = new JPAQuery<DpPessoa>(em())
+				.from(qDpPessoa);
+						
+		final BooleanBuilder predicates = new BooleanBuilder(qDpPessoa.lotacao.idLotacao.eq(lotacao.getId()));
+		if (selecionarApenasAtivos) {
+			predicates.and(qDpPessoa.dataFimPessoa.isNull());
+		} else {
+			final QDpPessoa subqDpPessoa = new QDpPessoa("subqDpPessoa");
+			final JPQLQuery<Long> subquery = JPAExpressions
+					.select(subqDpPessoa.idPessoa.max())
+					.from(subqDpPessoa)
+					.where(subqDpPessoa.lotacao.idLotacao.eq(lotacao.getId()))
+					.groupBy(subqDpPessoa.idPessoaIni);
+			predicates.and(qDpPessoa.idPessoa.in(subquery));
+		}
+		
+		return query.where(predicates).fetch();
+	}
+	
 	/*
 	 * @SuppressWarnings("unchecked") public Usuario
 	 * consultaUsuarioCadastrante(final String nmUsuario) { try { final Query

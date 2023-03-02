@@ -1098,14 +1098,8 @@ public class CpBL {
 	}
 
 	public InputStream uploadCargo(File file, CpOrgaoUsuario orgaoUsuario, String extensao) {
-		InputStream inputStream = null;
-		try {
-			Excel excel = new Excel();
-			inputStream = excel.uploadCargo(file, orgaoUsuario, extensao);
-		} catch (Exception e) {
-
-		}
-		return inputStream;
+		Excel excel = new Excel();
+		return excel.uploadCargo(file, orgaoUsuario, extensao);
 	}
 
 	public InputStream uploadPessoa(File file, CpOrgaoUsuario orgaoUsuario, String extensao, CpIdentidade i) {
@@ -1194,6 +1188,7 @@ public class CpBL {
 		}
 		
 		Date data = new Date();
+		final Date minDate = SigaCalendar.converteStringEmData("01/01/1900");
 		pessoa.setDataInicio(data);
 		pessoa.setMatricula(0L);
 		pessoa.setSituacaoFuncionalPessoa(SituacaoFuncionalEnum.APENAS_ATIVOS.getValor()[0]);
@@ -1206,8 +1201,8 @@ public class CpBL {
 			Calendar dtNasci = new GregorianCalendar();
 			dtNasci.setTime(dtNasc);
 
-			if (hj.before(dtNasci)) {
-				throw new AplicacaoException("Data de nascimento inválida");
+			if (hj.before(dtNasci) || dtNasc.before(minDate)) {
+				throw new AplicacaoException("Data de nascimento inválida ou fora dos limites.");
 			}
 			pessoa.setDataNascimento(dtNasc);
 		} else {
@@ -1222,8 +1217,8 @@ public class CpBL {
 			Calendar dtExpId = new GregorianCalendar();
 			dtExpId.setTime(dtExp);
 
-			if (hj.before(dtExpId)) {
-				throw new AplicacaoException("Data de expedição inválida");
+			if (hj.before(dtExpId) || dtExp.before(minDate)) {
+				throw new AplicacaoException("Data de expedição inválida ou fora dos limites.");
 			}
 			pessoa.setDataExpedicaoIdentidade(dtExp);
 		} else {
@@ -1769,8 +1764,7 @@ public class CpBL {
 	}
 	
 	public DpLotacao criarLotacao(final CpIdentidade identidadeCadastrante, final DpPessoa titular, final DpLotacao lotaTitular, 
-			final Long id, final String nmLotacao, final Long idOrgaoUsu, final String siglaLotacao,
-			final String situacao, final Boolean isExternaLotacao, final Long lotacaoPai, final Long idLocalidade, final boolean unidadeReceptora) {
+			final Long id, final String nmLotacao, final Long idOrgaoUsu, final String siglaLotacao, final Boolean isExternaLotacao, final Long lotacaoPai, final Long idLocalidade, final boolean unidadeReceptora) {
 		if(nmLotacao == null)
 			throw new AplicacaoException("Nome da lotação não informado");
 		
@@ -1802,8 +1796,6 @@ public class CpBL {
 			throw new AplicacaoException("Sigla já cadastrada para outra lotação");
 		}
 		
-		List<DpPessoa> listPessoa = null;
-		
 		lotacao = null;	
 		if(id != null) {
 			lotacao = dao().consultar(id, DpLotacao.class, false);
@@ -1812,8 +1804,7 @@ public class CpBL {
 			lotacaoNova.setIsSuspensa(0);
 		}
 		
-		if(id == null ||(id != null && lotacao != null && (!nmLotacao.equals(lotacao.getNomeLotacao()) || !siglaLotacao.equalsIgnoreCase(lotacao.getSiglaLotacao())
-										|| (lotacao.getDataFim() == null && "false".equals(situacao)) || (lotacao.getDataFim() != null && "true".equals(situacao)) 
+		if(id == null || (id != null && lotacao != null && (!nmLotacao.equals(lotacao.getNomeLotacao()) || !siglaLotacao.equalsIgnoreCase(lotacao.getSiglaLotacao())
 										|| (isExternaLotacao != null && ((lotacao.getIsExternaLotacao() == null) || lotacao.getIsExternaLotacao() == 0))
 										|| (isExternaLotacao == null && ((lotacao.getIsExternaLotacao() != null) && lotacao.getIsExternaLotacao() == 1))
 										|| (isExternaLotacao != null && lotacao.getIsExternaLotacao() != null && !isExternaLotacao.equals(lotacao.getIsExternaLotacao().equals(Integer.valueOf(1)) ? Boolean.TRUE : Boolean.FALSE))
@@ -1822,8 +1813,7 @@ public class CpBL {
 										|| (lotacaoPai != null && !lotacaoPai.equals(lotacao.getLotacaoPai() != null ? lotacao.getLotacaoPai().getId() : 0L))
 										|| !idLocalidade.equals(lotacao.getLocalidade().getId())
 										|| unidadeReceptora != lotacao.isUnidadeReceptora()))) {
-			if (id != null) {			
-				listPessoa = CpDao.getInstance().pessoasPorLotacao(id, Boolean.TRUE, Boolean.FALSE);
+			if (id != null) {
 				long qtdeDocumentoCriadosPosse = dao().consultarQtdeDocCriadosPossePorDpLotacao(lotacao.getIdInicial());
 				
 				if(!Cp.getInstance().getConf().podeUtilizarServicoPorConfiguracao(titular, lotaTitular,"SIGA;GI;CAD_LOTACAO;ALT") && qtdeDocumentoCriadosPosse > 0 && 
@@ -1831,16 +1821,6 @@ public class CpBL {
 					throw new AplicacaoException("Não é permitido a alteração do nome e sigla da unidade após criação de documento ou tramitação de documento para unidade.");
 				}
 				
-				//valida se pode inativar lotação
-				if(lotacao.getDataFim() == null && "false".equals(situacao)) {
-			        if(listPessoa.size() > 0 || qtdeDocumentoCriadosPosse > 0) {	        		 
-			        	throw new AplicacaoException("Inativação não permitida. Existem documentos e usuários vinculados nessa " + SigaMessages.getMessage("usuario.lotacao") , 0);
-			        } else if(dao().listarLotacoesPorPai(lotacao).size() > 0) {
-			        	throw new AplicacaoException("Inativação não permitida. Está " + SigaMessages.getMessage("usuario.lotacao") + " é pai de outra " + SigaMessages.getMessage("usuario.lotacao") , 0);
-			        } else {
-			        	lotacaoNova.setDataFimLotacao(data);
-			        }
-				}
 				lotacaoNova.setIdLotacaoIni(lotacao.getIdLotacaoIni());
 			} else {
 				lotacao = null;
@@ -1882,8 +1862,6 @@ public class CpBL {
 			}
 			
 			lotacaoNova.setDataInicioLotacao(data);
-			DpLotacao lotacaoFilhoNova = null;
-			DpLotacao lotacaoFilhoAntiga = null;
 			try {
 				if(lotacaoNova.getDataFimLotacao() != null) {
 					lotacao.setDataFimLotacao(lotacaoNova.getDataFimLotacao());
@@ -1894,26 +1872,16 @@ public class CpBL {
 				
 				if(lotacao != null && lotacao.getId() != null) {
 					
-					DpPessoa pessoaNova = null;
+					List<DpPessoa> listPessoa = CpDao.getInstance().consultaPessoasPorLotacao(lotacao, false);
 					for (DpPessoa dpPessoa : listPessoa) {
-						pessoaNova = DpPessoa.novaInstanciaBaseadaEm(dpPessoa, data);
-						if(dpPessoa.getLotacao().getIdInicial().equals(lotacaoNova.getIdLotacaoIni())) {
-							pessoaNova.setLotacao(lotacaoNova);
-						} else {
-							if(dpPessoa.getLotacao().getLotacaoPai() != null && lotacaoNova.getId().equals(dpPessoa.getLotacao().getLotacaoAtual().getLotacaoPai().getId())) {
-								pessoaNova.setLotacao(dpPessoa.getLotacao().getLotacaoAtual());
-							} else {
-								//grava nova lotacao filho e setar na pessoa
-								lotacaoFilhoNova = new DpLotacao();
-								lotacaoFilhoAntiga =  dpPessoa.getLotacao().getLotacaoAtual();
-								
-								lotacaoFilhoNova.setDataInicio(data);
-								copiaLotacao(lotacaoFilhoAntiga, lotacaoFilhoNova);
-								
-								dao().gravarComHistorico(lotacaoFilhoNova, lotacaoFilhoAntiga, data, identidadeCadastrante);
-								pessoaNova.setLotacao(lotacaoFilhoNova);
-							}
-						}				
+						DpPessoa pessoaNova = DpPessoa.novaInstanciaBaseadaEm(dpPessoa, data);
+						pessoaNova.setLotacao(lotacaoNova);
+						
+						if (dpPessoa.getDataFimPessoa() != null) {
+							pessoaNova.setDataFimPessoa(data);
+							pessoaNova.setHisIdcFim(identidadeCadastrante);
+						}
+						
 						dao().gravarComHistorico(pessoaNova, dpPessoa, data, identidadeCadastrante);
 						criarIdentidadeComHistorico(data, dpPessoa, pessoaNova, identidadeCadastrante);
 					}
@@ -1934,6 +1902,7 @@ public class CpBL {
 		lotNova.setLotacaoPai(lotAnt.getLotacaoPai() != null ? lotAnt.getLotacaoPai().getLotacaoAtual() : null);
 		lotNova.setOrgaoUsuario(lotAnt.getOrgaoUsuario());
 		lotNova.setIsSuspensa(lotAnt.getIsSuspensa());
+		lotNova.setUnidadeReceptora(lotAnt.isUnidadeReceptora());
 	}
 
 	/**

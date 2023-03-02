@@ -3,9 +3,12 @@ package br.gov.jfrj.siga.vraptor;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -315,10 +318,8 @@ public class DpCargoController extends
 			String nomeArquivo = arquivo.getFileName();
 			String extensao = nomeArquivo.substring(nomeArquivo.lastIndexOf("."), nomeArquivo.length());
 			
-			File file = new File("arq" + extensao);
-
-			file.createNewFile();
-			FileUtils.copyInputStreamToFile(arquivo.getFile(), file);
+			java.nio.file.Path tempFilePath = Files.createTempFile(UUID.randomUUID().toString(), extensao);
+			Files.copy(arquivo.getFile(), tempFilePath, StandardCopyOption.REPLACE_EXISTING);
 			
 			CpOrgaoUsuario orgaoUsuario = new CpOrgaoUsuario();
 			if(idOrgaoUsu != null && !"".equals(idOrgaoUsu)) {
@@ -328,7 +329,7 @@ public class DpCargoController extends
 			}
 			
 			CpBL cpbl = new CpBL();
-			inputStream = cpbl.uploadCargo(file, orgaoUsuario, extensao);
+			inputStream = cpbl.uploadCargo(tempFilePath.toFile(), orgaoUsuario, extensao);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}

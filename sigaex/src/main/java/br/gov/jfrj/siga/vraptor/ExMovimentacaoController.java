@@ -1,9 +1,14 @@
 package br.gov.jfrj.siga.vraptor;
 
+import static br.com.caelum.vraptor.view.Results.http;
 import static br.gov.jfrj.siga.ex.ExMobil.adicionarIndicativoDeMovimentacaoComOrigemPeloBotaoDeRestricaoDeAcesso;
 import static br.gov.jfrj.siga.ex.ExMobil.removerIndicativoDeMovimentacaoComOrigemPeloBotaoDeRestricaoDeAcesso;
+import static javax.ws.rs.core.HttpHeaders.ACCEPT;
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,6 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.jboss.logging.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.lowagie.text.Document;
@@ -115,6 +122,7 @@ public class ExMovimentacaoController extends ExController {
 	private static final int DEFAULT_TIPO_RESPONSAVEL = 1;
 	private static final int DEFAULT_POSTBACK = 1;
 	private static final Logger log = Logger.getLogger(ExMovimentacaoController.class);
+	private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 	
 	private static final int MAX_ITENS_PAGINA_TRAMITACAO_LOTE = 50;
 	
@@ -334,6 +342,18 @@ public class ExMovimentacaoController extends ExController {
 			return;
 		}
 
+		final String acceptHeader = request.getHeader(ACCEPT);
+		if (startsWithIgnoreCase(acceptHeader, APPLICATION_JSON)) {
+			final Map<String, Object> body = new LinkedHashMap<>();
+			body.put("documento", sigla);
+			body.put("movId", mov.getId());
+
+			result.use(http())
+					.addHeader(CONTENT_TYPE, APPLICATION_JSON)
+					.body(JSON_MAPPER.writeValueAsString(body))
+					.setStatusCode(200);
+			return;
+		}
 		result.redirectTo(MessageFormat.format("anexar?sigla={0}", sigla));
 	}
 
@@ -1383,15 +1403,19 @@ public class ExMovimentacaoController extends ExController {
 			final DpPessoaSelecao cosignatarioSel,
 			final String funcaoCosignatario, final String  unidadeCosignatario, final Integer postback) {
 		this.setPostback(postback);
-
+		
+		if (cosignatarioSel.empty()) {
+			result.include(SigaModal.ALERTA, SigaModal.mensagem("É necessário informar um cossignatário.").titulo("Atenção"));
+			result.forwardTo(this).incluirCosignatario(sigla);
+			return;
+		}
+		
 		final BuscaDocumentoBuilder documentoBuilder = BuscaDocumentoBuilder
 				.novaInstancia()
 				.setSigla(sigla);
-
 		final ExDocumento doc = buscarDocumento(documentoBuilder);
 
 		String funcaoUnidadeCosignatario = funcaoCosignatario;
-		// Efetuar validação e concatenar o conteudo se for implantação GOVSP
 		if(SigaMessages.isSigaSP() && (funcaoCosignatario != null && !funcaoCosignatario.isEmpty()) && (unidadeCosignatario != null && !unidadeCosignatario.isEmpty())) {
 			funcaoUnidadeCosignatario = funcaoUnidadeCosignatario + ";" + unidadeCosignatario; 
 		}
@@ -1417,6 +1441,7 @@ public class ExMovimentacaoController extends ExController {
 				mov.getDescrMov()
 		);
 		ExDocumentoController.redirecionarParaExibir(result, mov.getExDocumento().getSigla());
+		
 	}
 
 	// Nato: Temos que substituir por uma tela que mostre os itens marcados como
