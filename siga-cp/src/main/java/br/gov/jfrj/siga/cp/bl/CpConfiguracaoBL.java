@@ -72,20 +72,21 @@ public class CpConfiguracaoBL {
 	public static final String SIGLA_ORGAO_CODATA_ROOT = "COD";
 	public static final String SIGLA_ORGAO_PDS = "PDS";
 
-	public static final SortedSet<String> SIGLAS_ORGAOS_ADMINISTRADORES = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-	
+	public static final SortedSet<String> SIGLAS_ORGAOS_ADMINISTRADORES;
+	public static final SortedSet<String> SIGLAS_ORGAOS_OCULTADOS;
 	static {
-		SIGLAS_ORGAOS_ADMINISTRADORES.add(SIGLA_ORGAO_ROOT);
-		SIGLAS_ORGAOS_ADMINISTRADORES.add(SIGLA_ORGAO_CODATA_ROOT);
+		final SortedSet<String> siglasOrgaosAdministradores = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+		siglasOrgaosAdministradores.add(SIGLA_ORGAO_ROOT);
+		siglasOrgaosAdministradores.add(SIGLA_ORGAO_CODATA_ROOT);
+		siglasOrgaosAdministradores.add(SIGLA_ORGAO_PDS);
+		SIGLAS_ORGAOS_ADMINISTRADORES = Collections.unmodifiableSortedSet(siglasOrgaosAdministradores);
+
+		final SortedSet<String> siglasOrgaosOcultados = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+		siglasOrgaosOcultados.add(SIGLA_ORGAO_ROOT);
+		siglasOrgaosOcultados.add(SIGLA_ORGAO_PDS);
+		SIGLAS_ORGAOS_OCULTADOS = Collections.unmodifiableSortedSet(siglasOrgaosAdministradores);
 	}
-	
-	public static final List<String> SIGLAS_ORGAOS_OCULTADOS = new ArrayList<String>();
-	
-	static {
-		SIGLAS_ORGAOS_OCULTADOS.add(SIGLA_ORGAO_ROOT);
-		SIGLAS_ORGAOS_OCULTADOS.add(SIGLA_ORGAO_PDS);
-	}
-	
+
 	private final static org.jboss.logging.Logger log = org.jboss.logging.Logger.getLogger(CpConfiguracaoBL.class);
 
 	protected Date dtUltimaAtualizacaoCache = null;
