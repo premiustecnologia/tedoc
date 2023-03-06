@@ -8,7 +8,7 @@ COPY . /pbdoc/
 WORKDIR /pbdoc
 RUN mvn clean package -Dmaven.test.skip -Dsiga.versao=${SIGA_VERSAO} -s settings.xml
 
-FROM daggerok/jboss-eap-7.2:7.2.5-alpine
+FROM docker.io/daggerok/jboss-eap-7.2:7.2.5-alpine
 LABEL org.opencontainers.image.authors="michelrisucci@codata.pb.gov.br"
 
 USER root
