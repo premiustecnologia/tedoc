@@ -41,6 +41,7 @@ public class DpPessoaDaoFiltro extends DaoFiltroSelecionavel {
 	private boolean buscarSubstitutos;
 	private boolean buscarSemLimitarOrgaoOrigem;
 	private boolean buscarApenasUsuariosVisiveisParaTramitacao;
+	private boolean buscarParaCadastroDePessoas;
 	
 	private String situacaoFuncionalPessoa;
 	
@@ -171,6 +172,14 @@ public class DpPessoaDaoFiltro extends DaoFiltroSelecionavel {
 		this.id = id;
 	}
 	
+	public boolean isBuscarParaCadastroDePessoas() {
+		return buscarParaCadastroDePessoas;
+	}
+
+	public void setBuscarParaCadastroDePessoas(boolean buscarParaCadastroDePessoas) {
+		this.buscarParaCadastroDePessoas = buscarParaCadastroDePessoas;
+	}
+
 	public void prepararLotacao(String idLotacaoSelecao) {
 		if(idLotacaoSelecao != null) {			
 			if (idLotacaoSelecao.contains(",")) {									
