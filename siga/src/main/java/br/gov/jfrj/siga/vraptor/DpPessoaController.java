@@ -164,6 +164,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		}
 
 		flt.setBuscarSemLimitarOrgaoOrigem(this.semLimiteOrgaoOrigem);
+		
 		flt.setIdOrgaoUsu(orgaoUsu);
 		if (flt.getIdOrgaoUsu() == null && !getTitular().isTramitarOutrosOrgaos()) {
 			if (getLotaTitular() == null) {
@@ -186,6 +187,9 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		
 		boolean buscarApenasUsuariosVisiveisParaTramitacao = toBoolean(param("buscarApenasUsuariosVisiveisParaTramitacao"));
 		flt.setBuscarApenasUsuariosVisiveisParaTramitacao(toBooleanDefaultIfNull(buscarApenasUsuariosVisiveisParaTramitacao, false));
+		
+		boolean buscarApenasUsuariosDeUnidadesReceptoras = toBoolean(param("buscarApenasUsuariosDeUnidadesReceptoras"));
+		flt.setBuscarApenasUsuariosDeUnidadesReceptoras(toBooleanDefaultIfNull(buscarApenasUsuariosDeUnidadesReceptoras, false));
 
 		return flt;
 	}
@@ -247,8 +251,8 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				
 		result.include("temPermissaoParaExportarDados", temPermissaoParaExportarDados());
 		
-		if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {
-			list = dao().listarOrgaosUsuariosAtivos();
+		if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())) {
+			list = dao().listarOrgaosUsuariosAtivosEVisiveis();
 			result.include("orgaosUsu", list);
 			if (idOrgaoUsu == null) {
 				final CpOrgaoUsuario primeiroOrgaoUsuario = Iterables.getFirst(list, null);
@@ -263,7 +267,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				carregarCombos(null, ou.getId(), null, null, null, null, null, 0, Boolean.FALSE);
 			}
 		}
-		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())
+		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())
 				|| CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(idOrgaoUsu))) {
 			DpPessoaDaoFiltro dpPessoaFiltro = new DpPessoaDaoFiltro();
 			dpPessoaFiltro.setBuscarFechadas(buscarInativos);
@@ -321,7 +325,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		ou.setIdOrgaoUsu(pessoaAnt.getOrgaoUsuario().getId());
 		ou = CpDao.getInstance().consultarPorId(ou);
 
-		if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())
+		if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())
 				|| CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(ou.getId())) {
 			pessoaAnt = dao().consultar(id, DpPessoa.class, false).getPessoaAtual();
 
@@ -410,7 +414,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			DpPessoa pessoa = dao().consultar(id, DpPessoa.class, false);
 			ou.setIdOrgaoUsu(pessoa.getOrgaoUsuario().getId());
 			ou = CpDao.getInstance().consultarPorId(ou);
-			if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpDao.getInstance()
+			if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla()) || CpDao.getInstance()
 					.consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(ou.getId())) {
 				
 				/*
@@ -461,7 +465,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				}	
 			}
 		}
-		if (id == null || (ou.getId() != null && (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())
+		if (id == null || (ou.getId() != null && (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())
 				|| CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(ou.getId())))) {
 			if (ou.getId() == null) {
 				ou = CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario());
@@ -511,21 +515,14 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 			}
 		}
 		List<CpOrgaoUsuario> list = new ArrayList<CpOrgaoUsuario>();
-		if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {
-			list = dao().listarOrgaosUsuarios();
-
-			List<CpOrgaoUsuario> list1 = new ArrayList<CpOrgaoUsuario>();
-			for (CpOrgaoUsuario cpOrgaoUsuario : list) {
-				if (!CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(cpOrgaoUsuario.getSiglaOrgaoUsu()) || !CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {
-					list1.add(cpOrgaoUsuario);
-				}
-			}
+		if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())) {
+			list = dao().listarOrgaosUsuariosAtivosEVisiveis();
 
 			CpOrgaoUsuario org = new CpOrgaoUsuario();
 			org.setNmOrgaoUsu("Selecione");
 			org.setIdOrgaoUsu(0L);
-			list1.add(0, org);
-			result.include("orgaosUsu", list1);
+			list.add(0, org);
+			result.include("orgaosUsu", list);
 		} else {
 			ou = CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario());
 			list.add(ou);
@@ -549,16 +546,9 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		setItemPagina(15);
 		result.include("currentPageNumber", calculaPaginaAtual(paramoffset));
 		List<CpOrgaoUsuario> list = new ArrayList<CpOrgaoUsuario>();
-		if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {
-			List<CpOrgaoUsuario> list1 = new ArrayList<CpOrgaoUsuario>();
-			list = dao().consultaCpOrgaoUsuario();
-
-			for (CpOrgaoUsuario cpOrgaoUsuario : list) {
-				if (!CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(cpOrgaoUsuario.getSiglaOrgaoUsu()) || !CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {
-					list1.add(cpOrgaoUsuario);
-				}
-			}
-			result.include("orgaosUsu", list1);
+		if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())) {
+			list = dao().listarOrgaosUsuariosAtivosEVisiveis();
+			result.include("orgaosUsu", list);
 		} else {
 			CpOrgaoUsuario ou = CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario());
 			list.add(ou);
@@ -682,7 +672,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 
 	@Get("/app/pessoa/carregarExcel")
 	public void carregarExcel() {
-		if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {
+		if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())) {
 			result.include("orgaosUsu", dao().listarOrgaosUsuarios());
 		} else {
 			result.include("nmOrgaousu", getTitular().getOrgaoUsuario().getNmOrgaoUsu());
@@ -745,7 +735,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		result.include("request", getRequest());
 		List<CpOrgaoUsuario> list = new ArrayList<CpOrgaoUsuario>();
 		CpOrgaoUsuario ou = new CpOrgaoUsuario();
-		if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {
+		if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())) {
 			list = dao().listarOrgaosUsuarios();
 			list.remove(0);
 			result.include("orgaosUsu", list);
@@ -760,7 +750,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				carregarCombos(null, ou.getId(), null, null, null, null, null, 0, Boolean.TRUE);
 			}
 		}
-		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())
+		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())
 				|| CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(idOrgaoUsu))) {
 			DpPessoaDaoFiltro dpPessoa = new DpPessoaDaoFiltro();
 			if (paramoffset == null) {
@@ -823,7 +813,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 				senhaGerada[0] = GeraMessageDigest.geraSenha();
 			}
 			Cp.getInstance().getBL().criarIdentidade(dpPessoa2.getSesbPessoa() + dpPessoa2.getMatricula(),
-					dpPessoa2.getCpfFormatado(), getIdentidadeCadastrante(), null, senhaGerada, Boolean.FALSE);
+					dpPessoa2.getCpfFormatado(), getIdentidadeCadastrante(), null, senhaGerada, Boolean.FALSE, Boolean.TRUE);
 			cpfAnterior = dpPessoa2.getCpfPessoa().toString();
 		}
 		this.result.redirectTo(this).enviaEmail(0, idOrgaoUsu, nome, cpfPesquisa, idLotacaoPesquisa, idUsuarioPesquisa,0);
@@ -836,7 +826,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 
 		CpOrgaoUsuario ou = new CpOrgaoUsuario();
 
-		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())
+		if (idOrgaoUsu != null && (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())
 				|| CpDao.getInstance().consultarPorSigla(getTitular().getOrgaoUsuario()).getId().equals(idOrgaoUsu))) {
 			DpPessoa dpPessoa = new DpPessoa();
 
@@ -909,7 +899,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 					return new InputStreamDownload(inputStream, "text/csv", "pessoas.csv");
 				}
 			} else {
-				if (CpConfiguracaoBL.SIGLA_ORGAO_ROOT.equals(getTitular().getOrgaoUsuario().getSigla()) || CpConfiguracaoBL.SIGLA_ORGAO_CODATA_ROOT.equals(getTitular().getOrgaoUsuario().getSigla())) {					
+				if (CpConfiguracaoBL.SIGLAS_ORGAOS_ADMINISTRADORES.contains(getTitular().getOrgaoUsuario().getSigla())) {					
 					result.include("orgaosUsu", dao().listarOrgaosUsuarios());					
 				} else {					
 					List<CpOrgaoUsuario> list = new ArrayList<CpOrgaoUsuario>();					
