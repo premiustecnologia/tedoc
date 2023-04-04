@@ -164,6 +164,7 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		}
 
 		flt.setBuscarSemLimitarOrgaoOrigem(this.semLimiteOrgaoOrigem);
+		
 		flt.setIdOrgaoUsu(orgaoUsu);
 		if (flt.getIdOrgaoUsu() == null && !getTitular().isTramitarOutrosOrgaos()) {
 			if (getLotaTitular() == null) {
@@ -186,6 +187,9 @@ public class DpPessoaController extends SigaSelecionavelControllerSupport<DpPess
 		
 		boolean buscarApenasUsuariosVisiveisParaTramitacao = toBoolean(param("buscarApenasUsuariosVisiveisParaTramitacao"));
 		flt.setBuscarApenasUsuariosVisiveisParaTramitacao(toBooleanDefaultIfNull(buscarApenasUsuariosVisiveisParaTramitacao, false));
+		
+		boolean buscarApenasUsuariosDeUnidadesReceptoras = toBoolean(param("buscarApenasUsuariosDeUnidadesReceptoras"));
+		flt.setBuscarApenasUsuariosDeUnidadesReceptoras(toBooleanDefaultIfNull(buscarApenasUsuariosDeUnidadesReceptoras, false));
 
 		return flt;
 	}

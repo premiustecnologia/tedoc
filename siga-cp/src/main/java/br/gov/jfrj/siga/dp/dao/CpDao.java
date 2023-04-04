@@ -1620,7 +1620,9 @@ public class CpDao extends ModeloDao {
 			predicates.and(qDpPessoa.visivelTramitacao.isTrue());
 		}
 		
-		predicates.and(qDpPessoa.lotacao.unidadeReceptora.isTrue());
+		if (filtro.isBuscarApenasUsuariosDeUnidadesReceptoras()) {
+			predicates.and(qDpPessoa.lotacao.unidadeReceptora.isTrue());
+		}
 		
 		return consultarPessoa(predicates);
 	}
